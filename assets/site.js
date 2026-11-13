@@ -16,7 +16,7 @@
   function applyTheme(theme) {
     root.setAttribute('data-theme', theme);
     themeButtons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.themeSet === theme)));
-    if (themeMeta) themeMeta.setAttribute('content', theme === 'light' ? '#f2f3f7' : '#06070b');
+    if (themeMeta) themeMeta.setAttribute('content', theme === 'light' ? '#fff3dc' : '#120d26');
     window.dispatchEvent(new Event('swarm:relayout'));
   }
   applyTheme(root.getAttribute('data-theme') === 'light' ? 'light' : 'dark');

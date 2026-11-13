@@ -6,7 +6,7 @@
 <title>ICARUS · I Can Actually Run Useful Stuff</title>
 <meta name="description" content="ICARUS is a desktop app where a swarm of visible cursors operates live web pages. Each cursor is an AI agent with its own local-model loop, and each agent works its own browser tab.">
 <meta name="color-scheme" content="dark light">
-<meta name="theme-color" content="#06070b">
+<meta name="theme-color" content="#120d26">
 <meta property="og:type" content="website">
 <meta property="og:title" content="ICARUS · I Can Actually Run Useful Stuff">
 <meta property="og:description" content="A desktop app where a swarm of visible cursors operates live web pages. A lead agent splits each task; every agent runs its own local-model loop in its own browser tab.">
@@ -80,15 +80,17 @@
 
   <!-- ─── Hero ─────────────────────────────────────────────────────────── -->
   <section class="hero wrap" aria-labelledby="hero-title">
-    <p class="label">I Can Actually Run Useful Stuff</p>
-    <h1 id="hero-title">Icarus, take the&nbsp;mouse.</h1>
+    <p class="label cover-tag"><span>Vol. 1</span>I Can Actually Run Useful Stuff</p>
+    <h1 id="hero-title" class="title-ink">Icarus, take the&nbsp;mouse.</h1>
     <p class="lede">ICARUS is a desktop app where a swarm of visible cursors operates live web pages. Each cursor is an AI agent with its own model loop. A lead agent splits your task into small jobs, the agents take them at once, each in its own browser tab, and when everyone is busy, helpers join.</p>
     <div class="actions">
       <a class="btn btn-accent" href="#run">Run it locally<svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a>
       <a class="btn" href="#how">How it works</a>
     </div>
 
-    <figure class="stage pane" data-swarm data-glass-avoid>
+    <figure class="stage pane inked" data-swarm data-glass-avoid>
+      <p class="sfx2 stage-sfx" aria-hidden="true">ワラワラ<small>swarming</small></p>
+      <p class="nar stage-nar" aria-hidden="true">Live: the swarm, right now.</p>
       <figcaption class="sr-only">Illustration of a run. The lead cursor reads a task and splits it into eight small jobs. The four roster agents, Wing, Wax, Sun and Tide, take the first four in their own tabs: placing the order, logging the cost, reading the old order through an MCP tool and finding the delivery date. With everyone busy, four helpers join, Gust, Plume, Quill and Ember, each with its own cursor and tab: checking stock, confirming the address, attaching the old receipt and checking the budget. The lead then checks every result on the page.</figcaption>
 
       <div class="stage-bar">
@@ -456,39 +458,41 @@
       <p>The lead splits your task into small jobs: one page, one goal, one check each. The roster takes them at once, helpers join when everyone is busy, and every result is checked where it landed before the run is called done.</p>
     </header>
 
-    <div class="flow pane reveal" data-flow>
-      <svg class="flow-lines" aria-hidden="true"></svg>
-
-      <p class="col-k" style="grid-area:hl"><span>01</span>Lead</p>
-      <p class="col-k k-later" style="grid-area:ha"><span>02</span>Agents</p>
-      <p class="col-k k-later" style="grid-area:ht"><span>03</span>Tabs</p>
-      <p class="col-k k-later" style="grid-area:hv"><span>04</span>Verify</p>
-
-      <div class="grp" style="grid-area:gl">
-        <div class="node node-lead is-lead" data-node="lead" style="--c:var(--lead)"><svg class="glyph" aria-hidden="true"><use href="#cur"/></svg><span><b>Lead</b><small>splits, then checks</small></span></div>
-      </div>
-      <ul class="grp grp-agents" style="grid-area:ga" aria-label="Agents">
-        <li class="node" data-node="a-wing" style="--c:var(--wing)"><svg class="glyph" aria-hidden="true"><use href="#cur"/></svg><span><b>Wing</b><small>forms and checkout</small></span></li>
-        <li class="node" data-node="a-wax" style="--c:var(--wax)"><svg class="glyph" aria-hidden="true"><use href="#cur"/></svg><span><b>Wax</b><small>data entry</small></span></li>
-        <li class="node" data-node="a-sun" style="--c:var(--sun)"><svg class="glyph" aria-hidden="true"><use href="#cur"/></svg><span><b>Sun</b><small>reading and lookups</small></span></li>
-        <li class="node" data-node="a-tide" style="--c:var(--tide)"><svg class="glyph" aria-hidden="true"><use href="#cur"/></svg><span><b>Tide</b><small>research across pages</small></span></li>
-        <li class="node node-more" data-node="a-pool"><span class="pile" aria-hidden="true"><svg class="glyph" data-joined style="--c:var(--gust)"><use href="#cur"/></svg><svg class="glyph" data-joined style="--c:var(--plume)"><use href="#cur"/></svg><svg class="glyph" data-joined style="--c:var(--quill)"><use href="#cur"/></svg></span><span><b>+ Helpers</b><small>join when all are busy</small></span></li>
-      </ul>
-      <ul class="grp" style="grid-area:gt" aria-label="Browser tabs">
-        <li class="node node-tab" data-node="t-wing" style="--c:var(--wing)"><i class="fav"></i><code><span>store.test</span><span class="path">/cart</span></code></li>
-        <li class="node node-tab" data-node="t-wax" style="--c:var(--wax)"><i class="fav"></i><code><span>sheets.test</span><span class="path">/expenses</span></code></li>
-        <li class="node node-tab" data-node="t-sun" style="--c:var(--sun)"><i class="fav"></i><code><span>orders.test</span><span class="path">/history</span></code></li>
-        <li class="node node-tab" data-node="t-tide" style="--c:var(--tide)"><i class="fav"></i><code><span>carrier.test</span><span class="path">/express</span></code></li>
-        <li class="node node-tab node-more" data-node="t-pool"><i class="fav"></i><code><span>+ a tab each</span></code></li>
-      </ul>
-      <div class="grp" style="grid-area:gv">
-        <div class="node node-verify" data-node="verify"><svg class="ico" aria-hidden="true"><use href="#i-check-circle"/></svg><span><b>Verified</b><small>found on the page</small></span></div>
-      </div>
-
-      <p class="col-d" style="grid-area:dl">Reads the task and the page, then splits it into small jobs: one page, one goal, one check each.</p>
-      <p class="col-d" style="grid-area:da">Each agent runs its own model loop with only the tools it is allowed. When all are busy, helpers join, up to 24 at once.</p>
-      <p class="col-d" style="grid-area:dt">Every agent, helper or not, drives its own browser tab with real input.</p>
-      <p class="col-d" style="grid-area:dv">A result counts only when the evidence the agent quotes is found on the page.</p>
+    <div class="yonkoma">
+      <figure class="pn" data-pn style="--ar:4/5">
+        <div class="bg bg-hero"></div>
+        <div class="bg focus soft" style="--fx:50%;--fy:62%"></div>
+        <p class="nar p" data-a="down" style="--x:50%;--y:10%;--w:84cqw"><b>1</b> The lead reads your task and the page.</p>
+        <div class="chr" data-who="lead" data-face="stern" data-a="zoom" style="--x:50%;--y:62%;--s:56cqw;--r:-8deg;--d:0"><svg class="glyph" style="--c:var(--lead)"><use href="#cur"/></svg></div>
+        <p class="bal p" data-tail="bl" data-a="pop" style="--x:64%;--y:30%;--w:62cqw;--d:2">Split it small.</p>
+      </figure>
+      <figure class="pn" data-pn style="--ar:4/5">
+        <div class="bg bg-sentai"></div>
+        <p class="nar p" data-a="down" style="--x:50%;--y:10%;--w:84cqw"><b>2</b> Agents take the jobs, many at once.</p>
+        <div class="chr" data-who="wing" data-face="sparkle" data-a="hop" style="--x:28%;--y:42%;--s:36cqw;--r:-10deg;--d:1"><svg class="glyph" style="--c:var(--wing)"><use href="#cur"/></svg></div>
+        <div class="chr" data-who="wax" data-face="happy" data-a="hop" style="--x:72%;--y:44%;--s:36cqw;--r:8deg;--d:2"><svg class="glyph" style="--c:var(--wax)"><use href="#cur"/></svg></div>
+        <div class="chr" data-who="sun" data-face="cool" data-a="hop" style="--x:30%;--y:76%;--s:36cqw;--r:-6deg;--d:3"><svg class="glyph" style="--c:var(--sun)"><use href="#cur"/></svg></div>
+        <div class="chr" data-who="tide" data-face="neutral" data-a="hop" style="--x:72%;--y:78%;--s:36cqw;--r:10deg;--d:4"><svg class="glyph" style="--c:var(--tide)"><use href="#cur"/></svg></div>
+        <p class="sfx2 p" data-a="zoom" style="--x:52%;--y:60%;--fs:12cqw;--fill:linear-gradient(#ffe36e,#ff6b3d);--r:-8deg;--d:5" aria-label="Go">ダッ<small>go!</small></p>
+      </figure>
+      <figure class="pn" data-pn style="--ar:4/5">
+        <div class="bg bg-calm"></div>
+        <p class="nar p" data-a="down" style="--x:50%;--y:10%;--w:84cqw"><b>3</b> Each works its own tab, with real clicks.</p>
+        <div class="p minitab" data-a="up" style="--x:50%;--y:42%;--c:var(--wing);--d:1"><i></i>store.test/cart</div>
+        <div class="p minitab" data-a="up" style="--x:50%;--y:62%;--c:var(--wax);--d:2"><i></i>sheets.test/expenses</div>
+        <div class="p minitab" data-a="up" style="--x:50%;--y:82%;--c:var(--sun);--d:3"><i></i>orders.test/history</div>
+        <div class="chr" data-who="wing" data-face="neutral" data-a="left" style="--x:84%;--y:46%;--s:24cqw;--r:-10deg;--d:2"><svg class="glyph" style="--c:var(--wing)"><use href="#cur"/></svg></div>
+        <div class="chr flip" data-who="wax" data-face="happy" data-a="right" style="--x:16%;--y:66%;--s:24cqw;--r:8deg;--d:3"><svg class="glyph" style="--c:var(--wax)"><use href="#cur"/></svg></div>
+        <div class="chr" data-who="sun" data-face="cool" data-a="left" style="--x:86%;--y:86%;--s:24cqw;--r:-6deg;--d:4"><svg class="glyph" style="--c:var(--sun)"><use href="#cur"/></svg></div>
+        <p class="sfx2 p" data-a="zoom" style="--x:24%;--y:28%;--fs:10cqw;--fill:linear-gradient(#fff,#9be0ff);--r:-8deg;--d:4" aria-label="Click">カチッ<small>click</small></p>
+      </figure>
+      <figure class="pn" data-pn style="--ar:4/5">
+        <div class="bg bg-noir"></div>
+        <p class="nar p" data-a="down" style="--x:50%;--y:10%;--w:84cqw"><b>4</b> Every result is checked on the page.</p>
+        <div class="chr" data-who="lead" data-face="sparkle" data-a="down" style="--x:46%;--y:46%;--s:46cqw;--r:-6deg;--d:1"><svg class="glyph" style="--c:var(--lead)"><use href="#cur"/></svg><svg class="lens2" viewBox="0 0 40 40" aria-hidden="true"><circle cx="15" cy="15" r="11"/><path d="M23 23l12 12"/></svg></div>
+        <span class="stamp2 big p" data-a="stamp" style="--x:58%;--y:80%;--d:3">Verified</span>
+        <p class="sfx2 p" data-a="slam" style="--x:80%;--y:28%;--fs:12cqw;--fill:linear-gradient(#ffffff,#8ad8ff);--r:10deg;--d:3" aria-label="Stamp">バン!<small>stamp!</small></p>
+      </figure>
     </div>
   </section>
 
@@ -502,63 +506,96 @@
       <p>The models and tools run on your machine. The agents act through the real browser and report only what they can show on the page.</p>
     </header>
 
-    <div class="feat">
-      <article class="fp pane fp-a reveal">
-        <header class="fp-h"><h3>Your models, your tools</h3><span class="fp-k">Models</span></header>
-        <div class="fi">
-          <span class="tile"><svg class="ico" aria-hidden="true"><use href="#i-chip"/></svg></span>
-          <div><h4>Local models</h4><p>Any OpenAI-compatible endpoint, such as LM Studio, llama.cpp server, Ollama or vLLM.</p><code>http://127.0.0.1:1234/v1</code></div>
-        </div>
-        <div class="fi">
-          <span class="tile"><svg class="ico" aria-hidden="true"><use href="#i-terminal"/></svg></span>
-          <div><h4>Your own accounts</h4><p>Agents can run through the Claude Code, Codex or Gemini CLI you are already signed in to, with no API key. ICARUS hands them its tools over a local MCP bridge, with the CLI's own shell, file and web tools switched off.</p><code>claude-code · codex · gemini-cli</code></div>
-        </div>
-        <div class="fi">
-          <span class="tile"><svg class="ico" aria-hidden="true"><use href="#i-plug"/></svg></span>
-          <div><h4>MCP servers</h4><p>Connect tools over stdio or Streamable HTTP and choose which ones each project may use.</p><code>stdio · streamable http</code></div>
-        </div>
-        <div class="fi">
-          <span class="tile"><svg class="ico" aria-hidden="true"><use href="#i-key"/></svg></span>
-          <div><h4>Credentials stay local</h4><p>API keys, MCP environment values and headers stay in the local runtime. The app and its logs only see them masked.</p><code>apiKey: ••••••••</code></div>
-        </div>
+    <div class="mpage">
+      <article class="fcard reveal" style="--span:3;--c:var(--sun)">
+        <figure class="pn" data-pn style="--ar:16/9">
+          <div class="bg tint"></div>
+          <div class="bg focus soft" style="--fx:28%;--fy:64%"></div>
+          <div class="chr" data-who="sun" data-face="cool" data-a="left" style="--x:26%;--y:62%;--s:30cqw;--r:6deg;--d:0"><svg class="glyph" style="--c:var(--sun)"><use href="#cur"/></svg></div>
+          <p class="bal p" data-tail="bl" data-a="pop" style="--x:66%;--y:30%;--w:44cqw;--d:1">Runs on your own model.</p>
+        </figure>
+        <div class="fcap"><h3>Local models</h3><p>Any OpenAI-compatible endpoint: LM Studio, llama.cpp server, Ollama or vLLM.</p><code>http://127.0.0.1:1234/v1</code></div>
       </article>
-
-      <article class="fp pane fp-b reveal">
-        <header class="fp-h"><h3>Works the real page, many at once</h3><span class="fp-k">Swarm</span></header>
-        <div class="fi">
-          <span class="tile"><svg class="ico" aria-hidden="true"><use href="#i-pointer"/></svg></span>
-          <div><h4>Real clicks and keystrokes</h4><p>Dispatched through the Chrome DevTools Protocol as real input events, not simulated by scripts in the page.</p></div>
-        </div>
-        <div class="fi">
-          <span class="tile"><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg></span>
-          <div><h4>Targets re-resolved</h4><p>Just before each press the target is looked up again. If the page changed under it, the agent re-targets or re-reads instead of guessing.</p></div>
-        </div>
-        <div class="fi">
-          <span class="tile"><svg class="ico" aria-hidden="true"><use href="#i-split"/></svg></span>
-          <div><h4>A pool, not a queue</h4><p>Many small jobs run at once. When every agent is busy, a helper joins with its own cursor and tab, up to 24 agents at once.</p><code>Agents at once: 8</code></div>
-        </div>
-        <pre class="trace" aria-label="Example of input events"><span>Input.dispatchMouseEvent</span>  mouseMoved     412,288
-<span>Input.dispatchMouseEvent</span>  mousePressed   left
-<span>Input.dispatchMouseEvent</span>  mouseReleased  left
-<span>Input.insertText</span>          "$48.00"</pre>
+      <article class="fcard reveal" style="--span:3;--c:var(--tide)">
+        <figure class="pn" data-pn style="--ar:16/9">
+          <div class="bg tint"></div>
+          <div class="bg focus soft" style="--fx:28%;--fy:64%"></div>
+          <div class="chr" data-who="tide" data-face="sparkle" data-a="left" style="--x:26%;--y:62%;--s:30cqw;--r:-6deg;--d:0"><svg class="glyph" style="--c:var(--tide)"><use href="#cur"/></svg></div>
+          <p class="bal p" data-tail="bl" data-a="pop" style="--x:66%;--y:30%;--w:44cqw;--d:1">Bring your own account!</p>
+        </figure>
+        <div class="fcap"><h3>Your own accounts</h3><p>Claude Code, Codex or Gemini CLI, already signed in. No API key; the CLI's own shell, file and web tools stay off.</p><code>claude-code · codex · gemini-cli</code></div>
       </article>
-
-      <article class="fp pane fp-c reveal">
-        <header class="fp-h"><h3>Honest about the outcome</h3><span class="fp-k">Outcome</span></header>
-        <div class="fis">
-          <div class="fi">
-            <span class="tile"><svg class="ico" aria-hidden="true"><use href="#i-no-repeat"/></svg></span>
-            <div><h4>Uncertain submits are never replayed</h4><p>A submit that gets no clear answer is marked uncertain and held. It is never sent twice.</p><code>uncertain · held</code></div>
-          </div>
-          <div class="fi">
-            <span class="tile"><svg class="ico" aria-hidden="true"><use href="#i-stop"/></svg></span>
-            <div><h4>Stop cancels everything</h4><p>One press aborts model requests, cancels MCP calls and dispatches nothing more, for every agent at once.</p><code>notifications/cancelled</code></div>
-          </div>
-          <div class="fi">
-            <span class="tile"><svg class="ico" aria-hidden="true"><use href="#i-check-circle"/></svg></span>
-            <div><h4>Verified on the page</h4><p>Every result is checked on the page before the run is called done.</p><code>evidence · found</code></div>
-          </div>
-        </div>
+      <article class="fcard reveal" style="--span:2;--c:var(--wax)">
+        <figure class="pn" data-pn style="--ar:4/3">
+          <div class="bg tint"></div>
+          <div class="bg focus soft" style="--fx:28%;--fy:64%"></div>
+          <div class="chr" data-who="wax" data-face="happy" data-a="left" style="--x:26%;--y:62%;--s:40cqw;--r:6deg;--d:0"><svg class="glyph" style="--c:var(--wax)"><use href="#cur"/></svg></div>
+          <p class="bal p" data-tail="bl" data-a="pop" style="--x:66%;--y:30%;--w:56cqw;--d:1">Plug in your tools.</p>
+        </figure>
+        <div class="fcap"><h3>MCP servers</h3><p>Over stdio or Streamable HTTP, and each project picks which ones its agents may use.</p><code>stdio · streamable http</code></div>
+      </article>
+      <article class="fcard reveal" style="--span:2;--c:var(--lead)">
+        <figure class="pn" data-pn style="--ar:4/3">
+          <div class="bg tint"></div>
+          <div class="bg focus soft" style="--fx:28%;--fy:64%"></div>
+          <div class="chr" data-who="lead" data-face="stern" data-a="left" style="--x:26%;--y:62%;--s:40cqw;--r:-6deg;--d:0"><svg class="glyph" style="--c:var(--lead)"><use href="#cur"/></svg></div>
+          <p class="bal p" data-tail="bl" data-a="pop" style="--x:66%;--y:30%;--w:56cqw;--d:1">Keys stay home.</p>
+        </figure>
+        <div class="fcap"><h3>Credentials stay local</h3><p>API keys, env values and headers live in the local runtime; the app and its logs only see them masked.</p><code>apiKey: ••••••••</code></div>
+      </article>
+      <article class="fcard reveal" style="--span:2;--c:var(--wing)">
+        <figure class="pn" data-pn style="--ar:4/3">
+          <div class="bg tint"></div>
+          <div class="bg focus soft" style="--fx:28%;--fy:64%"></div>
+          <div class="chr" data-who="wing" data-face="sparkle" data-a="left" style="--x:26%;--y:62%;--s:40cqw;--r:6deg;--d:0"><svg class="glyph" style="--c:var(--wing)"><use href="#cur"/></svg></div>
+          <p class="bal p" data-tail="bl" data-a="pop" style="--x:66%;--y:30%;--w:56cqw;--d:1">Real clicks. Real keys.</p>
+        </figure>
+        <div class="fcap"><h3>Real input</h3><p>Dispatched through the Chrome DevTools Protocol, not simulated by scripts in the page.</p><code>Input.dispatchMouseEvent</code></div>
+      </article>
+      <article class="fcard reveal" style="--span:2;--c:var(--wing)">
+        <figure class="pn" data-pn style="--ar:4/3">
+          <div class="bg tint"></div>
+          <div class="bg focus soft" style="--fx:28%;--fy:64%"></div>
+          <div class="chr" data-who="wing" data-face="shock" data-a="left" style="--x:26%;--y:62%;--s:40cqw;--r:-6deg;--d:0"><svg class="glyph" style="--c:var(--wing)"><use href="#cur"/></svg></div>
+          <p class="bal p" data-tail="bl" data-a="pop" style="--x:66%;--y:30%;--w:56cqw;--d:1">It moved? I look again.</p>
+        </figure>
+        <div class="fcap"><h3>Targets re-resolved</h3><p>Just before each press the target is found again. If the page changed, the agent re-targets or re-reads.</p><code>e12 → re-resolved</code></div>
+      </article>
+      <article class="fcard reveal" style="--span:2;--c:var(--gust)">
+        <figure class="pn" data-pn style="--ar:4/3">
+          <div class="bg tint"></div>
+          <div class="bg focus soft" style="--fx:28%;--fy:64%"></div>
+          <div class="chr" data-who="gust" data-face="happy" data-a="left" style="--x:26%;--y:62%;--s:40cqw;--r:6deg;--d:0"><svg class="glyph" style="--c:var(--gust)"><use href="#cur"/></svg></div>
+          <p class="bal p" data-tail="bl" data-a="pop" style="--x:66%;--y:30%;--w:56cqw;--d:1">Busy? We'll help!</p>
+        </figure>
+        <div class="fcap"><h3>A pool, not a queue</h3><p>Many small jobs at once. When every agent is busy, a helper joins with its own cursor and tab, up to 24.</p><code>Agents at once: 8</code></div>
+      </article>
+      <article class="fcard reveal" style="--span:2;--c:var(--wax)">
+        <figure class="pn" data-pn style="--ar:4/3">
+          <div class="bg tint"></div>
+          <div class="bg focus soft" style="--fx:28%;--fy:64%"></div>
+          <div class="chr" data-who="wax" data-face="nervous" data-a="left" style="--x:26%;--y:62%;--s:40cqw;--r:-6deg;--d:0"><svg class="glyph" style="--c:var(--wax)"><use href="#cur"/></svg></div>
+          <p class="bal p" data-tail="bl" data-a="pop" style="--x:66%;--y:30%;--w:56cqw;--d:1">No answer… I wait.</p>
+        </figure>
+        <div class="fcap"><h3>Uncertain submits</h3><p>A submit with no clear answer is held as uncertain. It is never sent twice.</p><code>uncertain · held</code></div>
+      </article>
+      <article class="fcard reveal" style="--span:3;--c:var(--lead)">
+        <figure class="pn" data-pn style="--ar:16/9">
+          <div class="bg tint"></div>
+          <div class="bg focus soft" style="--fx:28%;--fy:64%"></div>
+          <div class="chr" data-who="lead" data-face="stern" data-a="left" style="--x:26%;--y:62%;--s:30cqw;--r:6deg;--d:0"><svg class="glyph" style="--c:var(--lead)"><use href="#cur"/></svg></div>
+          <p class="bal shout p" data-tail="bl" data-a="pop" style="--x:66%;--y:30%;--w:44cqw;--d:1">STOP means stop.</p>
+        </figure>
+        <div class="fcap"><h3>Stop cancels everything</h3><p>One press aborts model requests, cancels MCP calls and dispatches nothing more, for every agent.</p><code>notifications/cancelled</code></div>
+      </article>
+      <article class="fcard reveal" style="--span:3;--c:var(--lead)">
+        <figure class="pn" data-pn style="--ar:16/9">
+          <div class="bg tint"></div>
+          <div class="bg focus soft" style="--fx:28%;--fy:64%"></div>
+          <div class="chr" data-who="lead" data-face="sparkle" data-a="left" style="--x:26%;--y:62%;--s:30cqw;--r:-6deg;--d:0"><svg class="glyph" style="--c:var(--lead)"><use href="#cur"/></svg></div>
+          <p class="bal p" data-tail="bl" data-a="pop" style="--x:66%;--y:30%;--w:44cqw;--d:1">Show me the page.</p>
+        </figure>
+        <div class="fcap"><h3>Verified on the page</h3><p>A run is done only when the evidence each agent reports is found on the page.</p><code>evidence · found</code></div>
       </article>
     </div>
   </section>
@@ -581,7 +618,8 @@
 
     <div class="shots">
       <figure class="shot shot-main reveal">
-        <div class="shot-frame pane">
+        <div class="shot-frame pane inked">
+          <div class="peek" aria-hidden="true"><div class="chr" data-who="wing" data-face="happy" data-a="left" style="--s:92px;--r:-10deg;--d:0"><svg class="glyph" style="--c:var(--wing)"><use href="#cur"/></svg></div><p class="bal p" data-tail="bl" style="--x:180%;--y:-10%;--w:220px">That's us, live!</p></div>
           <div class="shot-media">
             <img src="shots/live-view.webp" alt="ICARUS live view: Wing works one order while helpers Gust and Plume take the other two, each in its own tab with its own cursor" width="2280" height="1410" loading="lazy" decoding="async" onerror="this.remove()">
             <div class="ph ph-live" aria-hidden="true">
@@ -600,7 +638,8 @@
       </figure>
 
       <figure class="shot reveal">
-        <div class="shot-frame pane">
+        <div class="shot-frame pane inked">
+          <div class="peek" aria-hidden="true"><div class="chr" data-who="lead" data-face="sparkle" data-a="left" style="--s:92px;--r:-10deg;--d:0"><svg class="glyph" style="--c:var(--lead)"><use href="#cur"/></svg></div><p class="bal p" data-tail="bl" style="--x:180%;--y:-10%;--w:220px">The roster.</p></div>
           <div class="shot-media">
             <img src="shots/roster.webp" alt="ICARUS Project and roster sheet: Wing, Wax, Sun and Tide with their strengths, connections and MCP tools" width="2280" height="1410" loading="lazy" decoding="async" onerror="this.remove()">
             <div class="ph ph-list" aria-hidden="true">
@@ -613,7 +652,8 @@
       </figure>
 
       <figure class="shot reveal">
-        <div class="shot-frame pane">
+        <div class="shot-frame pane inked">
+          <div class="peek" aria-hidden="true"><div class="chr" data-who="tide" data-face="cool" data-a="left" style="--s:92px;--r:-10deg;--d:0"><svg class="glyph" style="--c:var(--tide)"><use href="#cur"/></svg></div><p class="bal p" data-tail="bl" style="--x:180%;--y:-10%;--w:220px">Your models.</p></div>
           <div class="shot-media">
             <img src="shots/connections.webp" alt="ICARUS Models and MCP sheet: LM Studio connected, plus Claude, ChatGPT and Gemini through your own signed-in accounts" width="2280" height="1340" loading="lazy" decoding="async" onerror="this.remove()">
             <div class="ph ph-conn" aria-hidden="true">
@@ -629,7 +669,8 @@
 
   <!-- ─── Run it ───────────────────────────────────────────────────────── -->
   <section class="sec wrap" id="run" aria-labelledby="run-title">
-    <div class="run pane reveal">
+    <div class="run pane inked reveal">
+      <div class="run-art" aria-hidden="true"><div class="chr" data-who="lead" data-face="happy" data-a="pop" style="--s:130px;--r:-8deg;--d:0"><svg class="glyph" style="--c:var(--lead)"><use href="#cur"/></svg></div><p class="bal p" data-tail="bl" style="--x:-20%;--y:-18%;--w:230px">Three commands. That's it.</p></div>
       <header class="sec-h">
         <p class="label">Run it</p>
         <h2 id="run-title">Three commands, all on your machine.</h2>
@@ -655,6 +696,8 @@
     </div>
   </section>
 </main>
+
+<p class="wrap tbc" aria-label="To be continued"><span>To be continued…</span><b>つづく</b></p>
 
 <footer class="wrap foot">
   <a class="brand" href="#top" aria-label="ICARUS, back to top"><img src="assets/mark.svg" width="30" height="30" alt=""><span>ICARUS</span></a>

@@ -22,7 +22,7 @@
 
   /* ── Panels ───────────────────────────────────────────────────────── */
 
-  const panels = story ? [...story.querySelectorAll('[data-pn]')] : [];
+  const panels = [...document.querySelectorAll('[data-pn]')]; // every comic panel on the page
   const seen = 'IntersectionObserver' in window
     ? new IntersectionObserver((entries) => {
       for (const e of entries) {
@@ -147,7 +147,7 @@
     el.classList.add('drawn');
   }
 
-  const balloons = story ? [...story.querySelectorAll('.bal')] : [];
+  const balloons = [...document.querySelectorAll('.bal')];
   const sized = new WeakMap();
   if ('ResizeObserver' in window) {
     const ro = new ResizeObserver((entries) => {
@@ -200,6 +200,7 @@
   function setMode() {
     motion = !reduced.matches;
     if (story) story.toggleAttribute('data-motion', motion);
+    document.documentElement.toggleAttribute('data-comic', motion);
     if (pro) pro.toggleAttribute('data-motion', motion);
     if (!motion) panels.forEach((p) => p.classList.add('in'));
     prologue(true);

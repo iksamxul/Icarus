@@ -1542,8 +1542,8 @@ code, pre { font-family: var(--font-mono); }
 }
 
 /* ── Arrival: each panel plays its beat once (.in) ── */
-.story[data-motion] .pn:not(.in) [data-a] { opacity: 0; }
-.story[data-motion] .pn.in [data-a] {
+:root[data-comic] .pn:not(.in) [data-a] { opacity: 0; }
+:root[data-comic] .pn.in [data-a] {
   animation: var(--anim, a-up) 0.7s var(--pop) both;
   animation-delay: calc(var(--d, 0) * 130ms + 60ms);
 }
@@ -1573,20 +1573,20 @@ code, pre { font-family: var(--font-mono); }
 @keyframes a-fly { 0% { opacity: 1; transform: translate(-34cqw, -16cqw) rotate(-16deg); } 100% { opacity: 1; transform: none; } }
 @keyframes a-fade { 0% { opacity: 0; } 100% { opacity: 1; } }
 @keyframes a-stamp { 0% { opacity: 0; transform: scale(2.6) rotate(-14deg); } 60% { opacity: 1; transform: scale(0.92); } 100% { opacity: 1; transform: none; } }
-.story[data-motion] .pn.in [data-a="fade"] { animation-duration: 1.6s; }
-.story[data-motion] .pn.in [data-a="slam"], .story[data-motion] .pn.in [data-a="stamp"] { animation-duration: 0.55s; }
-.story[data-motion] .pn.in .ring4 { animation: ring4 0.9s ease-out 0.5s both; }
+:root[data-comic] .pn.in [data-a="fade"] { animation-duration: 1.6s; }
+:root[data-comic] .pn.in [data-a="slam"], :root[data-comic] .pn.in [data-a="stamp"] { animation-duration: 0.55s; }
+:root[data-comic] .pn.in .ring4 { animation: ring4 0.9s ease-out 0.5s both; }
 @keyframes ring4 { 0% { opacity: 0.9; transform: scale(0.7); } 100% { opacity: 0; transform: scale(1.5); } }
 
 /* ── Idle life while a panel is on screen (.vis) ── */
-.story[data-motion] .pn.vis .chr-img,
-.story[data-motion] .pn.vis .chr-blink { animation: bob 2.6s ease-in-out infinite; animation-delay: calc(var(--d, 0) * -0.41s); }
-.story[data-motion] .pn.vis .chr-blink { animation-name: bob, blink; animation-duration: 2.6s, 4.3s; animation-timing-function: ease-in-out, linear; animation-delay: calc(var(--d, 0) * -0.41s), calc(var(--d, 0) * -0.93s); }
-.story[data-motion] .pn.vis .emo.sweat { animation: drip 1.8s ease-in infinite; }
-.story[data-motion] .pn.vis .emo.vein { animation: throb 0.9s ease-in-out infinite; }
-.story[data-motion] .pn.vis .emo.sparkles { animation: twinkle 1.6s ease-in-out infinite; }
-.story[data-motion] .pn.vis .emo.zzz { animation: float 2.4s ease-in-out infinite; }
-.story[data-motion] .pn.vis .mouse2 { animation: bob 2.2s ease-in-out infinite; }
+:root[data-comic] .pn.vis .chr-img,
+:root[data-comic] .pn.vis .chr-blink { animation: bob 2.6s ease-in-out infinite; animation-delay: calc(var(--d, 0) * -0.41s); }
+:root[data-comic] .pn.vis .chr-blink { animation-name: bob, blink; animation-duration: 2.6s, 4.3s; animation-timing-function: ease-in-out, linear; animation-delay: calc(var(--d, 0) * -0.41s), calc(var(--d, 0) * -0.93s); }
+:root[data-comic] .pn.vis .emo.sweat { animation: drip 1.8s ease-in infinite; }
+:root[data-comic] .pn.vis .emo.vein { animation: throb 0.9s ease-in-out infinite; }
+:root[data-comic] .pn.vis .emo.sparkles { animation: twinkle 1.6s ease-in-out infinite; }
+:root[data-comic] .pn.vis .emo.zzz { animation: float 2.4s ease-in-out infinite; }
+:root[data-comic] .pn.vis .mouse2 { animation: bob 2.2s ease-in-out infinite; }
 @keyframes bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -1.1cqw; } }
 @keyframes blink { 0%, 93% { opacity: 0; } 93.4%, 96% { opacity: 1; } 96.4%, 100% { opacity: 0; } }
 @keyframes drip { 0% { translate: 0 -0.6cqw; opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { translate: 0 2.6cqw; opacity: 0; } }
@@ -1604,6 +1604,185 @@ code, pre { font-family: var(--font-mono); }
   .pn { margin: 8px 10px; border-width: 2px; border-radius: 8px; }
   .note { margin: 0 10px 10px; }
   .note p:last-child { font-size: 14px; }
+}
+
+/* ── The whole site as a comic ──────────────────────────────────────────
+   Cover, chapter cards, a yonkoma, a manga page of features, inked screen
+   frames, the lead handing over the commands, and つづく. Same cast, same
+   balloons, same lettering as the episode; the glass stays on the frames. */
+
+/* Cover */
+.cover-tag { gap: 12px; }
+.cover-tag::before { display: none; }
+.cover-tag span {
+  display: inline-grid; place-items: center;
+  height: 26px; padding: 0 10px;
+  border-radius: 6px;
+  background: var(--ink); color: #ffffff;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  font: 800 12px/1 var(--font-comic);
+  letter-spacing: 0.08em;
+  rotate: -4deg;
+}
+.title-ink {
+  color: #ffffff;
+  -webkit-text-stroke: clamp(2px, 0.05em, 5px) var(--ink);
+  paint-order: stroke fill;
+  text-shadow: 0.05em 0.06em 0 #38b6ff, 0.1em 0.12em 0 #ff5fa2;
+  letter-spacing: -0.035em;
+}
+:root[data-theme="light"] .title-ink { color: #ffffff; text-shadow: 0.05em 0.06em 0 #38b6ff, 0.1em 0.12em 0 #ff5fa2, 0.13em 0.16em 0 var(--ink); }
+.hero { position: relative; }
+.hero::before {
+  content: "";
+  position: absolute; left: 50%; top: 0; z-index: -1;
+  width: 100%; height: 720px;
+  translate: -50% 0;
+  pointer-events: none;
+  background: repeating-conic-gradient(from 0deg at 50% 32%, rgba(255, 255, 255, 0.05) 0deg 1.2deg, transparent 1.2deg 6deg);
+  -webkit-mask-image: radial-gradient(60% 60% at 50% 32%, transparent 18%, #000 40%, transparent 78%);
+  mask-image: radial-gradient(60% 60% at 50% 32%, transparent 18%, #000 40%, transparent 78%);
+}
+:root[data-theme="light"] .hero::before { background: repeating-conic-gradient(from 0deg at 50% 32%, rgba(18, 15, 26, 0.06) 0deg 1.2deg, transparent 1.2deg 6deg); }
+.inked {
+  border: 3px solid var(--ink) !important;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 8px 8px 0 var(--ink), var(--glass-shadow) !important;
+}
+.stage-sfx {
+  position: absolute; z-index: 6; right: 4%; top: -34px;
+  --fs: clamp(34px, 5vw, 64px);
+  --fill: linear-gradient(#fff6c0, #ffb800);
+  rotate: 6deg;
+  pointer-events: none;
+}
+.stage-nar {
+  position: absolute; z-index: 6; left: -12px; top: -18px;
+  --w: 260px;
+  font-size: 14px;
+  rotate: -3deg;
+  pointer-events: none;
+}
+
+/* Chapter cards: every section title as a comic title. */
+.sec-h h2 {
+  color: var(--text);
+  text-shadow: 0.045em 0.055em 0 color-mix(in srgb, var(--chap, #38b6ff) 70%, transparent);
+}
+#story .sec-h { --chap: #ff5fa2; }
+#how .sec-h { --chap: #f5b83d; }
+#features .sec-h { --chap: #8b6cff; }
+#inside .sec-h { --chap: #45ede6; }
+#run .sec-h { --chap: #45ed53; }
+.sec-h .label::before { width: 22px; height: 22px; border-radius: 6px; background: var(--chap, var(--accent)); border: 2px solid var(--ink); rotate: -8deg; opacity: 1; }
+.sec-h.split > p:not(.label) {
+  justify-self: start;
+  padding: 14px 18px 16px;
+  background: #fff6d6;
+  color: var(--ink);
+  border: 2.5px solid var(--ink);
+  box-shadow: 6px 6px 0 var(--ink);
+  font: 700 clamp(15px, 1.3vw, 17px)/1.45 var(--font-comic);
+  rotate: -1deg;
+}
+
+/* Prologue captions as narration boxes. */
+.pro-step {
+  width: max-content; max-width: 46ch;
+  padding: 10px 14px 12px;
+  background: #fff6d6; color: var(--ink);
+  border: 2.5px solid var(--ink);
+  box-shadow: 5px 5px 0 var(--ink);
+  font: 700 clamp(15px, 1.4vw, 18px)/1.4 var(--font-comic);
+}
+.pro-copy h2 { text-shadow: 0.045em 0.055em 0 rgba(139, 108, 255, 0.75); }
+.prologue.has-3d .pro-pin { background: repeating-conic-gradient(from 0deg at 50% 36%, rgba(255, 255, 255, 0.035) 0deg 1.2deg, transparent 1.2deg 6deg); }
+
+/* How it works: a yonkoma. */
+.yonkoma { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 44px; }
+.yonkoma .pn, .fcard .pn { grid-column: auto; margin: 0; }
+.nar b { display: inline-grid; place-items: center; min-width: 1.5em; height: 1.5em; margin-right: 0.4em; border-radius: 50%; background: var(--ink); color: #ffffff; font-size: 0.85em; }
+.minitab {
+  display: inline-flex; align-items: center; gap: 0.6em;
+  width: 70cqw;
+  padding: 2.4cqw 3cqw;
+  border-radius: 3cqw 3cqw 1.2cqw 1.2cqw;
+  background: #ffffff;
+  border: max(2px, 0.6cqw) solid var(--ink);
+  box-shadow: 1cqw 1cqw 0 var(--ink);
+  color: var(--ink);
+  font: 700 clamp(12px, 4.4cqw, 15px)/1 var(--font-mono);
+  white-space: nowrap; overflow: hidden;
+}
+.minitab i { flex: none; width: 0.8em; height: 0.8em; border-radius: 0.2em; background: var(--c); border: 1px solid var(--ink); }
+.stamp2.big { position: absolute; right: auto; bottom: auto; padding: 1.4cqw 3cqw; font-size: clamp(14px, 6cqw, 26px); border-width: max(3px, 0.8cqw); rotate: -10deg; }
+
+/* Features: a manga page. */
+.mpage { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 22px 18px; margin-top: 44px; }
+.fcard { grid-column: span var(--span, 2); display: flex; flex-direction: column; }
+.fcard .pn { margin: 0; }
+.fcap {
+  position: relative; z-index: 2;
+  margin: -22px 14px 0;
+  padding: 12px 16px 14px;
+  background: #fff6d6;
+  color: var(--ink);
+  border: 2.5px solid var(--ink);
+  box-shadow: 5px 5px 0 var(--ink);
+}
+.fcap h3 { font: 800 17px/1.25 var(--font-comic); }
+.fcap p { margin-top: 4px; font-size: 14px; line-height: 1.5; color: #3a3550; }
+.fcap code {
+  display: inline-flex; margin-top: 8px; padding: 3px 9px;
+  border-radius: 999px; border: 1.5px solid var(--ink);
+  background: #ffffff; color: var(--ink);
+  font-size: 12px;
+}
+
+/* Screens: inked frames, a character peeking in. */
+.shot-frame { position: relative; }
+.shot-media { border: 3px solid var(--ink) !important; }
+.peek { position: absolute; z-index: 5; left: -26px; top: -40px; width: 92px; height: 92px; pointer-events: none; }
+.peek .chr { position: relative; left: auto; top: auto; translate: none; width: 92px; }
+.peek .bal, .run-art .bal { font-size: 15px; padding: 10px 18px 12px; max-width: 240px; }
+.shot figcaption b { padding: 2px 10px; border-radius: 6px; background: var(--ink); color: #ffffff; }
+:root[data-theme="light"] .shot figcaption b { color: #ffffff; }
+
+/* Run it: the lead hands over the commands. */
+.run { position: relative; }
+.run-art { position: absolute; z-index: 5; right: clamp(16px, 4vw, 48px); top: -44px; width: 130px; height: 130px; pointer-events: none; }
+.run-art .chr { position: relative; left: auto; top: auto; translate: none; width: 130px; }
+.cmd { border: 2px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); }
+
+/* The end. */
+.tbc {
+  display: flex; align-items: center; justify-content: flex-end; gap: 14px;
+  margin-top: clamp(64px, 9vw, 120px);
+  font: 800 clamp(18px, 2vw, 24px)/1 var(--font-comic);
+  color: var(--text-dim);
+}
+.tbc b {
+  padding: 10px 16px 12px;
+  background: #fff6d6; color: var(--ink);
+  border: 3px solid var(--ink);
+  box-shadow: 6px 6px 0 var(--ink);
+  font: 900 clamp(22px, 2.6vw, 32px)/1 var(--font-sfx);
+  rotate: -3deg;
+}
+
+@media (max-width: 980px) {
+  .yonkoma { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mpage { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fcard { grid-column: span 1; }
+}
+@media (max-width: 600px) {
+  .yonkoma { grid-template-columns: minmax(0, 1fr); }
+  .mpage { grid-template-columns: minmax(0, 1fr); }
+  .stage-nar { display: none; }
+  .stage-sfx { top: -26px; }
+  .peek { left: -6px; top: -30px; }
+  .run-art { top: -36px; right: 8px; width: 100px; height: 100px; }
+  .run-art .chr { width: 100px; }
+  .run-art .bal { display: none; }
 }
 
 /* ── Responsive ───────────────────────────────────────────────────────── */
@@ -1703,4 +1882,313 @@ code, pre { font-family: var(--font-mono); }
 @media (prefers-reduced-transparency: reduce) {
   .nav { background: var(--glass-solid); -webkit-backdrop-filter: none; backdrop-filter: none; }
   .pane { background: var(--glass-solid); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   COMIC EDITION
+   The whole site as a comic: nav, cover, chapters, panels, buttons and
+   footer are inked paper with hard shadows. One palette, Icarus's sky and
+   sun, that everything follows:
+     ink    the outlines            sun / gold   the primary (actions, now)
+     sky    links, checks, verified rose / iris  emphasis, the night
+   plus the agents' own colours from the app (Wing, Wax, Sun, Tide, the
+   helpers). Night edition (dark) is indigo paper; day edition (light) is
+   warm cream. There is no backdrop blur any more: nothing re-blurs while
+   you scroll, so the page stays light. Balloons keep their glass sheen.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+:root {
+  color-scheme: dark;
+  --ink: #0b0814;
+  --sun: #ff8a1f;
+  --gold: #ffc83d;
+  --sky: #2fa4ff;
+  --rose: #ff4f8b;
+  --iris: #7b55ff;
+  --cream: #fff3dc;
+
+  --bg: #120d26;
+  --card: #221a45;
+  --card-2: #2b2257;
+  --text: #fff4dc;
+  --text-dim: #ddd3f2;
+  --text-faint: #b9aed6;
+  --line: rgba(255, 244, 220, 0.16);
+  --line-strong: var(--ink);
+  --field: #2b2257;
+  --dots: rgba(255, 200, 61, 0.09);
+
+  --glass-fill: var(--card);
+  --glass-nav: var(--card);
+  --glass-solid: var(--card);
+  --glass-stroke: var(--ink);
+  --glass-specular: inset 0 2px 0 rgba(255, 255, 255, 0.07);
+  --glass-shadow: 6px 6px 0 var(--ink);
+  --hard: 5px 5px 0 var(--ink);
+  --hard-lift: 8px 8px 0 var(--ink);
+  --hard-press: 1px 1px 0 var(--ink);
+
+  --accent: var(--gold);
+  --accent-text: var(--gold);
+  --on-accent: var(--ink);
+  --frost: var(--gold);
+  --frost-hover: #ffd766;
+  --frost-stroke: var(--ink);
+  --frost-edge: inset 0 2px 0 rgba(255, 255, 255, 0.55);
+  --verify-bg: var(--sky);
+  --verify-ink: #ffffff;
+  --focus-ring-color: var(--gold);
+
+  --pg-bg: #fffaf0;
+  --pg-chrome: #ffedc9;
+  --pg-ink: #17122a;
+  --pg-dim: #5a5070;
+  --pg-line: rgba(23, 18, 42, 0.22);
+  --pg-field: #fff3dc;
+  --pg-btn: var(--sky);
+  --pg-btn-ink: #ffffff;
+
+  --ambient:
+    radial-gradient(60% 50% at 8% 0%, rgba(123, 85, 255, 0.32), transparent 62%),
+    radial-gradient(50% 45% at 100% 8%, rgba(255, 79, 139, 0.22), transparent 62%),
+    radial-gradient(55% 50% at 90% 95%, rgba(47, 164, 255, 0.18), transparent 66%),
+    radial-gradient(45% 40% at 0% 100%, rgba(255, 138, 31, 0.16), transparent 66%);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --ink: #17122a;
+  --bg: #fff3dc;
+  --card: #fffaf0;
+  --card-2: #ffffff;
+  --text: #17122a;
+  --text-dim: #3f3657;
+  --text-faint: #5f5577;
+  --line: rgba(23, 18, 42, 0.16);
+  --field: #ffffff;
+  --dots: rgba(255, 138, 31, 0.13);
+  --glass-specular: inset 0 2px 0 rgba(255, 255, 255, 0.9);
+  --accent: var(--sun);
+  --accent-text: #b85300;
+  --frost: var(--gold);
+  --focus-ring-color: var(--sun);
+  --ambient:
+    radial-gradient(60% 50% at 8% 0%, rgba(255, 200, 61, 0.42), transparent 62%),
+    radial-gradient(50% 45% at 100% 8%, rgba(47, 164, 255, 0.2), transparent 62%),
+    radial-gradient(55% 50% at 90% 95%, rgba(255, 79, 139, 0.16), transparent 66%),
+    radial-gradient(45% 40% at 0% 100%, rgba(123, 85, 255, 0.14), transparent 66%);
+}
+
+/* The page: paper with a halftone that drifts very slowly (one composited
+   layer moving by transform, no repaint). */
+html { background: var(--bg); }
+body::after {
+  content: "";
+  position: fixed; inset: -64px; z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(var(--dots) 1.4px, transparent 2px);
+  background-size: 18px 18px;
+  -webkit-mask-image: radial-gradient(75% 65% at 92% 6%, #000, transparent 72%), radial-gradient(70% 60% at 4% 96%, #000, transparent 72%);
+  mask-image: radial-gradient(75% 65% at 92% 6%, #000, transparent 72%), radial-gradient(70% 60% at 4% 96%, #000, transparent 72%);
+}
+:root[data-comic] body::after { animation: dots-drift 48s linear infinite; }
+@keyframes dots-drift { to { transform: translate3d(36px, 36px, 0); } }
+::selection { background: var(--gold); color: var(--ink); }
+:focus-visible { outline: 3px solid var(--focus-ring-color); outline-offset: 3px; }
+
+/* Ink everywhere: panes, cards, controls. */
+.pane, .note, .fcap, .cmd, .dock, .chip, .copy, .theme, .roster li, .shot-media {
+  border: 3px solid var(--ink) !important;
+}
+.pane { background: var(--card); box-shadow: var(--hard); border-radius: 18px; }
+.chip, .copy { border-width: 2.5px !important; box-shadow: 3px 3px 0 var(--ink); background: var(--card-2); color: var(--text); }
+.label { color: var(--text-dim); }
+.label::before { background: var(--sun); border: 2px solid var(--ink); width: 16px; height: 16px; border-radius: 4px; rotate: -8deg; opacity: 1; }
+
+/* Nav: an inked strip, no blur. */
+.nav {
+  background: var(--card);
+  border: 3px solid var(--ink);
+  border-radius: 20px;
+  box-shadow: var(--hard);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.brand span {
+  font: 900 17px/1 var(--font-display);
+  letter-spacing: 0.14em;
+  color: var(--gold);
+  -webkit-text-stroke: 1.2px var(--ink);
+  paint-order: stroke fill;
+  text-shadow: 2px 2px 0 var(--ink);
+}
+.brand img { border: 2px solid var(--ink); border-radius: 9px; box-shadow: 2px 2px 0 var(--ink); }
+.nav-links a { color: var(--text); font-weight: 650; border-radius: 12px; }
+.nav-links a:hover { background: none; color: var(--text); }
+.nav-pill {
+  background: var(--gold);
+  border: 2.5px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 3px 3px 0 var(--ink);
+}
+.nav-links a[aria-current] { color: var(--ink); }
+.theme { background: var(--field); border-radius: 14px; }
+.theme::before { background: var(--sky); border: 2.5px solid var(--ink); border-radius: 10px; box-shadow: 2px 2px 0 var(--ink); }
+.theme button { color: var(--text-dim); font-weight: 700; }
+.theme button[aria-pressed="true"] { color: #ffffff; }
+
+/* Buttons: inked, lift on hover, squash when pressed. */
+.btn {
+  border: 3px solid var(--ink);
+  border-radius: 14px;
+  background: var(--card-2);
+  color: var(--text);
+  box-shadow: var(--hard);
+  font-weight: 800;
+  transition: transform 0.16s cubic-bezier(0.3, 1.4, 0.5, 1), box-shadow 0.16s ease, background 0.2s ease;
+}
+.btn:hover { border-color: var(--ink); transform: translate(-2px, -2px); box-shadow: var(--hard-lift); }
+.btn:active { transform: translate(4px, 4px) scale(0.98); box-shadow: var(--hard-press); transition-duration: 0.05s; }
+.btn-accent { background: var(--gold); color: var(--ink); }
+.btn-accent:hover { background: #ffd766; }
+.copy:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--ink); }
+.copy:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+.copy[data-done] { background: var(--sky); color: #ffffff; }
+.cmd { background: var(--card-2); box-shadow: 4px 4px 0 var(--ink); border-radius: 14px; }
+.cmd code { color: var(--text); font-weight: 600; }
+.step-n { background: var(--gold); color: var(--ink); border: 2.5px solid var(--ink); }
+
+/* Cover. */
+.title-ink {
+  color: var(--cream);
+  -webkit-text-stroke: clamp(2px, 0.05em, 5px) var(--ink);
+  text-shadow: 0.05em 0.06em 0 var(--sky), 0.1em 0.12em 0 var(--rose), 0.14em 0.17em 0 var(--ink);
+}
+:root[data-theme="light"] .title-ink { color: #ffffff; text-shadow: 0.05em 0.06em 0 var(--sky), 0.1em 0.12em 0 var(--rose), 0.14em 0.17em 0 var(--ink); }
+.hero .lede {
+  display: inline-block;
+  max-width: 64ch;
+  padding: 14px 20px 16px;
+  background: var(--cream);
+  color: #17122a;
+  border: 3px solid var(--ink);
+  box-shadow: var(--hard);
+  font: 600 clamp(15px, 1.35vw, 18px)/1.55 var(--font-ui);
+  rotate: -0.6deg;
+}
+.cover-tag span { background: var(--rose); color: #ffffff; border: 2px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); }
+.stage { background: var(--card); }
+.stage .task, .stage .chip { background: var(--card-2); }
+.run-status[data-state="verified"] { background: var(--gold); color: var(--ink); }
+.dock { background: var(--card); box-shadow: var(--hard); border-radius: 18px; }
+.dock li[data-busy] { background: color-mix(in srgb, var(--tint) 22%, transparent); box-shadow: inset 0 0 0 2px var(--ink); }
+.tab { border: 2px solid var(--ink); }
+.box.ok { border-color: var(--sky); }
+.stage-sfx { --fill: linear-gradient(#fff3a6, var(--sun)); }
+
+/* Chapter titles follow the palette. */
+#story .sec-h { --chap: var(--rose); }
+#how .sec-h { --chap: var(--sun); }
+#features .sec-h { --chap: var(--iris); }
+#inside .sec-h { --chap: var(--sky); }
+#run .sec-h { --chap: var(--gold); }
+.sec-h h2 { text-shadow: 0.045em 0.055em 0 var(--chap, var(--sky)), 0.08em 0.1em 0 var(--ink); }
+.pro-copy h2 { text-shadow: 0.045em 0.055em 0 var(--iris), 0.08em 0.1em 0 var(--ink); }
+
+/* Narration boxes and captions: one cream, one ink. */
+.nar, .fcap, .pro-step, .sec-h.split > p:not(.label), .tbc b, .stage-nar { background: var(--cream); color: #17122a; }
+.note { background: var(--card); box-shadow: var(--hard); }
+.note p:last-child { color: var(--text-dim); }
+
+/* Screens and the run pane. */
+.shot-frame { background: var(--card); }
+.shot figcaption b { background: var(--sky); color: #ffffff; border: 2px solid var(--ink); }
+.run { background: var(--card); }
+
+/* Footer: an inked strip. */
+.foot {
+  margin-top: 28px;
+  padding: 26px 28px 30px;
+  border: 3px solid var(--ink);
+  border-radius: 18px;
+  background: var(--card);
+  box-shadow: var(--hard);
+  color: var(--text-dim);
+  margin-bottom: 40px;
+}
+.foot .brand span { color: var(--gold); }
+.foot a:not(.brand) { color: var(--sky); text-decoration-color: currentColor; font-weight: 700; }
+.tbc { margin-top: clamp(56px, 8vw, 100px); }
+.tbc span { color: var(--text-dim); }
+
+/* ── Panel art follows the palette ── */
+.bg-dusk { background: linear-gradient(180deg, #160d36 0%, #3b1f7a 24%, #7b55ff 42%, #ff4f8b 62%, #ff8a1f 82%, #ffc83d 100%); }
+.bg-gloom { background: radial-gradient(70% 70% at 30% 70%, #4b4790, #241c58 60%, #120d26); }
+.bg-hero { background: radial-gradient(62% 62% at 54% 56%, #fff6c0 0%, #ffc83d 16%, #ff8a1f 36%, #7b55ff 68%, #120d26 100%); }
+.bg-shoujo { background: linear-gradient(160deg, #ffd3e6 0%, #ff9cc6 38%, #b9a3ff 100%); }
+.bg-slash { background: linear-gradient(118deg, #120d26 0%, #2a3f9a 42%, #9fd6ff 49.5%, #ffffff 50%, #2a3f9a 57%, #120d26 100%); }
+.bg-pop { background: linear-gradient(120deg, #ff4f8b 0%, #ffc83d 50%, #2fa4ff 100%); }
+.bg-calm { background: linear-gradient(180deg, #eaf6ff, #b8e0ff 60%, #8ccfff); }
+.bg-tone { background-color: #fff6e6; }
+.bg-red { background: radial-gradient(60% 72% at 62% 56%, #ff6a8f 0%, #d61f5a 46%, #2a0820 100%); }
+.bg-noir { background: radial-gradient(42% 62% at 50% 28%, rgba(47, 164, 255, 0.55), transparent 72%), linear-gradient(#1a1446, #0c0820); }
+.bg-gold { background: radial-gradient(75% 85% at 50% 112%, #fff4c2 0%, #ffc83d 28%, #ff8a1f 52%, #ff4f8b 76%, #7b55ff 100%); }
+.montage { background: var(--cream); }
+.mbtn { background: var(--sky); }
+.mbtn.done { background: #ffffff; color: #17122a; }
+.ring4 { border-color: var(--sky); }
+.stamp2 { border-color: var(--rose); color: var(--rose); }
+.held2 { color: #1478c8; }
+.popad b { color: var(--rose); }
+.popad { background: linear-gradient(#fff3a6, var(--gold)); }
+.katana { box-shadow: 0 0 2cqw 0.6cqw rgba(159, 214, 255, 0.75); }
+.tabc::before { background: var(--iris); }
+.pn { border-color: var(--ink); box-shadow: 4px 4px 0 var(--ink); }
+.yonkoma .pn, .fcard .pn { box-shadow: 5px 5px 0 var(--ink); }
+
+/* ── Motion: everything moves, and only when motion is welcome ── */
+:root[data-comic] .reveal {
+  opacity: 0;
+  transform: translateY(26px) rotate(-1.4deg) scale(0.96);
+  transition: opacity 0.45s ease, transform 0.7s cubic-bezier(0.2, 1.25, 0.35, 1);
+}
+:root[data-comic] .reveal.in { opacity: 1; transform: none; }
+:root[data-comic] .fcard.reveal:nth-child(3n + 2) { transition-delay: 0.08s; }
+:root[data-comic] .fcard.reveal:nth-child(3n) { transition-delay: 0.16s; }
+
+/* Hover: panels and cards lift and tilt like a page being picked up. */
+.fcard, .shot-frame, .note, .yonkoma .pn, .beat .pn {
+  transition: transform 0.35s cubic-bezier(0.2, 1.3, 0.4, 1), box-shadow 0.25s ease;
+}
+@media (hover: hover) {
+  .fcard:hover { transform: translate(-3px, -4px) rotate(-0.6deg); }
+  .fcard:nth-child(even):hover { transform: translate(-3px, -4px) rotate(0.6deg); }
+  .shot-frame:hover, .note:hover { transform: translate(-3px, -3px); box-shadow: var(--hard-lift); }
+  .yonkoma .pn:hover, .beat .pn:hover { transform: translate(-3px, -3px) rotate(-0.4deg); box-shadow: 8px 8px 0 var(--ink); }
+  .nav-links a:hover { animation: wobble 0.45s ease; }
+  .brand:hover img { animation: wobble 0.5s ease; }
+  .dock li:hover .glyph { animation: wobble 0.45s ease; }
+}
+@keyframes wobble { 0%, 100% { rotate: 0deg; } 25% { rotate: -6deg; } 60% { rotate: 5deg; } 85% { rotate: -2deg; } }
+
+/* Idle life that never stops the page: a nudge on the main action, the
+   cover's title breathing, balloons floating and sound effects pulsing
+   while their panel is on screen. */
+:root[data-comic] .nav-cta, :root[data-comic] .hero .btn-accent { animation: nudge 5s ease-in-out infinite; }
+@keyframes nudge { 0%, 86%, 100% { rotate: 0deg; } 89% { rotate: -4deg; } 92% { rotate: 4deg; } 95% { rotate: -2deg; } }
+:root[data-comic] .title-ink { animation: title-in 0.9s cubic-bezier(0.2, 1.3, 0.35, 1) both; }
+@keyframes title-in { from { opacity: 0; transform: scale(0.82) rotate(-3deg); } to { opacity: 1; transform: none; } }
+:root[data-comic] .cover-tag span { animation: tag-in 0.7s 0.2s cubic-bezier(0.2, 1.4, 0.35, 1) both; }
+@keyframes tag-in { from { opacity: 0; transform: translateY(-14px) rotate(-14deg); } to { opacity: 1; transform: none; } }
+:root[data-comic] .stage-sfx { animation: pulse 1.8s ease-in-out infinite; }
+:root[data-comic] .pn.in.vis .bal { animation: var(--anim, a-pop) 0.7s var(--pop) both, floaty 3.6s ease-in-out infinite; animation-delay: calc(var(--d, 0) * 130ms + 60ms), calc(var(--d, 0) * 0.3s + 0.9s); }
+:root[data-comic] .pn.in.vis .sfx2 { animation: var(--anim, a-zoom) 0.7s var(--pop) both, pulse 2.2s ease-in-out infinite; animation-delay: calc(var(--d, 0) * 130ms + 60ms), calc(var(--d, 0) * 0.2s + 1s); }
+:root[data-comic] .peek .chr-img, :root[data-comic] .run-art .chr-img { animation: bob 2.8s ease-in-out infinite; }
+:root[data-comic] .peek .bal, :root[data-comic] .run-art .bal { animation: floaty 3.4s ease-in-out infinite; }
+@keyframes floaty { 0%, 100% { translate: -50% -50%; } 50% { translate: -50% calc(-50% - 0.9cqw - 2px); } }
+@keyframes pulse { 0%, 100% { scale: 1; } 50% { scale: 1.06; } }
+.peek .bal, .run-art .bal { translate: -50% -50%; }
+
+@media (prefers-reduced-motion: reduce) {
+  body::after, .nav-cta, .hero .btn-accent, .title-ink, .stage-sfx { animation: none !important; }
 }
