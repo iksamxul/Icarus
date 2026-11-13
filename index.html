@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ICARUS · I Can Actually Run Useful Stuff</title>
+<meta name="description" content="ICARUS is a desktop app where a swarm of visible cursors operates live web pages. Each cursor is an AI agent with its own local-model loop, and each agent works its own browser tab.">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#06070b">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ICARUS · I Can Actually Run Useful Stuff">
+<meta property="og:description" content="A desktop app where a swarm of visible cursors operates live web pages. A lead agent splits each task; every agent runs its own local-model loop in its own browser tab.">
+<link rel="icon" type="image/svg+xml" href="assets/mark.svg">
+<script>
+  /* Theme before first paint: a saved choice, else the system's. */
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem('icarus.showcase.theme'); } catch (e) {}
+    if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
+<link rel="stylesheet" href="assets/styles.css">
+<script type="importmap">{ "imports": { "three": "./assets/vendor/three/three.module.min.js" } }</script>
+<script src="assets/swarm.js" defer></script>
+<script src="assets/story.js" defer></script>
+<script src="assets/site.js" defer></script>
+<script type="module" src="assets/three-icarus.js"></script>
+</head>
+<body>
+
+<!-- Icons: one sprite, drawn for this page. Stroke icons take .ico; the cursor takes .glyph. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <linearGradient id="bal-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity="0.97"/><stop offset="0.6" stop-color="#f6f9ff" stop-opacity="0.92"/><stop offset="1" stop-color="#dfe8fb" stop-opacity="0.88"/></linearGradient><linearGradient id="bal-sheen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity="0.95"/><stop offset="0.38" stop-color="#ffffff" stop-opacity="0"/></linearGradient>
+  <symbol id="cur" viewBox="0 0 24 24"><path d="M5 3.2v15.9l4.4-3.8 2.9 6.2 3-1.4-2.9-6.1h6.1z"/></symbol>
+  <symbol id="i-split" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2"/><path d="M7 12h3c3.2 0 4-6 8.5-6M10 12c3.2 0 4 6 8.5 6M10 12h8.5"/></symbol>
+  <symbol id="i-pointer" viewBox="0 0 24 24"><path d="M5.5 4.5l5 14.5 2.3-6.2 6.2-2.3z"/></symbol>
+  <symbol id="i-plug" viewBox="0 0 24 24"><path d="M9 3v4M15 3v4M6.5 7h11v3.5a5.5 5.5 0 0 1-11 0zM12 16v5"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.4l2.8 2.8 5.4-5.6"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M9 6v12M15 6v12"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.8v12.4a.6.6 0 0 0 .9.5l9.6-6.2a.6.6 0 0 0 0-1L8.9 5.3a.6.6 0 0 0-.9.5z"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 5.5V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7.5a2 2 0 0 0 2 2h.5"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M19.5 14.6A7.6 7.6 0 0 1 9.4 4.5a7.6 7.6 0 1 0 10.1 10.1z"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></symbol>
+  <symbol id="i-chip" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2.5"/><path d="M10 10h4v4h-4zM9.5 2.5v3M14.5 2.5v3M9.5 18.5v3M14.5 18.5v3M2.5 9.5h3M2.5 14.5h3M18.5 9.5h3M18.5 14.5h3"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15.5" r="4"/><path d="M10.9 12.6l8.6-8.6M16.5 7l2.5 2.5M14 9.5l2 2"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="2.5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3"/></symbol>
+  <symbol id="i-no-repeat" viewBox="0 0 24 24"><path d="M17 3l3 3-3 3M4 12v-1a5 5 0 0 1 5-5h11M7 21l-3-3 3-3M20 12v1a5 5 0 0 1-5 5H4M3.5 3.5l17 17"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2.5"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 15.5l-5-4.5-9.5 8.5"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></symbol>
+  <symbol id="i-terminal" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="3"/><path d="M7.5 9.5l3 2.5-3 2.5M12.5 15h4"/></symbol>
+</svg>
+
+<a class="skip" href="#top">Skip to content</a>
+
+<header class="nav" data-nav>
+  <a class="brand" href="#top" aria-label="ICARUS, back to top"><img src="assets/mark.svg" width="30" height="30" alt=""><span>ICARUS</span></a>
+  <nav class="nav-links" aria-label="Sections">
+    <span class="nav-pill" aria-hidden="true"></span>
+    <a href="#prologue">Swarm</a>
+    <a href="#story">Story</a>
+    <a href="#how">How it works</a>
+    <a href="#features">Features</a>
+    <a href="#inside">Screens</a>
+    <a href="#run">Run it</a>
+  </nav>
+  <div class="theme" role="group" aria-label="Colour theme">
+    <button type="button" data-theme-set="dark" aria-pressed="true"><svg class="ico" aria-hidden="true"><use href="#i-moon"/></svg><span>Dark</span></button>
+    <button type="button" data-theme-set="light" aria-pressed="false"><svg class="ico" aria-hidden="true"><use href="#i-sun"/></svg><span>Light</span></button>
+  </div>
+  <a class="btn btn-accent btn-sm nav-cta" href="#run">Run it</a>
+</header>
+
+<main id="top">
+
+  <!-- ─── Hero ─────────────────────────────────────────────────────────── -->
+  <section class="hero wrap" aria-labelledby="hero-title">
+    <p class="label">I Can Actually Run Useful Stuff</p>
+    <h1 id="hero-title">Icarus, take the&nbsp;mouse.</h1>
+    <p class="lede">ICARUS is a desktop app where a swarm of visible cursors operates live web pages. Each cursor is an AI agent with its own model loop. A lead agent splits your task into small jobs, the agents take them at once, each in its own browser tab, and when everyone is busy, helpers join.</p>
+    <div class="actions">
+      <a class="btn btn-accent" href="#run">Run it locally<svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      <a class="btn" href="#how">How it works</a>
+    </div>
+
+    <figure class="stage pane" data-swarm data-glass-avoid>
+      <figcaption class="sr-only">Illustration of a run. The lead cursor reads a task and splits it into eight small jobs. The four roster agents, Wing, Wax, Sun and Tide, take the first four in their own tabs: placing the order, logging the cost, reading the old order through an MCP tool and finding the delivery date. With everyone busy, four helpers join, Gust, Plume, Quill and Ember, each with its own cursor and tab: checking stock, confirming the address, attaching the old receipt and checking the budget. The lead then checks every result on the page.</figcaption>
+
+      <div class="stage-bar">
+        <p class="task" aria-hidden="true"><span class="task-k">Task</span><span class="task-t">Reorder the desk lamp from #4821 by express, log the cost and find the delivery date.<i class="caret" data-t="caret"></i></span></p>
+        <span class="chip run-status" data-run-status data-state="planning" aria-hidden="true"><svg class="ico"><use href="#i-split"/></svg><span>Planning</span></span>
+        <button type="button" class="chip chip-btn" data-swarm-toggle aria-label="Pause the animation"><svg class="ico" aria-hidden="true"><use href="#i-pause"/></svg><span>Pause</span></button>
+      </div>
+
+      <div class="tabs" aria-hidden="true">
+        <article class="tab" data-tab="wing" style="--c:var(--wing)">
+          <header class="tab-h"><svg class="glyph"><use href="#cur"/></svg><b>Wing</b><span class="url"><span>store.test</span><span class="path">/cart</span></span><span class="tab-st" data-st data-state="queued"><svg class="ico"><use href="#i-clock"/></svg><span>Queued</span></span></header>
+          <div class="pg pg-cart">
+            <p class="crumbs"><span>Cart</span><span aria-hidden="true">›</span><b>Shipping</b><span aria-hidden="true">›</span><span>Pay</span></p>
+            <div class="item"><span class="thumb"></span><span class="it"><b>Desk lamp, brass</b><small>Qty 1 · from order #4821</small></span><span class="price">$48.00</span></div>
+            <dl class="totals"><div><dt>Shipping</dt><dd data-t="wing-ship">$0.00</dd></div><div><dt>Total</dt><dd data-t="wing-total">$48.00</dd></div></dl>
+            <div class="buy"><span class="seg"><span class="on" data-t="wing-std">Standard</span><span data-t="wing-exp">Express</span></span><span class="pbtn" data-t="wing-place">Place order</span></div>
+          </div>
+        </article>
+
+        <article class="tab" data-tab="wax" style="--c:var(--wax)">
+          <header class="tab-h"><svg class="glyph"><use href="#cur"/></svg><b>Wax</b><span class="url"><span>sheets.test</span><span class="path">/expenses</span></span><span class="tab-st" data-st data-state="queued"><svg class="ico"><use href="#i-clock"/></svg><span>Queued</span></span></header>
+          <div class="pg pg-sheet" data-t="wax-page">
+            <p class="sheet-t"><b>Expenses · November</b><span class="saved"><svg class="ico"><use href="#i-check"/></svg>Saved</span></p>
+            <div class="sheet">
+              <div class="sr hd"><span class="d">Date</span><span>Item</span><span class="num">Cost</span></div>
+              <div class="sr opt"><span class="d">03 Nov</span><span>Monitor arm</span><span class="num">$89.00</span></div>
+              <div class="sr"><span class="d">08 Nov</span><span>Cable tray</span><span class="num">$24.50</span></div>
+              <div class="sr" data-t="wax-row"><span class="d">13 Nov</span><span class="cell" data-t="wax-item"></span><span class="cell num" data-t="wax-cost"></span></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tab" data-tab="sun" style="--c:var(--sun)">
+          <header class="tab-h"><svg class="glyph"><use href="#cur"/></svg><b>Sun</b><span class="url"><span>orders.test</span><span class="path">/history</span></span><span class="tab-st" data-st data-state="queued"><svg class="ico"><use href="#i-clock"/></svg><span>Queued</span></span></header>
+          <div class="pg pg-orders" data-t="sun-list">
+            <p class="orders-t"><b>Order history</b><span class="search"><svg class="ico"><use href="#i-search"/></svg>Search orders</span></p>
+            <ol class="ol">
+              <li class="or" data-t="sun-row"><b>#4821</b><span>Desk lamp, brass</span><em>$48.00</em></li>
+              <li class="or"><b>#4790</b><span>Monitor arm</span><em>$89.00</em></li>
+              <li class="or opt"><b>#4755</b><span>Cable tray</span><em>$24.50</em></li>
+            </ol>
+          </div>
+        </article>
+
+        <article class="tab" data-tab="tide" style="--c:var(--tide)">
+          <header class="tab-h"><svg class="glyph"><use href="#cur"/></svg><b>Tide</b><span class="url"><span>carrier.test</span><span class="path">/express</span></span><span class="tab-st" data-st data-state="queued"><svg class="ico"><use href="#i-clock"/></svg><span>Queued</span></span></header>
+          <div class="pg pg-ship" data-t="tide-page">
+            <div class="ship" data-t="tide-scroll">
+              <div class="ship-hero"><b>Express</b><span>2 business days</span></div>
+              <p class="ship-k">Estimate for orders placed today</p>
+              <ol class="track"><li class="on">Today</li><li>Packed</li><li>In transit</li><li>Delivered</li></ol>
+              <p class="eta" data-t="tide-eta">Arrives Tue 17 Nov</p>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="pool" aria-hidden="true">
+        <article class="tab mini is-empty" data-tab="gust" style="--c:var(--gust)">
+          <header class="tab-h"><svg class="glyph"><use href="#cur"/></svg><b>Gust</b><span class="url"><span>store.test</span><span class="path">/lamp</span></span><span class="tab-st" data-st data-state="queued"><svg class="ico"><use href="#i-clock"/></svg><span>Queued</span></span></header>
+          <div class="pg pg-mini"><span>Desk lamp, brass</span><em class="vchip" data-t="gust-ev">In stock · 3 left</em></div>
+        </article>
+        <article class="tab mini is-empty" data-tab="plume" style="--c:var(--plume)">
+          <header class="tab-h"><svg class="glyph"><use href="#cur"/></svg><b>Plume</b><span class="url"><span>account.test</span><span class="path">/address</span></span><span class="tab-st" data-st data-state="queued"><svg class="ico"><use href="#i-clock"/></svg><span>Queued</span></span></header>
+          <div class="pg pg-mini"><span>Ship to</span><em class="vchip" data-t="plume-ev">12 Wharf Road</em></div>
+        </article>
+        <article class="tab mini is-empty" data-tab="quill" style="--c:var(--quill)">
+          <header class="tab-h"><svg class="glyph"><use href="#cur"/></svg><b>Quill</b><span class="url"><span>mail.test</span><span class="path">/receipts</span></span><span class="tab-st" data-st data-state="queued"><svg class="ico"><use href="#i-clock"/></svg><span>Queued</span></span></header>
+          <div class="pg pg-mini"><span>Receipt for #4821</span><span class="pbtn" data-t="quill-btn">Attach</span></div>
+        </article>
+        <article class="tab mini is-empty" data-tab="ember" style="--c:var(--ember)">
+          <header class="tab-h"><svg class="glyph"><use href="#cur"/></svg><b>Ember</b><span class="url"><span>sheets.test</span><span class="path">/budget</span></span><span class="tab-st" data-st data-state="queued"><svg class="ico"><use href="#i-clock"/></svg><span>Queued</span></span></header>
+          <div class="pg pg-mini"><span>Office budget</span><em class="vchip" data-t="ember-ev">$212 left</em></div>
+        </article>
+      </div>
+
+      <div class="swarm" aria-hidden="true"></div>
+    </figure>
+
+    <ul class="dock" aria-label="The default roster and the helpers that join">
+      <li class="is-lead" data-dock="lead" style="--c:var(--lead)"><svg class="glyph" aria-hidden="true"><use href="#cur"/></svg><span><b>Lead</b><small>splits, then checks</small></span></li>
+      <li data-dock="wing" style="--c:var(--wing)"><svg class="glyph" aria-hidden="true"><use href="#cur"/></svg><span><b>Wing</b><small>forms and checkout</small></span></li>
+      <li data-dock="wax" style="--c:var(--wax)"><svg class="glyph" aria-hidden="true"><use href="#cur"/></svg><span><b>Wax</b><small>data entry</small></span></li>
+      <li data-dock="sun" style="--c:var(--sun)"><svg class="glyph" aria-hidden="true"><use href="#cur"/></svg><span><b>Sun</b><small>reading and lookups</small></span></li>
+      <li data-dock="tide" style="--c:var(--tide)"><svg class="glyph" aria-hidden="true"><use href="#cur"/></svg><span><b>Tide</b><small>research across pages</small></span></li>
+      <li class="dock-pool"><span class="pile" aria-hidden="true"><svg class="glyph" data-dock="gust" style="--c:var(--gust)"><use href="#cur"/></svg><svg class="glyph" data-dock="plume" style="--c:var(--plume)"><use href="#cur"/></svg><svg class="glyph" data-dock="quill" style="--c:var(--quill)"><use href="#cur"/></svg><svg class="glyph" data-dock="ember" style="--c:var(--ember)"><use href="#cur"/></svg></span><span><b data-pool-count>Up to 8 at once</b><small>helpers join when busy</small></span></li>
+    </ul>
+  </section>
+
+  <!-- ─── Prologue: the swarm in 3D (assets/three-icarus.js) ─────────────
+       A live WebGL scene pinned for a few screens: a loose cloud of cursors
+       gathers into wings as you scroll. It runs only while on screen, and
+       the glass nav steps aside meanwhile (data-glass-avoid). ─────────── -->
+  <section class="prologue" id="prologue" data-prologue data-glass-avoid aria-labelledby="pro-h">
+    <div class="pro-pin">
+      <canvas class="pro-canvas" aria-hidden="true"></canvas>
+      <div class="pro-copy wrap">
+        <p class="label">Prologue</p>
+        <h2 id="pro-h">One cursor is a tool. Twenty&#8209;four is a swarm.</h2>
+        <div class="pro-steps">
+          <p class="pro-step" data-step="0">Scattered, the way a Friday afternoon feels.</p>
+          <p class="pro-step" data-step="1">The lead calls them in. The roster takes the leading edge.</p>
+          <p class="pro-step" data-step="2">Helpers fill out the wings: up to 24 agents at once, each with its own cursor and tab.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── The story: a webtoon episode ───────────────────────────────────
+       Vertical panels, read by scrolling, like a manhwa. Each panel plays
+       its beat once when it arrives (story.js adds .in), and its cast idles
+       (blinks, bobs) only while it is on screen (.vis). Characters are
+       .chr[data-who][data-face]; three-icarus.js swaps in toon-shaded 3D
+       renders of each, the flat cursor stays as the fallback. --x/--y place
+       things in the panel, --s sizes a character in panel widths, data-a
+       picks the entrance and --d its order. ─────────────────────────── -->
+  <section class="story" id="story" aria-labelledby="story-title" data-story>
+    <header class="wrap sec-h split reveal">
+      <div>
+        <p class="label">Episode 1</p>
+        <h2 id="story-title">The Lamp.</h2>
+      </div>
+      <p>A webtoon in fourteen panels about one ordinary task and a swarm that refuses to guess. Every gag is a real feature.</p>
+    </header>
+
+    <div class="episode wrap">
+      <!-- 1 · Friday -->
+      <div class="beat">
+      <figure class="pn" data-pn style="--ar:16/11">
+        <div class="bg bg-dusk"></div>
+        <div class="bg rays"></div>
+        <div class="bg skyline"></div>
+        <div class="p tabmount" style="--x:70%;--y:60%" data-a="up" aria-hidden="true">
+          <span class="tabc" style="--tx:-14cqw;--ty:14cqw;--tr:-8deg">cart</span>
+          <span class="tabc" style="--tx:6cqw;--ty:15cqw;--tr:5deg">expenses.xlsx</span>
+          <span class="tabc" style="--tx:-9cqw;--ty:8cqw;--tr:9deg">track parcel</span>
+          <span class="tabc" style="--tx:9cqw;--ty:8cqw;--tr:-6deg">inbox (213)</span>
+          <span class="tabc" style="--tx:-3cqw;--ty:2cqw;--tr:-11deg">lamp reviews</span>
+          <span class="tabc" style="--tx:-11cqw;--ty:-4cqw;--tr:7deg">is brass a colour</span>
+          <span class="tabc" style="--tx:7cqw;--ty:-3cqw;--tr:4deg">expenses FINAL (2)</span>
+          <span class="tabc" style="--tx:-2cqw;--ty:-10cqw;--tr:-5deg">lamp but cheaper</span>
+          <span class="tabc" style="--tx:5cqw;--ty:-17cqw;--tr:10deg">why does my lamp hum</span>
+          <span class="tabc" style="--tx:-6cqw;--ty:-23cqw;--tr:-3deg">#4821</span>
+        </div>
+        <div class="chr" data-who="you" data-face="cry" data-a="left" style="--x:20%;--y:72%;--s:21cqw;--r:-6deg;--d:2"><svg class="glyph" style="--c:var(--you)"><use href="#cur"/></svg><i class="emo sweat"></i></div>
+        <p class="nar p" data-a="down" style="--x:24%;--y:14%;--w:38cqw">Friday, 4:52 pm. One task. Forty-seven tabs.</p>
+        <p class="sfx2 p" data-a="zoom" style="--x:82%;--y:15%;--fs:7.5cqw;--fill:linear-gradient(#e2d0ff,#8b5cff);--r:-6deg;--d:3" aria-label="Rumble">ゴゴゴゴ<small>rumble</small></p>
+      </figure>
+      <aside class="note"><p class="label">The task</p><p>Reorder the desk lamp from order #4821 by express, log the cost and find out when it arrives.</p></aside>
+      </div>
+
+      <!-- 2 · The wish -->
+      <div class="beat">
+      <figure class="pn" data-pn style="--ar:4/3">
+        <div class="bg bg-gloom"></div>
+        <div class="bg gloom-lines"></div>
+        <div class="chr" data-who="you" data-face="cry" data-a="zoom" style="--x:31%;--y:60%;--s:46cqw;--r:-4deg"><svg class="glyph" style="--c:var(--you)"><use href="#cur"/></svg><i class="emo gloom"></i></div>
+        <p class="bal p" data-tail="bl" data-a="pop" style="--x:72%;--y:24%;--w:40cqw;--d:2">I just want to reorder a lamp…</p>
+        <p class="bal think p" data-tail="bl" data-a="pop" style="--x:72%;--y:66%;--w:38cqw;--d:4">…and log the cost. And find out when it arrives. And—</p>
+      </figure>
+      </div>
+
+      <!-- 3 · Enter the lead -->
+      <div class="beat">
+      <figure class="pn" data-pn style="--ar:5/4">
+        <div class="bg bg-hero"></div>
+        <div class="bg focus" style="--fx:54%;--fy:56%"></div>
+        <div class="chr" data-who="lead" data-face="sparkle" data-a="slam" style="--x:54%;--y:58%;--s:42cqw;--r:-12deg"><svg class="glyph" style="--c:var(--lead)"><use href="#cur"/></svg><i class="emo sparkles"></i></div>
+        <p class="bal shout p" data-tail="br" data-a="pop" style="--x:27%;--y:17%;--w:36cqw;--d:2">Hand me the mouse.</p>
+        <p class="sfx2 p" data-a="zoom" style="--x:80%;--y:16%;--fs:8.5cqw;--fill:linear-gradient(#fff6c0,#ffb800);--r:8deg;--d:3" aria-label="Sparkle">キラーン<small>sparkle</small></p>
+      </figure>
+      <aside class="note"><p class="label">The lead</p><p>Reads your task and the page, then plans the run. It never touches the page itself; the agents do.</p></aside>
+      </div>
+
+      <!-- 4 · The handover -->
+      <div class="beat">
+      <figure class="pn" data-pn style="--ar:16/9">
+        <div class="bg bg-shoujo"></div>
+        <div class="bg bubbles"></div>
+        <div class="chr" data-who="you" data-face="happy" data-a="left" style="--x:22%;--y:62%;--s:26cqw;--r:8deg"><svg class="glyph" style="--c:var(--you)"><use href="#cur"/></svg></div>
+        <div class="chr flip" data-who="lead" data-face="sparkle" data-a="right" style="--x:78%;--y:60%;--s:27cqw;--r:-8deg"><svg class="glyph" style="--c:var(--lead)"><use href="#cur"/></svg><i class="emo sparkles"></i></div>
+        <div class="p mouse2" data-a="zoom" style="--x:50%;--y:46%;--d:2"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="3" width="10" height="18" rx="5"/><path d="M12 7v3"/></svg></div>
+        <p class="bal p" data-tail="bl" data-a="pop" style="--x:23%;--y:17%;--w:28cqw;--d:3">It's all yours.</p>
+        <p class="bal p" data-tail="br" data-a="pop" style="--x:77%;--y:17%;--w:28cqw;--d:4">Leave it to us.</p>
+      </figure>
+      </div>
+
+      <!-- 5 · The crew -->
+      <div class="beat">
+      <figure class="pn" data-pn style="--ar:16/10">
+        <div class="bg bg-sentai"></div>
+        <div class="bg focus soft" style="--fx:50%;--fy:52%"></div>
+        <div class="chr" data-who="wing" data-face="sparkle" data-a="up" style="--x:14%;--y:50%;--s:21cqw;--r:-10deg;--d:1"><svg class="glyph" style="--c:var(--wing)"><use href="#cur"/></svg></div>
+        <div class="chr" data-who="wax" data-face="happy" data-a="up" style="--x:38%;--y:46%;--s:21cqw;--r:4deg;--d:2"><svg class="glyph" style="--c:var(--wax)"><use href="#cur"/></svg></div>
+        <div class="chr" data-who="sun" data-face="cool" data-a="up" style="--x:62%;--y:48%;--s:21cqw;--r:-4deg;--d:3"><svg class="glyph" style="--c:var(--sun)"><use href="#cur"/></svg></div>
+        <div class="chr" data-who="tide" data-face="neutral" data-a="up" style="--x:86%;--y:50%;--s:21cqw;--r:10deg;--d:4"><svg class="glyph" style="--c:var(--tide)"><use href="#cur"/></svg></div>
+        <p class="plate p" data-a="up" style="--x:14%;--y:84%;--c:var(--wing);--d:5"><b>Wing</b>forms &amp; checkout</p>
+        <p class="plate p" data-a="up" style="--x:38%;--y:84%;--c:var(--wax);--d:5"><b>Wax</b>data entry</p>
+        <p class="plate p" data-a="up" style="--x:62%;--y:84%;--c:var(--sun);--d:5"><b>Sun</b>reading</p>
+        <p class="plate p" data-a="up" style="--x:86%;--y:84%;--c:var(--tide);--d:5"><b>Tide</b>research</p>
+        <p class="sfx2 p" data-a="slam" style="--x:50%;--y:13%;--fs:9cqw;--fill:linear-gradient(#ffe36e,#ff6b3d);--d:6" aria-label="Boom">ドドーン!<small>da-da-dan!</small></p>
+      </figure>
+      <aside class="note"><p class="label">The roster</p><p>Each agent has a strength, a connection (a local model or your own account) and the MCP tools it may use, and runs its own model loop.</p></aside>
+      </div>
+
+      <!-- 6 · The split -->
+      <div class="beat">
+      <figure class="pn" data-pn style="--ar:16/9">
+        <div class="bg bg-slash"></div>
+        <div class="bg speed"></div>
+        <div class="chr" data-who="lead" data-face="stern" data-a="left" style="--x:22%;--y:58%;--s:28cqw;--r:-16deg"><svg class="glyph" style="--c:var(--lead)"><use href="#cur"/></svg></div>
+        <i class="p katana" data-a="slash" style="--x:44%;--y:46%;--d:1" aria-hidden="true"></i>
+        <span class="shard p" data-a="burst" style="--x:58%;--y:22%;--tr:-8deg;--d:2">check stock</span>
+        <span class="shard p" data-a="burst" style="--x:80%;--y:24%;--tr:6deg;--d:2">read #4821</span>
+        <span class="shard p" data-a="burst" style="--x:66%;--y:40%;--tr:4deg;--d:3">click Express</span>
+        <span class="shard p" data-a="burst" style="--x:88%;--y:44%;--tr:-5deg;--d:3">place order</span>
+        <span class="shard p" data-a="burst" style="--x:57%;--y:60%;--tr:-3deg;--d:4">log $48.00</span>
+        <span class="shard p" data-a="burst" style="--x:80%;--y:63%;--tr:9deg;--d:4">attach receipt</span>
+        <span class="shard p" data-a="burst" style="--x:64%;--y:80%;--tr:6deg;--d:5">read budget</span>
+        <span class="shard p" data-a="burst" style="--x:87%;--y:82%;--tr:-7deg;--d:5">find date</span>
+        <p class="sfx2 p" data-a="zoom" style="--x:42%;--y:15%;--fs:9cqw;--fill:linear-gradient(#e9f6ff,#7ad3ff);--r:-10deg;--d:1" aria-label="Slash">ズバッ<small>slash!</small></p>
+        <p class="nar p" data-a="up" style="--x:23%;--y:90%;--w:40cqw;--d:6">One task. Eight small jobs.</p>
+      </figure>
+      <aside class="note"><p class="label">Small jobs</p><p>The lead splits work into small subtasks: one page, one goal, one check each. Small jobs finish sooner, because they run side by side.</p></aside>
+      </div>
+
+      <!-- 7 · Montage -->
+      <div class="beat">
+      <figure class="pn montage" data-pn style="--ar:1/1">
+        <div class="sub" style="--c:var(--wing)">
+          <div class="bg tint"></div>
+          <div class="chr" data-who="wing" data-face="neutral" data-a="left" style="--x:30%;--y:60%;--s:44cqw;--r:-6deg"><svg class="glyph" style="--c:var(--wing)"><use href="#cur"/></svg></div>
+          <span class="mbtn p" data-a="pop" style="--x:72%;--y:62%;--d:2">Express ✓</span>
+          <p class="sfx2 p" data-a="zoom" style="--x:72%;--y:24%;--fs:14cqw;--fill:linear-gradient(#fff,#9be0ff);--d:3" aria-label="Click">カチッ<small>click</small></p>
+        </div>
+        <div class="sub" style="--c:var(--wax)">
+          <div class="bg tint"></div>
+          <div class="chr" data-who="wax" data-face="happy" data-a="left" style="--x:30%;--y:62%;--s:44cqw;--r:6deg"><svg class="glyph" style="--c:var(--wax)"><use href="#cur"/></svg></div>
+          <span class="key p" data-a="burst" style="--x:66%;--y:66%;--tr:-12deg;--d:2">$</span>
+          <span class="key p" data-a="burst" style="--x:80%;--y:56%;--tr:10deg;--d:3">4</span>
+          <span class="key p" data-a="burst" style="--x:74%;--y:80%;--tr:-4deg;--d:4">8</span>
+          <p class="sfx2 p" data-a="zoom" style="--x:68%;--y:22%;--fs:13cqw;--fill:linear-gradient(#fff,#ffb3d1);--d:2" aria-label="Typing">カタカタ<small>clack clack</small></p>
+        </div>
+        <div class="sub" style="--c:var(--sun)">
+          <div class="bg tint"></div>
+          <div class="chr" data-who="sun" data-face="cool" data-a="left" style="--x:30%;--y:62%;--s:44cqw;--r:-4deg"><svg class="glyph" style="--c:var(--sun)"><use href="#cur"/></svg></div>
+          <p class="bal p small" data-tail="bl" data-a="pop" style="--x:70%;--y:66%;--w:52cqw;--d:2">mcp · lookup_order #4821</p>
+          <p class="sfx2 p" data-a="zoom" style="--x:68%;--y:22%;--fs:13cqw;--fill:linear-gradient(#fff,#ffd36e);--d:3" aria-label="Ring">プルル<small>ring ring</small></p>
+        </div>
+        <div class="sub" style="--c:var(--tide)">
+          <div class="bg tint"></div>
+          <div class="chr" data-who="tide" data-face="neutral" data-a="left" style="--x:30%;--y:62%;--s:44cqw;--r:8deg"><svg class="glyph" style="--c:var(--tide)"><use href="#cur"/></svg></div>
+          <span class="mbtn p" data-a="pop" style="--x:72%;--y:66%;--d:2">Tue 17 Nov</span>
+          <p class="sfx2 p" data-a="zoom" style="--x:70%;--y:22%;--fs:13cqw;--fill:linear-gradient(#fff,#c6b4ff);--d:3" aria-label="Scroll">スーッ<small>scroll</small></p>
+        </div>
+      </figure>
+      </div>
+
+      <!-- 8 · Helpers join -->
+      <div class="beat">
+      <figure class="pn" data-pn style="--ar:21/9">
+        <div class="bg bg-pop"></div>
+        <div class="bg dots"></div>
+        <div class="chr" data-who="gust" data-face="happy" data-a="hop" style="--x:16%;--y:58%;--s:17cqw;--r:-10deg;--d:1"><svg class="glyph" style="--c:var(--gust)"><use href="#cur"/></svg></div>
+        <div class="chr" data-who="plume" data-face="sparkle" data-a="hop" style="--x:36%;--y:52%;--s:17cqw;--r:6deg;--d:2"><svg class="glyph" style="--c:var(--plume)"><use href="#cur"/></svg></div>
+        <div class="chr" data-who="quill" data-face="happy" data-a="hop" style="--x:56%;--y:58%;--s:17cqw;--r:-6deg;--d:3"><svg class="glyph" style="--c:var(--quill)"><use href="#cur"/></svg></div>
+        <div class="chr" data-who="ember" data-face="sparkle" data-a="hop" style="--x:76%;--y:52%;--s:17cqw;--r:10deg;--d:4"><svg class="glyph" style="--c:var(--ember)"><use href="#cur"/></svg></div>
+        <p class="bal p" data-tail="bl" data-a="pop" style="--x:87%;--y:24%;--w:22cqw;--d:5">Everyone busy? We're in!</p>
+        <p class="sfx2 p" data-a="zoom" style="--x:12%;--y:18%;--fs:6.5cqw;--fill:linear-gradient(#fff,#8dffb0);--r:-8deg;--d:1" aria-label="Boing">ピョン<small>boing</small></p>
+      </figure>
+      <aside class="note"><p class="label">The pool</p><p>When every agent is busy, helpers join with their own cursor and tab: up to 24 agents at once.</p></aside>
+      </div>
+
+      <!-- 9 · Plot twist -->
+      <div class="beat">
+      <figure class="pn" data-pn style="--ar:4/3">
+        <div class="bg bg-shock"></div>
+        <div class="chr" data-who="wing" data-face="shock" data-a="slam" style="--x:30%;--y:60%;--s:38cqw;--r:-4deg"><svg class="glyph" style="--c:var(--wing)"><use href="#cur"/></svg><i class="emo gloom"></i></div>
+        <div class="p popad" data-a="slam" style="--x:72%;--y:38%;--w:42cqw;--d:1"><b>WAIT!</b> Lamp insurance? Only $19!<span>No thanks</span></div>
+        <span class="mbtn p flyaway" data-a="fly" style="--x:80%;--y:76%;--d:2">Place order</span>
+        <p class="sfx2 p" data-a="slam" style="--x:58%;--y:12%;--fs:12cqw;--fill:linear-gradient(#ffffff,#9aa3ff);--r:-6deg;--d:2" aria-label="Shock">ガーン<small>gaan</small></p>
+      </figure>
+      </div>
+
+      <!-- 10 · Looks again -->
+      <div class="beat">
+      <figure class="pn" data-pn style="--ar:21/9">
+        <div class="bg bg-calm"></div>
+        <div class="chr" data-who="wing" data-face="neutral" data-a="left" style="--x:18%;--y:56%;--s:22cqw;--r:-8deg"><svg class="glyph" style="--c:var(--wing)"><use href="#cur"/></svg></div>
+        <span class="mbtn p done" data-a="pop" style="--x:56%;--y:56%;--d:2">✓ Placed #5170<i class="ring4"></i></span>
+        <p class="sfx2 p" data-a="zoom" style="--x:84%;--y:30%;--fs:8cqw;--fill:linear-gradient(#fff,#9be0ff);--d:2" aria-label="Click">カチッ<small>click</small></p>
+        <p class="nar p" data-a="up" style="--x:84%;--y:82%;--w:28cqw;--d:3">…looks again. Clicks.</p>
+      </figure>
+      <aside class="note"><p class="label">Real input</p><p>Clicks and keystrokes go through the Chrome DevTools Protocol. Just before each press the target is looked up again, so a page that moves doesn't fool it.</p></aside>
+      </div>
+
+      <!-- 11 · Silence -->
+      <div class="beat">
+      <figure class="pn" data-pn style="--ar:4/5">
+        <div class="bg bg-tone"></div>
+        <div class="chr" data-who="wax" data-face="nervous" data-a="up" style="--x:30%;--y:74%;--s:28cqw;--r:4deg"><svg class="glyph" style="--c:var(--wax)"><use href="#cur"/></svg><i class="emo sweat"></i><i class="emo sweat two"></i></div>
+        <span class="mbtn p" data-a="pop" style="--x:68%;--y:80%;--d:1">Save</span>
+        <span class="clock p" data-a="pop" style="--x:24%;--y:16%;--d:2">8 s</span>
+        <p class="sfx2 p vert quiet" data-a="fade" style="--x:72%;--y:38%;--fs:13cqw;--fill:linear-gradient(#ffffff,#d6dbe6);--d:2" aria-label="Silence">シーン<small>silence…</small></p>
+        <p class="bal think p" data-tail="bl" data-a="pop" style="--x:40%;--y:46%;--w:40cqw;--d:4">Press it… again?</p>
+      </figure>
+      </div>
+
+      <!-- 12 · Absolutely not -->
+      <div class="beat">
+      <figure class="pn" data-pn style="--ar:16/10">
+        <div class="bg bg-red"></div>
+        <div class="bg focus dark" style="--fx:62%;--fy:56%"></div>
+        <div class="chr" data-who="lead" data-face="stern" data-a="zoom" style="--x:63%;--y:58%;--s:50cqw;--r:8deg"><svg class="glyph" style="--c:var(--lead)"><use href="#cur"/></svg><i class="emo vein"></i></div>
+        <div class="chr" data-who="wax" data-face="shock" data-a="left" style="--x:13%;--y:80%;--s:14cqw;--r:-8deg;--d:2" data-noblink><svg class="glyph" style="--c:var(--wax)"><use href="#cur"/></svg></div>
+        <p class="bal shout p" data-tail="br" data-a="slam" style="--x:28%;--y:22%;--w:34cqw;--d:1">Absolutely. Not.</p>
+        <span class="held2 p" data-a="pop" style="--x:28%;--y:52%;--d:3"><svg class="ico" aria-hidden="true"><use href="#i-pause"/></svg>Held · uncertain</span>
+        <p class="sfx2 p" data-a="zoom" style="--x:85%;--y:22%;--fs:7cqw;--fill:linear-gradient(#ffd0d0,#ff2d55);--r:6deg;--d:2" aria-label="Menace">ゴゴゴ<small>menace</small></p>
+      </figure>
+      <aside class="note"><p class="label">Uncertain submits</p><p>A submit that gets no clear answer is held as uncertain and never sent twice. The agent reads the page before it touches anything again.</p></aside>
+      </div>
+
+      <!-- 13 · The verdict -->
+      <div class="beat">
+      <figure class="pn" data-pn style="--ar:16/10">
+        <div class="bg bg-noir"></div>
+        <div class="chr" data-who="lead" data-face="sparkle" data-a="down" style="--x:50%;--y:30%;--s:22cqw;--r:-6deg"><svg class="glyph" style="--c:var(--lead)"><use href="#cur"/></svg><svg class="lens2" viewBox="0 0 40 40" aria-hidden="true"><circle cx="15" cy="15" r="11"/><path d="M23 23l12 12"/></svg></div>
+        <div class="ev2 p" data-a="up" style="--x:14%;--y:76%;--c:var(--wing);--d:1"><b>Wing</b>Placed #5170<span class="stamp2" data-a="stamp" style="--d:3">Verified</span></div>
+        <div class="ev2 p" data-a="up" style="--x:38%;--y:76%;--c:var(--wax);--d:1"><b>Wax</b>Row 4 saved<span class="stamp2" data-a="stamp" style="--d:4">Verified</span></div>
+        <div class="ev2 p" data-a="up" style="--x:62%;--y:76%;--c:var(--sun);--d:1"><b>Sun</b>#4821 · lamp<span class="stamp2" data-a="stamp" style="--d:5">Verified</span></div>
+        <div class="ev2 p" data-a="up" style="--x:86%;--y:76%;--c:var(--tide);--d:1"><b>Tide</b>Tue 17 Nov<span class="stamp2" data-a="stamp" style="--d:6">Verified</span></div>
+        <p class="sfx2 p" data-a="slam" style="--x:84%;--y:18%;--fs:9cqw;--fill:linear-gradient(#ffffff,#8ad8ff);--r:10deg;--d:3" aria-label="Stamp">バン!<small>stamp!</small></p>
+      </figure>
+      <aside class="note"><p class="label">Verified</p><p>Every result is checked on the page before the run is called done. "Done" without evidence doesn't count.</p></aside>
+      </div>
+
+      <!-- 14 · Finale -->
+      <div class="beat">
+      <figure class="pn" data-pn style="--ar:16/10">
+        <div class="bg bg-gold"></div>
+        <div class="bg confetti"></div>
+        <div class="chr" data-who="wing" data-face="happy" data-a="hop" style="--x:12%;--y:44%;--s:15cqw;--r:-12deg;--d:1"><svg class="glyph" style="--c:var(--wing)"><use href="#cur"/></svg></div>
+        <div class="chr" data-who="wax" data-face="happy" data-a="hop" style="--x:28%;--y:36%;--s:15cqw;--r:8deg;--d:2"><svg class="glyph" style="--c:var(--wax)"><use href="#cur"/></svg></div>
+        <div class="chr" data-who="gust" data-face="happy" data-a="hop" style="--x:44%;--y:30%;--s:13cqw;--r:-6deg;--d:3"><svg class="glyph" style="--c:var(--gust)"><use href="#cur"/></svg></div>
+        <div class="chr" data-who="tide" data-face="sparkle" data-a="hop" style="--x:60%;--y:36%;--s:15cqw;--r:10deg;--d:2"><svg class="glyph" style="--c:var(--tide)"><use href="#cur"/></svg></div>
+        <div class="chr" data-who="quill" data-face="happy" data-a="hop" style="--x:74%;--y:46%;--s:13cqw;--r:-8deg;--d:4"><svg class="glyph" style="--c:var(--quill)"><use href="#cur"/></svg></div>
+        <div class="chr" data-who="sun" data-face="cool" data-a="hop" style="--x:89%;--y:34%;--s:15cqw;--r:6deg;--d:3"><svg class="glyph" style="--c:var(--sun)"><use href="#cur"/></svg></div>
+        <div class="chr" data-who="you" data-face="sleepy" data-a="up" style="--x:50%;--y:80%;--s:17cqw;--r:-70deg;--d:5"><svg class="glyph" style="--c:var(--you)"><use href="#cur"/></svg></div>
+        <i class="emo zzz p" data-a="fade" style="--x:58%;--y:66%;--d:6">z<b>z</b><b>Z</b></i>
+        <p class="nar p" data-a="down" style="--x:24%;--y:11%;--w:42cqw;--d:5">8 of 8, all on the page. Nobody flew too close to the sun.</p>
+        <p class="bal p" data-tail="tr" data-a="pop" style="--x:80%;--y:72%;--w:20cqw;--d:6">Sun is fine.</p>
+      </figure>
+      <aside class="note"><p class="label">The end</p><p>Nobody guessed, nothing was sent twice, and every result was found on the page.</p></aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── How it works ─────────────────────────────────────────────────── -->
+  <section class="sec wrap" id="how" aria-labelledby="how-title">
+    <header class="sec-h split reveal">
+      <div>
+        <p class="label">How it works</p>
+        <h2 id="how-title">One task in, many small jobs out, every one checked on the page.</h2>
+      </div>
+      <p>The lead splits your task into small jobs: one page, one goal, one check each. The roster takes them at once, helpers join when everyone is busy, and every result is checked where it landed before the run is called done.</p>
+    </header>
+
+    <div class="flow pane reveal" data-flow>
+      <svg class="flow-lines" aria-hidden="true"></svg>
+
+      <p class="col-k" style="grid-area:hl"><span>01</span>Lead</p>
+      <p class="col-k k-later" style="grid-area:ha"><span>02</span>Agents</p>
+      <p class="col-k k-later" style="grid-area:ht"><span>03</span>Tabs</p>
+      <p class="col-k k-later" style="grid-area:hv"><span>04</span>Verify</p>
+
+      <div class="grp" style="grid-area:gl">
+        <div class="node node-lead is-lead" data-node="lead" style="--c:var(--lead)"><svg class="glyph" aria-hidden="true"><use href="#cur"/></svg><span><b>Lead</b><small>splits, then checks</small></span></div>
+      </div>
+      <ul class="grp grp-agents" style="grid-area:ga" aria-label="Agents">
+        <li class="node" data-node="a-wing" style="--c:var(--wing)"><svg class="glyph" aria-hidden="true"><use href="#cur"/></svg><span><b>Wing</b><small>forms and checkout</small></span></li>
+        <li class="node" data-node="a-wax" style="--c:var(--wax)"><svg class="glyph" aria-hidden="true"><use href="#cur"/></svg><span><b>Wax</b><small>data entry</small></span></li>
+        <li class="node" data-node="a-sun" style="--c:var(--sun)"><svg class="glyph" aria-hidden="true"><use href="#cur"/></svg><span><b>Sun</b><small>reading and lookups</small></span></li>
+        <li class="node" data-node="a-tide" style="--c:var(--tide)"><svg class="glyph" aria-hidden="true"><use href="#cur"/></svg><span><b>Tide</b><small>research across pages</small></span></li>
+        <li class="node node-more" data-node="a-pool"><span class="pile" aria-hidden="true"><svg class="glyph" data-joined style="--c:var(--gust)"><use href="#cur"/></svg><svg class="glyph" data-joined style="--c:var(--plume)"><use href="#cur"/></svg><svg class="glyph" data-joined style="--c:var(--quill)"><use href="#cur"/></svg></span><span><b>+ Helpers</b><small>join when all are busy</small></span></li>
+      </ul>
+      <ul class="grp" style="grid-area:gt" aria-label="Browser tabs">
+        <li class="node node-tab" data-node="t-wing" style="--c:var(--wing)"><i class="fav"></i><code><span>store.test</span><span class="path">/cart</span></code></li>
+        <li class="node node-tab" data-node="t-wax" style="--c:var(--wax)"><i class="fav"></i><code><span>sheets.test</span><span class="path">/expenses</span></code></li>
+        <li class="node node-tab" data-node="t-sun" style="--c:var(--sun)"><i class="fav"></i><code><span>orders.test</span><span class="path">/history</span></code></li>
+        <li class="node node-tab" data-node="t-tide" style="--c:var(--tide)"><i class="fav"></i><code><span>carrier.test</span><span class="path">/express</span></code></li>
+        <li class="node node-tab node-more" data-node="t-pool"><i class="fav"></i><code><span>+ a tab each</span></code></li>
+      </ul>
+      <div class="grp" style="grid-area:gv">
+        <div class="node node-verify" data-node="verify"><svg class="ico" aria-hidden="true"><use href="#i-check-circle"/></svg><span><b>Verified</b><small>found on the page</small></span></div>
+      </div>
+
+      <p class="col-d" style="grid-area:dl">Reads the task and the page, then splits it into small jobs: one page, one goal, one check each.</p>
+      <p class="col-d" style="grid-area:da">Each agent runs its own model loop with only the tools it is allowed. When all are busy, helpers join, up to 24 at once.</p>
+      <p class="col-d" style="grid-area:dt">Every agent, helper or not, drives its own browser tab with real input.</p>
+      <p class="col-d" style="grid-area:dv">A result counts only when the evidence the agent quotes is found on the page.</p>
+    </div>
+  </section>
+
+  <!-- ─── Features ─────────────────────────────────────────────────────── -->
+  <section class="sec wrap" id="features" aria-labelledby="features-title">
+    <header class="sec-h split reveal">
+      <div>
+        <p class="label">What it does</p>
+        <h2 id="features-title">Local models, real input, results it can prove.</h2>
+      </div>
+      <p>The models and tools run on your machine. The agents act through the real browser and report only what they can show on the page.</p>
+    </header>
+
+    <div class="feat">
+      <article class="fp pane fp-a reveal">
+        <header class="fp-h"><h3>Your models, your tools</h3><span class="fp-k">Models</span></header>
+        <div class="fi">
+          <span class="tile"><svg class="ico" aria-hidden="true"><use href="#i-chip"/></svg></span>
+          <div><h4>Local models</h4><p>Any OpenAI-compatible endpoint, such as LM Studio, llama.cpp server, Ollama or vLLM.</p><code>http://127.0.0.1:1234/v1</code></div>
+        </div>
+        <div class="fi">
+          <span class="tile"><svg class="ico" aria-hidden="true"><use href="#i-terminal"/></svg></span>
+          <div><h4>Your own accounts</h4><p>Agents can run through the Claude Code, Codex or Gemini CLI you are already signed in to, with no API key. ICARUS hands them its tools over a local MCP bridge, with the CLI's own shell, file and web tools switched off.</p><code>claude-code · codex · gemini-cli</code></div>
+        </div>
+        <div class="fi">
+          <span class="tile"><svg class="ico" aria-hidden="true"><use href="#i-plug"/></svg></span>
+          <div><h4>MCP servers</h4><p>Connect tools over stdio or Streamable HTTP and choose which ones each project may use.</p><code>stdio · streamable http</code></div>
+        </div>
+        <div class="fi">
+          <span class="tile"><svg class="ico" aria-hidden="true"><use href="#i-key"/></svg></span>
+          <div><h4>Credentials stay local</h4><p>API keys, MCP environment values and headers stay in the local runtime. The app and its logs only see them masked.</p><code>apiKey: ••••••••</code></div>
+        </div>
+      </article>
+
+      <article class="fp pane fp-b reveal">
+        <header class="fp-h"><h3>Works the real page, many at once</h3><span class="fp-k">Swarm</span></header>
+        <div class="fi">
+          <span class="tile"><svg class="ico" aria-hidden="true"><use href="#i-pointer"/></svg></span>
+          <div><h4>Real clicks and keystrokes</h4><p>Dispatched through the Chrome DevTools Protocol as real input events, not simulated by scripts in the page.</p></div>
+        </div>
+        <div class="fi">
+          <span class="tile"><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg></span>
+          <div><h4>Targets re-resolved</h4><p>Just before each press the target is looked up again. If the page changed under it, the agent re-targets or re-reads instead of guessing.</p></div>
+        </div>
+        <div class="fi">
+          <span class="tile"><svg class="ico" aria-hidden="true"><use href="#i-split"/></svg></span>
+          <div><h4>A pool, not a queue</h4><p>Many small jobs run at once. When every agent is busy, a helper joins with its own cursor and tab, up to 24 agents at once.</p><code>Agents at once: 8</code></div>
+        </div>
+        <pre class="trace" aria-label="Example of input events"><span>Input.dispatchMouseEvent</span>  mouseMoved     412,288
+<span>Input.dispatchMouseEvent</span>  mousePressed   left
+<span>Input.dispatchMouseEvent</span>  mouseReleased  left
+<span>Input.insertText</span>          "$48.00"</pre>
+      </article>
+
+      <article class="fp pane fp-c reveal">
+        <header class="fp-h"><h3>Honest about the outcome</h3><span class="fp-k">Outcome</span></header>
+        <div class="fis">
+          <div class="fi">
+            <span class="tile"><svg class="ico" aria-hidden="true"><use href="#i-no-repeat"/></svg></span>
+            <div><h4>Uncertain submits are never replayed</h4><p>A submit that gets no clear answer is marked uncertain and held. It is never sent twice.</p><code>uncertain · held</code></div>
+          </div>
+          <div class="fi">
+            <span class="tile"><svg class="ico" aria-hidden="true"><use href="#i-stop"/></svg></span>
+            <div><h4>Stop cancels everything</h4><p>One press aborts model requests, cancels MCP calls and dispatches nothing more, for every agent at once.</p><code>notifications/cancelled</code></div>
+          </div>
+          <div class="fi">
+            <span class="tile"><svg class="ico" aria-hidden="true"><use href="#i-check-circle"/></svg></span>
+            <div><h4>Verified on the page</h4><p>Every result is checked on the page before the run is called done.</p><code>evidence · found</code></div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ─── Screens ──────────────────────────────────────────────────────────
+       Screenshot slots. Drop PNGs into showcase/shots/ with these names and
+       they replace the placeholders; nothing else needs to change.
+         shots/live-view.png    16:10, 2400 × 1500
+         shots/roster.png       16:10, 2400 × 1500
+         shots/connections.png  16:10, 2400 × 1500
+  ──────────────────────────────────────────────────────────────────────── -->
+  <section class="sec wrap" id="inside" aria-labelledby="inside-title">
+    <header class="sec-h split reveal">
+      <div>
+        <p class="label">Inside the app</p>
+        <h2 id="inside-title">The live view, the roster and the wiring.</h2>
+      </div>
+      <p>The view the swarm works in, the agents you give it, and the model and MCP servers it runs on.</p>
+    </header>
+
+    <div class="shots">
+      <figure class="shot shot-main reveal">
+        <div class="shot-frame pane">
+          <div class="shot-media">
+            <img src="shots/live-view.webp" alt="ICARUS live view: Wing works one order while helpers Gust and Plume take the other two, each in its own tab with its own cursor" width="2280" height="1410" loading="lazy" decoding="async" onerror="this.remove()">
+            <div class="ph ph-live" aria-hidden="true">
+              <div class="ph-top"><i></i><i></i><i></i><i></i><i></i></div>
+              <div class="ph-grid"><i></i><i></i><i></i><i></i></div>
+              <div class="ph-dock"><i></i><i></i></div>
+              <svg class="glyph ph-cur" style="--c:var(--wing);left:30%;top:32%"><use href="#cur"/></svg>
+              <svg class="glyph ph-cur" style="--c:var(--wax);left:74%;top:38%"><use href="#cur"/></svg>
+              <svg class="glyph ph-cur" style="--c:var(--sun);left:22%;top:66%"><use href="#cur"/></svg>
+              <svg class="glyph ph-cur" style="--c:var(--tide);left:66%;top:70%"><use href="#cur"/></svg>
+            </div>
+            <div class="ph-tag" data-slot><svg class="ico" aria-hidden="true"><use href="#i-image"/></svg><b>Screenshot slot</b><code>shots/live-view.png</code><small>16:10 · 2400 × 1500</small></div>
+          </div>
+        </div>
+        <figcaption><b>Live view</b><span>Wing takes one order; with Wing busy, helpers Gust and Plume join for the other two. One tab each.</span></figcaption>
+      </figure>
+
+      <figure class="shot reveal">
+        <div class="shot-frame pane">
+          <div class="shot-media">
+            <img src="shots/roster.webp" alt="ICARUS Project and roster sheet: Wing, Wax, Sun and Tide with their strengths, connections and MCP tools" width="2280" height="1410" loading="lazy" decoding="async" onerror="this.remove()">
+            <div class="ph ph-list" aria-hidden="true">
+              <i style="--c:var(--lead)"></i><i style="--c:var(--wing)"></i><i style="--c:var(--wax)"></i><i style="--c:var(--sun)"></i><i style="--c:var(--tide)"></i>
+            </div>
+            <div class="ph-tag" data-slot><svg class="ico" aria-hidden="true"><use href="#i-image"/></svg><b>Screenshot slot</b><code>shots/roster.png</code><small>16:10 · 2400 × 1500</small></div>
+          </div>
+        </div>
+        <figcaption><b>Roster</b><span>Each agent's strength, its connection and the MCP tools it may use.</span></figcaption>
+      </figure>
+
+      <figure class="shot reveal">
+        <div class="shot-frame pane">
+          <div class="shot-media">
+            <img src="shots/connections.webp" alt="ICARUS Models and MCP sheet: LM Studio connected, plus Claude, ChatGPT and Gemini through your own signed-in accounts" width="2280" height="1340" loading="lazy" decoding="async" onerror="this.remove()">
+            <div class="ph ph-conn" aria-hidden="true">
+              <div><i></i><i></i><i></i></div><div><i></i><i></i><i></i><i></i></div>
+            </div>
+            <div class="ph-tag" data-slot><svg class="ico" aria-hidden="true"><use href="#i-image"/></svg><b>Screenshot slot</b><code>shots/connections.png</code><small>16:10 · 2400 × 1500</small></div>
+          </div>
+        </div>
+        <figcaption><b>Models and MCP</b><span>LM Studio locally, or Claude, ChatGPT and Gemini on your own accounts, no API key.</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ─── Run it ───────────────────────────────────────────────────────── -->
+  <section class="sec wrap" id="run" aria-labelledby="run-title">
+    <div class="run pane reveal">
+      <header class="sec-h">
+        <p class="label">Run it</p>
+        <h2 id="run-title">Three commands, all on your machine.</h2>
+        <p>You need Node 22 or newer and a local model behind an OpenAI-compatible API. The defaults match LM Studio on 127.0.0.1:1234.</p>
+      </header>
+      <ol class="steps">
+        <li class="step">
+          <p class="step-k"><span class="step-n">1</span>Install</p>
+          <div class="cmd"><code>npm install</code><button type="button" class="copy" data-copy="npm install" aria-label="Copy npm install"><svg class="ico" aria-hidden="true"><use href="#i-copy"/></svg><span>Copy</span></button></div>
+          <p>Fetches the dependencies, once.</p>
+        </li>
+        <li class="step">
+          <p class="step-k"><span class="step-n">2</span>Terminal one</p>
+          <div class="cmd"><code>npm run demo</code><button type="button" class="copy" data-copy="npm run demo" aria-label="Copy npm run demo"><svg class="ico" aria-hidden="true"><use href="#i-copy"/></svg><span>Copy</span></button></div>
+          <p>Serves the demo pages the swarm practises on.</p>
+        </li>
+        <li class="step">
+          <p class="step-k"><span class="step-n">3</span>Terminal two</p>
+          <div class="cmd"><code>npm start</code><button type="button" class="copy" data-copy="npm start" aria-label="Copy npm start"><svg class="ico" aria-hidden="true"><use href="#i-copy"/></svg><span>Copy</span></button></div>
+          <p>Builds and opens the app.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap foot">
+  <a class="brand" href="#top" aria-label="ICARUS, back to top"><img src="assets/mark.svg" width="30" height="30" alt=""><span>ICARUS</span></a>
+  <p>I Can Actually Run Useful Stuff.</p>
+  <p class="credits">Motion inspired by <a href="https://califa.github.io/swarm-site/" rel="noopener">Swarm</a> by Joel Califa and <a href="https://github.com/DhvanilPatel/swarm-cursors" rel="noopener">Swarm Rebuild</a> by Dhvanil Patel</p>
+</footer>
+
+<p class="sr-only" aria-live="polite" data-announce></p>
+</body>
+</html>
