@@ -36,6 +36,17 @@
     var m = document.querySelector('meta[name="theme-color"]');
     if (m) m.setAttribute('content', t === 'light' ? '#fff3dc' : '#120d26');
   })();
+  /* Screens: retry a failed screenshot a few times before giving up. */
+  window.shotRetry = function (img) {
+    var n = +(img.getAttribute('data-retry') || 0);
+    if (n >= 4) { img.remove(); return; }
+    img.setAttribute('data-retry', n + 1);
+    setTimeout(function () {
+      var bust = function (u) { return u.replace(/\.webp(\?r=\d+)?/g, '.webp?r=' + (n + 1)); };
+      if (img.srcset) img.srcset = bust(img.srcset);
+      img.src = bust(img.src);
+    }, 1200 * (n + 1));
+  };
 </script>
 <link rel="stylesheet" href="assets/styles.css">
 <script type="importmap">{ "imports": { "three": "./assets/vendor/three/three.module.min.js" } }</script>
@@ -619,9 +630,11 @@
   <!-- ─── Screens ──────────────────────────────────────────────────────────
        App screenshots, one per edition: the dark one shows in dark, the
        light one in light (see shots/README.md for how they are captured).
-         shots/live-view-{dark,light}.webp     2280 × 1410
-         shots/roster-{dark,light}.webp        2280 × 1410
-         shots/connections-{dark,light}.webp   2280 × 1340
+         shots/live-view-{dark,light}[-1x].webp     3038 × 1880 (1x: 1519 wide)
+         shots/roster-{dark,light}[-1x].webp        3038 × 1880
+         shots/connections-{dark,light}[-1x].webp   3038 × 1786
+       A failed load retries a few times (a dropped connection must not
+       leave the frame empty) before the drawn wireframe shows instead.
   ──────────────────────────────────────────────────────────────────────── -->
   <section class="sec wrap" id="inside" aria-labelledby="inside-title">
     <header class="sec-h split reveal">
@@ -637,8 +650,8 @@
         <div class="shot-frame pane inked">
           <div class="peek" aria-hidden="true"><div class="chr" data-who="wing" data-face="happy" data-a="left" style="--s:92px;--r:-10deg;--d:0"><svg class="glyph" style="--c:var(--wing)"><use href="#cur"/></svg></div><p class="bal p" data-tail="bl" style="--x:180%;--y:-10%;--w:220px">That's us, live!</p></div>
           <div class="shot-media">
-            <img class="shot-dark" src="shots/live-view-dark-1x.webp" srcset="shots/live-view-dark-1x.webp 1519w, shots/live-view-dark.webp 3038w" sizes="(min-width: 1152px) 1104px, calc(100vw - 48px)" width="3038" height="1880" alt="ICARUS live view: Wing works one order while helpers Gust and Plume take the other two, each in its own tab with its own cursor" loading="lazy" decoding="async" onerror="this.remove()">
-            <img class="shot-light" src="shots/live-view-light-1x.webp" srcset="shots/live-view-light-1x.webp 1519w, shots/live-view-light.webp 3038w" sizes="(min-width: 1152px) 1104px, calc(100vw - 48px)" width="3038" height="1880" alt="ICARUS live view: Wing works one order while helpers Gust and Plume take the other two, each in its own tab with its own cursor" loading="lazy" decoding="async" onerror="this.remove()">
+            <img class="shot-dark" src="shots/live-view-dark-1x.webp" srcset="shots/live-view-dark-1x.webp 1519w, shots/live-view-dark.webp 3038w" sizes="(min-width: 1152px) 1104px, calc(100vw - 48px)" width="3038" height="1880" alt="ICARUS live view: Wing works one order while helpers Gust and Plume take the other two, each in its own tab with its own cursor" loading="lazy" decoding="async" onerror="shotRetry(this)">
+            <img class="shot-light" src="shots/live-view-light-1x.webp" srcset="shots/live-view-light-1x.webp 1519w, shots/live-view-light.webp 3038w" sizes="(min-width: 1152px) 1104px, calc(100vw - 48px)" width="3038" height="1880" alt="ICARUS live view: Wing works one order while helpers Gust and Plume take the other two, each in its own tab with its own cursor" loading="lazy" decoding="async" onerror="shotRetry(this)">
             <div class="ph ph-live" aria-hidden="true">
               <div class="ph-top"><i></i><i></i><i></i><i></i><i></i></div>
               <div class="ph-grid"><i></i><i></i><i></i><i></i></div>
@@ -648,7 +661,6 @@
               <svg class="glyph ph-cur" style="--c:var(--sun);left:22%;top:66%"><use href="#cur"/></svg>
               <svg class="glyph ph-cur" style="--c:var(--tide);left:66%;top:70%"><use href="#cur"/></svg>
             </div>
-            <div class="ph-tag" data-slot><svg class="ico" aria-hidden="true"><use href="#i-image"/></svg><b>Screenshot slot</b><code>shots/live-view.png</code><small>16:10 · 2400 × 1500</small></div>
           </div>
         </div>
         <figcaption><b>Live view</b><span>Wing takes one order; with Wing busy, helpers Gust and Plume join for the other two. One tab each.</span></figcaption>
@@ -658,12 +670,11 @@
         <div class="shot-frame pane inked">
           <div class="peek" aria-hidden="true"><div class="chr" data-who="lead" data-face="sparkle" data-a="left" style="--s:92px;--r:-10deg;--d:0"><svg class="glyph" style="--c:var(--lead)"><use href="#cur"/></svg></div><p class="bal p" data-tail="bl" style="--x:180%;--y:-10%;--w:220px">The roster.</p></div>
           <div class="shot-media">
-            <img class="shot-dark" src="shots/roster-dark-1x.webp" srcset="shots/roster-dark-1x.webp 1519w, shots/roster-dark.webp 3038w" sizes="(min-width: 1152px) 544px, (min-width: 761px) calc(50vw - 32px), calc(100vw - 48px)" width="3038" height="1880" alt="ICARUS Project and roster sheet: Wing, Wax, Sun and Tide with their strengths, connections and MCP tools" loading="lazy" decoding="async" onerror="this.remove()">
-            <img class="shot-light" src="shots/roster-light-1x.webp" srcset="shots/roster-light-1x.webp 1519w, shots/roster-light.webp 3038w" sizes="(min-width: 1152px) 544px, (min-width: 761px) calc(50vw - 32px), calc(100vw - 48px)" width="3038" height="1880" alt="ICARUS Project and roster sheet: Wing, Wax, Sun and Tide with their strengths, connections and MCP tools" loading="lazy" decoding="async" onerror="this.remove()">
+            <img class="shot-dark" src="shots/roster-dark-1x.webp" srcset="shots/roster-dark-1x.webp 1519w, shots/roster-dark.webp 3038w" sizes="(min-width: 1152px) 544px, (min-width: 761px) calc(50vw - 32px), calc(100vw - 48px)" width="3038" height="1880" alt="ICARUS Project and roster sheet: Wing, Wax, Sun and Tide with their strengths, connections and MCP tools" loading="lazy" decoding="async" onerror="shotRetry(this)">
+            <img class="shot-light" src="shots/roster-light-1x.webp" srcset="shots/roster-light-1x.webp 1519w, shots/roster-light.webp 3038w" sizes="(min-width: 1152px) 544px, (min-width: 761px) calc(50vw - 32px), calc(100vw - 48px)" width="3038" height="1880" alt="ICARUS Project and roster sheet: Wing, Wax, Sun and Tide with their strengths, connections and MCP tools" loading="lazy" decoding="async" onerror="shotRetry(this)">
             <div class="ph ph-list" aria-hidden="true">
               <i style="--c:var(--lead)"></i><i style="--c:var(--wing)"></i><i style="--c:var(--wax)"></i><i style="--c:var(--sun)"></i><i style="--c:var(--tide)"></i>
             </div>
-            <div class="ph-tag" data-slot><svg class="ico" aria-hidden="true"><use href="#i-image"/></svg><b>Screenshot slot</b><code>shots/roster.png</code><small>16:10 · 2400 × 1500</small></div>
           </div>
         </div>
         <figcaption><b>Roster</b><span>Each agent's strength, its connection and the MCP tools it may use.</span></figcaption>
@@ -673,12 +684,11 @@
         <div class="shot-frame pane inked">
           <div class="peek" aria-hidden="true"><div class="chr" data-who="tide" data-face="cool" data-a="left" style="--s:92px;--r:-10deg;--d:0"><svg class="glyph" style="--c:var(--tide)"><use href="#cur"/></svg></div><p class="bal p" data-tail="bl" style="--x:180%;--y:-10%;--w:220px">Your models.</p></div>
           <div class="shot-media">
-            <img class="shot-dark" src="shots/connections-dark-1x.webp" srcset="shots/connections-dark-1x.webp 1519w, shots/connections-dark.webp 3038w" sizes="(min-width: 1152px) 544px, (min-width: 761px) calc(50vw - 32px), calc(100vw - 48px)" width="3038" height="1786" alt="ICARUS Models and MCP sheet: LM Studio connected, plus Claude, ChatGPT and Gemini through your own signed-in accounts" loading="lazy" decoding="async" onerror="this.remove()">
-            <img class="shot-light" src="shots/connections-light-1x.webp" srcset="shots/connections-light-1x.webp 1519w, shots/connections-light.webp 3038w" sizes="(min-width: 1152px) 544px, (min-width: 761px) calc(50vw - 32px), calc(100vw - 48px)" width="3038" height="1786" alt="ICARUS Models and MCP sheet: LM Studio connected, plus Claude, ChatGPT and Gemini through your own signed-in accounts" loading="lazy" decoding="async" onerror="this.remove()">
+            <img class="shot-dark" src="shots/connections-dark-1x.webp" srcset="shots/connections-dark-1x.webp 1519w, shots/connections-dark.webp 3038w" sizes="(min-width: 1152px) 544px, (min-width: 761px) calc(50vw - 32px), calc(100vw - 48px)" width="3038" height="1786" alt="ICARUS Models and MCP sheet: LM Studio connected, plus Claude, ChatGPT and Gemini through your own signed-in accounts" loading="lazy" decoding="async" onerror="shotRetry(this)">
+            <img class="shot-light" src="shots/connections-light-1x.webp" srcset="shots/connections-light-1x.webp 1519w, shots/connections-light.webp 3038w" sizes="(min-width: 1152px) 544px, (min-width: 761px) calc(50vw - 32px), calc(100vw - 48px)" width="3038" height="1786" alt="ICARUS Models and MCP sheet: LM Studio connected, plus Claude, ChatGPT and Gemini through your own signed-in accounts" loading="lazy" decoding="async" onerror="shotRetry(this)">
             <div class="ph ph-conn" aria-hidden="true">
               <div><i></i><i></i><i></i></div><div><i></i><i></i><i></i><i></i></div>
             </div>
-            <div class="ph-tag" data-slot><svg class="ico" aria-hidden="true"><use href="#i-image"/></svg><b>Screenshot slot</b><code>shots/connections.png</code><small>16:10 · 2400 × 1500</small></div>
           </div>
         </div>
         <figcaption><b>Models and MCP</b><span>LM Studio locally, or Claude, ChatGPT and Gemini on your own accounts, no API key.</span></figcaption>
@@ -723,6 +733,13 @@
   <p>I Can Actually Run Useful Stuff.</p>
   <p class="credits">Motion inspired by <a href="https://califa.github.io/swarm-site/" rel="noopener">Swarm</a> by Joel Califa and <a href="https://github.com/DhvanilPatel/swarm-cursors" rel="noopener">Swarm Rebuild</a> by Dhvanil Patel</p>
 </footer>
+
+<!-- Back to top: a small glass orb, inked like the rest of the page, with a
+     ring that fills as you read. It appears once the cover is behind you. -->
+<button type="button" class="to-top" data-to-top aria-label="Back to top">
+  <svg class="to-top-ring" viewBox="0 0 48 48" aria-hidden="true"><circle class="trk" cx="24" cy="24" r="20"/><circle class="bar" cx="24" cy="24" r="20" pathLength="100"/></svg>
+  <svg class="to-top-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8 3.6 11.6h5.1V20.6h6.6v-9h5.1z"/></svg>
+</button>
 
 <p class="sr-only" aria-live="polite" data-announce></p>
 </body>

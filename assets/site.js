@@ -212,3 +212,33 @@
     });
   });
 })();
+
+/* Back to top: the orb shows once the cover is behind you, its ring fills
+   with how far down the page you are, and a press flies you back up (no
+   flight with reduced motion). Focus lands on the brand at the top. */
+(() => {
+  const btn = document.querySelector('[data-to-top]');
+  if (!btn) return;
+  const bar = btn.querySelector('.bar');
+  let queued = false;
+  const update = () => {
+    queued = false;
+    const y = window.scrollY;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    btn.toggleAttribute('data-show', y > window.innerHeight * 0.9);
+    if (bar) bar.style.strokeDashoffset = String(100 - Math.min(100, (y / Math.max(1, max)) * 100));
+  };
+  const queue = () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(update);
+  };
+  window.addEventListener('scroll', queue, { passive: true });
+  window.addEventListener('resize', queue);
+  update();
+  btn.addEventListener('click', () => {
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: still ? 'auto' : 'smooth' });
+    document.querySelector('.nav .brand')?.focus({ preventScroll: true });
+  });
+})();
