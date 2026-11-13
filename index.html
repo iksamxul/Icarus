@@ -6,11 +6,25 @@
 <title>ICARUS · I Can Actually Run Useful Stuff</title>
 <meta name="description" content="ICARUS is a desktop app where a swarm of visible cursors operates live web pages. Each cursor is an AI agent with its own local-model loop, and each agent works its own browser tab.">
 <meta name="color-scheme" content="dark light">
-<meta name="theme-color" content="#120d26">
+<meta name="theme-color" content="#ffc83d">
 <meta property="og:type" content="website">
 <meta property="og:title" content="ICARUS · I Can Actually Run Useful Stuff">
 <meta property="og:description" content="A desktop app where a swarm of visible cursors operates live web pages. A lead agent splits each task; every agent runs its own local-model loop in its own browser tab.">
+<meta property="og:site_name" content="ICARUS">
+<meta property="og:url" content="https://iksamxul.github.io/Icarus/">
+<meta property="og:image" content="https://iksamxul.github.io/Icarus/assets/social-card.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ICARUS, take the mouse: a swarm of smiling toon cursors around the lead, who says Hand me the mouse!">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ICARUS · I Can Actually Run Useful Stuff">
+<meta name="twitter:description" content="A desktop app where a swarm of visible cursors operates live web pages, each agent in its own tab, on your own models.">
+<meta name="twitter:image" content="https://iksamxul.github.io/Icarus/assets/social-card.jpg">
+<meta name="twitter:image:alt" content="ICARUS, take the mouse: a swarm of smiling toon cursors around the lead, who says Hand me the mouse!">
 <link rel="icon" type="image/svg+xml" href="assets/mark.svg">
+<link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
 <script>
   /* Theme before first paint: a saved choice, else the system's. */
   (function () {
@@ -18,6 +32,9 @@
     try { t = localStorage.getItem('icarus.showcase.theme'); } catch (e) {}
     if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', t);
+    /* The static theme colour is gold, for link previews; the page uses its edition's. */
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', t === 'light' ? '#fff3dc' : '#120d26');
   })();
 </script>
 <link rel="stylesheet" href="assets/styles.css">
