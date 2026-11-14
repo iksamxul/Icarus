@@ -2405,3 +2405,109 @@ body::after {
   .to-top[data-show]:hover, .to-top[data-show]:active { transform: none; }
   .to-top[data-show]:hover .to-top-arrow { animation: none; }
 }
+
+/* ── Download ────────────────────────────────────────────────────────────
+   Two inked cards: the installer in gold (the one most people want, with a
+   Recommended tag), the portable zip on the panel colour. Each carries a
+   small glass orb like the back-to-top button. Cards lift on hover and
+   squash when pressed; the notes sit below in a narration box. */
+#download .sec-h { --chap: var(--sky); }
+.dl { position: relative; padding: clamp(28px, 5vw, 56px); border-radius: var(--r-big); }
+.dl-art { position: absolute; z-index: 5; right: clamp(16px, 4vw, 48px); top: -40px; width: 120px; height: 120px; pointer-events: none; }
+.dl-art .chr { position: relative; left: auto; top: auto; translate: none; width: 120px; }
+.dl-art .bal { font-size: 15px; padding: 10px 18px 12px; max-width: 220px; translate: -50% -50%; }
+:root[data-comic] .dl-art .chr-img { animation: bob 2.8s ease-in-out infinite; }
+:root[data-comic] .dl-art .bal { animation: floaty 3.4s ease-in-out infinite; }
+
+.dl-cards { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 22px; margin-top: 36px; }
+.dl-card {
+  position: relative;
+  display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 6px 16px;
+  padding: 22px 24px 24px;
+  border: 3px solid var(--ink); border-radius: 20px;
+  background: var(--card-2); color: var(--text);
+  box-shadow: var(--hard);
+  text-decoration: none;
+  transition: transform 0.16s cubic-bezier(0.3, 1.4, 0.5, 1), box-shadow 0.16s ease;
+}
+.dl-card::after {
+  content: ""; position: absolute; left: 18px; right: 40%; top: 7px; height: 12px; border-radius: 999px;
+  background: linear-gradient(rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+.dl-main { background: linear-gradient(180deg, #ffe27a, var(--gold) 55%, #ffaa2e); color: var(--ink); }
+.dl-card:hover { transform: translate(-2px, -3px); box-shadow: 8px 9px 0 var(--ink); }
+.dl-card:active { transform: translate(4px, 4px) scale(0.985); box-shadow: 1px 1px 0 var(--ink); transition-duration: 0.05s; }
+.dl-card:focus-visible { outline: 3px solid var(--focus-ring-color, var(--gold)); outline-offset: 4px; }
+.dl-orb {
+  grid-row: span 2;
+  position: relative;
+  display: grid; place-items: center;
+  width: 58px; height: 58px; border-radius: 50%;
+  border: 3px solid var(--ink);
+  background:
+    radial-gradient(110% 80% at 32% 16%, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.1) 38%, transparent 56%),
+    radial-gradient(90% 70% at 50% 108%, color-mix(in srgb, var(--sky) 60%, transparent), transparent 70%),
+    var(--iris);
+  box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 0.75), inset 0 -7px 12px rgba(11, 8, 20, 0.3), 3px 3px 0 var(--ink);
+  color: #ffffff;
+}
+.dl-orb .ico { width: 26px; height: 26px; stroke-width: 2.4; filter: drop-shadow(1.5px 1.5px 0 var(--ink)); }
+.dl-card:hover .dl-orb .ico { animation: dl-drop 0.6s cubic-bezier(0.3, 1.6, 0.5, 1); }
+@keyframes dl-drop { 0% { translate: 0 0; } 45% { translate: 0 4px; } 100% { translate: 0 0; } }
+.dl-t { display: grid; gap: 4px; }
+.dl-t b { font: italic 900 clamp(22px, 2.4vw, 28px)/1 var(--font-title); letter-spacing: 0.01em; text-transform: uppercase; }
+.dl-t small { font: 600 13px/1.2 var(--font-mono); opacity: 0.85; }
+.dl-d { grid-column: 1 / -1; margin-top: 10px; font-size: 15px; line-height: 1.45; }
+.dl-main .dl-d { color: #2a2040; }
+.dl-tag {
+  position: absolute; right: 16px; top: -14px;
+  padding: 6px 11px 7px; border-radius: 8px;
+  background: var(--rose); color: #ffffff; border: 2.5px solid var(--ink); box-shadow: 2px 2px 0 var(--ink);
+  font: 900 12px/1 var(--font-comic); letter-spacing: 0.08em; text-transform: uppercase;
+  rotate: 4deg;
+}
+
+.dl-notes { margin-top: 30px; display: grid; gap: 16px; }
+.dl-warn {
+  justify-self: start; max-width: 70ch;
+  padding: 12px 16px 14px;
+  background: var(--cream); color: var(--ink);
+  border: 2.5px solid var(--ink); box-shadow: 5px 5px 0 var(--ink);
+  font: 700 15px/1.45 var(--font-comic);
+  rotate: -0.6deg;
+}
+.dl-warn b { color: #c2410c; }
+.dl-warn em { font-style: normal; padding: 0 5px; border-radius: 5px; background: rgba(23, 18, 42, 0.1); }
+.dl-notes ul { display: grid; gap: 10px; padding: 0; margin: 4px 0 0; list-style: none; }
+.dl-notes li { display: flex; align-items: flex-start; gap: 10px; font-size: 15px; line-height: 1.45; color: var(--text-dim); }
+.dl-notes li .ico { flex: none; margin-top: 2px; color: var(--sky); }
+.dl-notes code { font-size: 13px; padding: 2px 6px; border-radius: 6px; background: var(--card-2); border: 1.5px solid var(--line); color: var(--text); }
+.dl-notes a, .dl-more a { color: var(--sky); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+:root[data-theme="light"] .dl-notes a, :root[data-theme="light"] .dl-more a { color: #0b6fc4; }
+:root[data-theme="light"] .dl-notes li .ico { color: #0b6fc4; }
+.dl-more { display: flex; flex-wrap: wrap; gap: 8px 12px; font-size: 14px; color: var(--text-faint); }
+
+@media (max-width: 760px) {
+  .dl-cards { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 600px) {
+  .dl-art { top: -34px; right: 8px; width: 92px; height: 92px; }
+  .dl-art .chr { width: 92px; }
+  .dl-art .bal { display: none; }
+  .dl-orb { width: 50px; height: 50px; }
+  .dl-orb .ico { width: 22px; height: 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dl-card, .dl-card:hover, .dl-card:active { transform: none; transition: none; }
+  .dl-card:hover .dl-orb .ico { animation: none; }
+}
+
+.dl-card:not(.dl-main)::after { opacity: 0.3; }
+.nav-cta { gap: 7px; }
+.nav-cta .ico { width: 17px; height: 17px; stroke-width: 2.4; }
+.dl-t small span { white-space: nowrap; }
+@media (max-width: 430px) {
+  .nav-cta { width: 44px; padding: 0; justify-content: center; }
+  .nav-cta span { display: none; }
+}
