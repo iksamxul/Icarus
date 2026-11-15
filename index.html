@@ -552,7 +552,7 @@
           <div class="chr" data-who="tide" data-face="sparkle" data-a="left" style="--x:26%;--y:62%;--s:30cqw;--r:-6deg;--d:0"><svg class="glyph" style="--c:var(--tide)"><use href="#cur"/></svg></div>
           <p class="bal p" data-tail="bl" data-a="pop" style="--x:66%;--y:30%;--w:44cqw;--d:1">Bring your own account!</p>
         </figure>
-        <div class="fcap"><h3>Your own accounts</h3><p>Claude Code, Codex or Gemini CLI, already signed in. No API key; the CLI's own shell, file and web tools stay off.</p><code>claude-code · codex · gemini-cli</code></div>
+        <div class="fcap"><h3>Your own accounts</h3><p>Claude Code, Codex or Antigravity CLI, already signed in. No API key; the CLI's own shell, file and web tools stay off.</p><code>claude-code · codex · agy</code></div>
       </article>
       <article class="fcard reveal" style="--span:2;--c:var(--wax)">
         <figure class="pn" data-pn style="--ar:4/3">
@@ -597,7 +597,7 @@
           <div class="chr" data-who="gust" data-face="happy" data-a="left" style="--x:26%;--y:62%;--s:40cqw;--r:6deg;--d:0"><svg class="glyph" style="--c:var(--gust)"><use href="#cur"/></svg></div>
           <p class="bal p" data-tail="bl" data-a="pop" style="--x:66%;--y:30%;--w:56cqw;--d:1">Busy? We'll help!</p>
         </figure>
-        <div class="fcap"><h3>A pool, not a queue</h3><p>Many small jobs at once. When every agent is busy, a helper joins with its own cursor and tab, up to 24.</p><code>Agents at once: 8</code></div>
+        <div class="fcap"><h3>A pool, not a queue</h3><p>Up to 24 agents and cursors work together. Choose separate tabs or a shared preview where the whole swarm collaborates on one live page.</p><code>Agents at once: up to 24 · shared preview</code></div>
       </article>
       <article class="fcard reveal" style="--span:2;--c:var(--wax)">
         <figure class="pn" data-pn style="--ar:4/3">
@@ -712,22 +712,22 @@
         <p>Version 0.1.0 for Windows 10 and 11, 64-bit. It runs on your own machine, with your own models.</p>
       </header>
       <div class="dl-cards">
-        <a class="dl-card dl-main" href="https://github.com/iksamxul/Icarus/releases/latest/download/ICARUS-portable.zip">
+        <a class="dl-card dl-main" href="https://github.com/iksamxul/Icarus/releases/latest/download/ICARUS-Setup.exe">
           <span class="dl-orb" aria-hidden="true"><svg class="ico"><use href="#i-download"/></svg></span>
+          <span class="dl-t"><b>Installer</b><small><span>ICARUS-Setup.exe</span> · <span>195&nbsp;MB</span></small></span>
+          <span class="dl-d">A comic setup in four episodes, with the cast flying around while it installs. No admin needed. Adds Start menu and desktop shortcuts, and an uninstaller in Settings › Apps.</span>
+          <span class="dl-tag">Recommended</span>
+        </a>
+        <a class="dl-card" href="https://github.com/iksamxul/Icarus/releases/latest/download/ICARUS-portable.zip">
+          <span class="dl-orb" aria-hidden="true"><svg class="ico"><use href="#i-zip"/></svg></span>
           <span class="dl-t"><b>Portable</b><small><span>ICARUS-portable.zip</span> · <span>180&nbsp;MB</span></small></span>
           <span class="dl-d">Unzip anywhere and run ICARUS.exe. Nothing gets installed.</span>
-          <span class="dl-tag">Download</span>
         </a>
-        <div class="dl-card dl-soon">
-          <span class="dl-orb" aria-hidden="true"><svg class="ico"><use href="#i-clock"/></svg></span>
-          <span class="dl-t"><b>Installer</b><small>Coming soon</small></span>
-          <span class="dl-d">Installer coming soon: a proper setup app is on the way. Until then, the portable zip has everything.</span>
-          <span class="dl-tag">Soon</span>
-        </div>
       </div>
       <div class="dl-notes">
         <p class="dl-warn"><b>Heads up:</b> ICARUS isn't code-signed yet, so Windows SmartScreen may warn the first time. Choose <em>More info</em>, then <em>Run anyway</em>.</p>
         <ul>
+          <li><svg class="ico" aria-hidden="true"><use href="#i-check-circle"/></svg><span>The demo order desk starts automatically. Its pages and tools are included; no Node installation or separate server needed.</span></li>
           <li><svg class="ico" aria-hidden="true"><use href="#i-chip"/></svg><span>A local model needs <a href="https://lmstudio.ai">LM Studio</a> or any OpenAI-compatible server.</span></li>
           <li><svg class="ico" aria-hidden="true"><use href="#i-key"/></svg><span>Your own accounts use the Claude Code, Codex and Antigravity CLIs signed in on that PC. No API key.</span></li>
           <li><svg class="ico" aria-hidden="true"><use href="#i-check-circle"/></svg><span>Settings live in <code>%APPDATA%\ICARUS</code>, so a newer version keeps them.</span></li>
@@ -740,10 +740,10 @@
   <!-- ─── Run it ───────────────────────────────────────────────────────── -->
   <section class="sec wrap" id="run" aria-labelledby="run-title">
     <div class="run pane inked reveal">
-      <div class="run-art" aria-hidden="true"><div class="chr" data-who="lead" data-face="happy" data-a="pop" style="--s:130px;--r:-8deg;--d:0"><svg class="glyph" style="--c:var(--lead)"><use href="#cur"/></svg></div><p class="bal p" data-tail="bl" style="--x:-20%;--y:-18%;--w:230px">Three commands. That's it.</p></div>
+      <div class="run-art" aria-hidden="true"><div class="chr" data-who="lead" data-face="happy" data-a="pop" style="--s:130px;--r:-8deg;--d:0"><svg class="glyph" style="--c:var(--lead)"><use href="#cur"/></svg></div><p class="bal p" data-tail="bl" style="--x:-20%;--y:-18%;--w:230px">Two commands. That's it.</p></div>
       <header class="sec-h">
         <p class="label">From source</p>
-        <h2 id="run-title">Or build it: three commands.</h2>
+        <h2 id="run-title">Or build it: two commands.</h2>
         <p>You need Node 22 or newer and a local model behind an OpenAI-compatible API. The defaults match LM Studio on 127.0.0.1:1234.</p>
       </header>
       <ol class="steps">
@@ -753,14 +753,9 @@
           <p>Fetches the dependencies, once.</p>
         </li>
         <li class="step">
-          <p class="step-k"><span class="step-n">2</span>Terminal one</p>
-          <div class="cmd"><code>npm run demo</code><button type="button" class="copy" data-copy="npm run demo" aria-label="Copy npm run demo"><svg class="ico" aria-hidden="true"><use href="#i-copy"/></svg><span>Copy</span></button></div>
-          <p>Serves the demo pages the swarm practises on.</p>
-        </li>
-        <li class="step">
-          <p class="step-k"><span class="step-n">3</span>Terminal two</p>
+          <p class="step-k"><span class="step-n">2</span>Launch</p>
           <div class="cmd"><code>npm start</code><button type="button" class="copy" data-copy="npm start" aria-label="Copy npm start"><svg class="ico" aria-hidden="true"><use href="#i-copy"/></svg><span>Copy</span></button></div>
-          <p>Builds and opens the app.</p>
+          <p>Builds and opens the app, and starts the demo automatically.</p>
         </li>
       </ol>
     </div>

@@ -960,7 +960,7 @@ code, pre { font-family: var(--font-mono); }
 
 /* Run it. */
 .run { padding: clamp(28px, 5vw, 56px); border-radius: var(--r-big); }
-.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 40px; }
+.steps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 40px; }
 .step { padding: 0 28px; border-left: 1px solid var(--line); }
 .step:first-child { padding-left: 0; border-left: 0; }
 .step:last-child { padding-right: 0; }
@@ -2511,13 +2511,3 @@ body::after {
   .nav-cta { width: 44px; padding: 0; justify-content: center; }
   .nav-cta span { display: none; }
 }
-/* The installer slot until the setup app ships: dashed, quiet, not a link. */
-.dl-soon { border-style: dashed; background: transparent; box-shadow: none; color: var(--text-dim); cursor: default; }
-.dl-soon:hover, .dl-soon:active { transform: none; box-shadow: none; }
-.dl-soon::after { display: none; }
-.dl-soon .dl-orb { background: radial-gradient(110% 80% at 32% 16%, rgba(255, 255, 255, 0.4) 0%, transparent 56%), var(--card-2); color: var(--text-dim); box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 0.35), 3px 3px 0 var(--ink); }
-.dl-soon .dl-orb .ico { filter: none; }
-.dl-soon:hover .dl-orb .ico { animation: none; }
-.dl-soon .dl-t b { color: var(--text); }
-.dl-soon .dl-tag { background: var(--iris); }
-.dl-main .dl-tag { background: var(--sky); }
