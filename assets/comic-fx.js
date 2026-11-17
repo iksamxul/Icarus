@@ -226,6 +226,26 @@
     requestAnimationFrame(fly);
   }, { passive: true });
 
+  /* ── Panels tilt toward the pointer ──────────────────────────────── */
+
+  if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    document.querySelectorAll('.yonkoma .pn, .mpage .pn').forEach((pn) => {
+      pn.addEventListener('pointermove', (e) => {
+        const r = pn.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        pn.style.setProperty('--tx', `${(y * -7).toFixed(2)}deg`);
+        pn.style.setProperty('--ty', `${(x * 9).toFixed(2)}deg`);
+        pn.classList.add('tilting');
+      });
+      pn.addEventListener('pointerleave', () => {
+        pn.style.setProperty('--tx', '0deg');
+        pn.style.setProperty('--ty', '0deg');
+        pn.classList.remove('tilting');
+      });
+    });
+  }
+
   /* ── 5. Motion-comic depth ───────────────────────────────────────── */
 
   const deep = [...document.querySelectorAll('.episode .pn, .yonkoma .pn')];
