@@ -246,6 +246,32 @@
     });
   }
 
+  /* ── The live stage's payoff: a VERIFIED! stamp when a run checks out ─ */
+
+  const stage = document.querySelector('[data-swarm]');
+  const status = stage && stage.querySelector('[data-run-status]');
+  if (stage && status && 'MutationObserver' in window) {
+    stage.insertAdjacentHTML('beforeend', '<div class="stage-stamp" aria-hidden="true"><b>Verified!</b><small></small></div>');
+    const stamp = stage.querySelector('.stage-stamp');
+    let timer = 0;
+    let was = status.dataset.state;
+    new MutationObserver(() => {
+      const now = status.dataset.state;
+      if (now === 'verified' && was !== 'verified' && !still()) {
+        const count = (status.textContent.match(/\d+ of \d+/) || [''])[0];
+        stamp.querySelector('small').textContent = count;
+        stamp.classList.remove('go');
+        stage.classList.remove('thud');
+        void stamp.offsetWidth;
+        stamp.classList.add('go');
+        stage.classList.add('thud');
+        clearTimeout(timer);
+        timer = setTimeout(() => { stamp.classList.remove('go'); stage.classList.remove('thud'); }, 2600);
+      }
+      was = now;
+    }).observe(status, { attributes: true, attributeFilter: ['data-state'] });
+  }
+
   /* ── 5. Motion-comic depth ───────────────────────────────────────── */
 
   const deep = [...document.querySelectorAll('.episode .pn, .yonkoma .pn')];

@@ -48,13 +48,13 @@
     }, 1200 * (n + 1));
   };
 </script>
-<link rel="stylesheet" href="assets/styles.css?v=20261118b">
+<link rel="stylesheet" href="assets/styles.css?v=20261118c">
 <script type="importmap">{ "imports": { "three": "./assets/vendor/three/three.module.min.js" } }</script>
-<script src="assets/swarm.js?v=20261118b" defer></script>
-<script src="assets/story.js?v=20261118b" defer></script>
-<script src="assets/site.js?v=20261118b" defer></script>
-<script src="assets/comic-fx.js?v=20261118b" defer></script>
-<script type="module" src="assets/three-icarus.js?v=20261118b"></script>
+<script src="assets/swarm.js?v=20261118c" defer></script>
+<script src="assets/story.js?v=20261118c" defer></script>
+<script src="assets/site.js?v=20261118c" defer></script>
+<script src="assets/comic-fx.js?v=20261118c" defer></script>
+<script type="module" src="assets/three-icarus.js?v=20261118c"></script>
 </head>
 <body>
 
@@ -320,7 +320,17 @@
         <div class="bg bubbles"></div>
         <div class="chr" data-who="you" data-face="happy" data-a="left" style="--x:22%;--y:62%;--s:26cqw;--r:8deg"><svg class="glyph" style="--c:var(--you)"><use href="#cur"/></svg></div>
         <div class="chr flip" data-who="lead" data-face="sparkle" data-a="right" style="--x:78%;--y:60%;--s:27cqw;--r:-8deg"><svg class="glyph" style="--c:var(--lead)"><use href="#cur"/></svg><i class="emo sparkles"></i></div>
-        <div class="p mouse2" data-a="zoom" style="--x:50%;--y:46%;--d:2"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="3" width="10" height="18" rx="5"/><path d="M12 7v3"/></svg></div>
+        <div class="p mouse2" data-a="zoom" style="--x:50%;--y:50%;--d:2"><svg viewBox="-36 -34 172 182" aria-hidden="true">
+          <defs><clipPath id="m-clip"><path d="M50 14C74 14 86 36 86 64c0 30-16 48-36 48S14 94 14 64C14 36 26 14 50 14z"/></clipPath></defs>
+          <g class="m-lines"><path d="M-18 40l-12-6M-22 66h-13M-18 92l-12 6M118 40l12-6M122 66h13M118 92l12 6M24 -10l-6-10M76 -10l6-10"/></g>
+          <path class="m-cable" d="M50 14c0-12-8-18-18-18S12-12 12-24"/>
+          <path class="m-body" d="M50 14C74 14 86 36 86 64c0 30-16 48-36 48S14 94 14 64C14 36 26 14 50 14z"/>
+          <path class="m-shade" clip-path="url(#m-clip)" d="M66 18c14 10 20 28 20 46 0 30-16 48-36 48 14-8 22-26 22-48 0-18-2-34-6-46z"/>
+          <path class="m-ink" d="M50 16v36M16 52c18 5 50 5 68 0"/>
+          <rect class="m-wheel" x="44.5" y="25" width="11" height="19" rx="5.5"/>
+          <path class="m-shine" d="M29 30c-4 7-6 15-6 23"/>
+          <path class="m-outline" d="M50 14C74 14 86 36 86 64c0 30-16 48-36 48S14 94 14 64C14 36 26 14 50 14z"/>
+        </svg></div>
         <p class="bal p" data-tail="bl" data-a="pop" style="--x:23%;--y:17%;--w:28cqw;--d:3">It's all yours.</p>
         <p class="bal p" data-tail="br" data-a="pop" style="--x:77%;--y:17%;--w:28cqw;--d:4">Leave it to us.</p>
       </figure>

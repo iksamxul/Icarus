@@ -574,8 +574,11 @@ function prologue(section) {
   for (let i = 0; i < N; i += 1) {
     const r = 46 + rand() * 70;
     const a = rand() * Math.PI * 2;
-    // Scattered behind the lead, never in front of its face.
-    cloud.push(new THREE.Vector3(Math.cos(a) * r * 1.3, (rand() - 0.5) * 62 + 2, -38 - rand() * 72));
+    // Between the lead and the sun's near side (the sun spans z -126..-58):
+    // behind the lead's face, never inside the sun.
+    // and leaning away from the words on the left.
+    const cx = Math.cos(a) * r * 1.3;
+    cloud.push(new THREE.Vector3(cx < 0 ? cx * 0.55 : cx, (rand() - 0.5) * 62 + 2, -12 - rand() * 36));
     spinA.push(new THREE.Quaternion().setFromEuler(e.set(rand() * 6.3, rand() * 6.3, rand() * 6.3)));
     spinB.push(new THREE.Vector3(rand() - 0.5, rand() - 0.5, rand() - 0.5).normalize());
     scaleOf.push(i <= 4 ? 1.25 : 1.05);
@@ -643,7 +646,7 @@ function prologue(section) {
       );
       qs.setFromAxisAngle(spinB[i], t * 0.35 * (1 - k)).multiply(spinA[i]);
       q.copy(qs).slerp(formQ[i], k);
-      const sc = scaleOf[i] * (1.1 - 0.1 * k);
+      const sc = scaleOf[i] * (0.74 + 0.26 * k); // smaller while scattered: they frame the lead, not crowd it
       s.set(sc, sc, sc);
       mesh.setMatrixAt(i, m4.compose(p, q, s));
     }
