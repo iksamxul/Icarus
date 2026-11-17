@@ -10,6 +10,8 @@
       frame, then the real border takes over.
    5. Motion-comic depth: in the story and the yonkoma, each panel's
       backdrop drifts against its cast while you scroll.
+   6. Blocks print in as halftone dots; speed lines streak in at the edges
+      when the page flies by (a fast scroll, or a jump down the page).
 
    Everything is transform and opacity on a few elements at a time. Nothing
    here blocks a click or a scroll, and all of it stays off with
@@ -192,6 +194,37 @@
       pn.inkSvg = null;
     });
   });
+
+  /* ── Halftone print-in: drop the mask once the dots have grown ───── */
+
+  document.addEventListener('animationend', (e) => {
+    if (e.animationName === 'ht-print') e.target.classList.add('printed');
+  });
+
+  /* ── Speed lines while the page flies by ─────────────────────────── */
+
+  const lines = document.createElement('div');
+  lines.className = 'fx-speed';
+  lines.setAttribute('aria-hidden', 'true');
+  document.body.append(lines);
+  let lastY = window.scrollY;
+  let vel = 0;
+  let flying = false;
+  function fly() {
+    const y = window.scrollY;
+    vel = vel * 0.8 + Math.abs(y - lastY) * 0.2;
+    lastY = y;
+    const o = Math.max(0, Math.min(0.55, (vel - 30) / 90));
+    lines.style.opacity = o.toFixed(3);
+    lines.classList.toggle('on', o > 0.01);
+    if (vel > 0.5 && !still()) requestAnimationFrame(fly);
+    else { flying = false; vel = 0; lines.classList.remove('on'); lines.style.opacity = '0'; }
+  }
+  window.addEventListener('scroll', () => {
+    if (flying || still()) return;
+    flying = true;
+    requestAnimationFrame(fly);
+  }, { passive: true });
 
   /* ── 5. Motion-comic depth ───────────────────────────────────────── */
 

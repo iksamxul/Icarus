@@ -2167,7 +2167,7 @@ body::after {
 :root[data-comic] .nav-cta, :root[data-comic] .hero .btn-accent { animation: nudge 5s ease-in-out infinite; }
 @keyframes nudge { 0%, 86%, 100% { rotate: 0deg; } 89% { rotate: -4deg; } 92% { rotate: 4deg; } 95% { rotate: -2deg; } }
 :root[data-comic] .title-ink { animation: title-in 0.9s cubic-bezier(0.2, 1.3, 0.35, 1) both; }
-@keyframes title-in { from { opacity: 0; transform: scale(0.82) rotate(-3deg); } to { opacity: 1; transform: none; } }
+@keyframes title-in { from { transform: scale(0.82) rotate(-3deg); } to { transform: none; } }
 :root[data-comic] .cover-tag span { animation: tag-in 0.7s 0.2s cubic-bezier(0.2, 1.4, 0.35, 1) both; }
 @keyframes tag-in { from { opacity: 0; transform: translateY(-14px) rotate(-14deg); } to { opacity: 1; transform: none; } }
 :root[data-comic] .pn.in.vis .bal { animation: var(--anim, a-pop) 0.7s var(--pop) both, floaty 3.6s ease-in-out infinite; animation-delay: calc(var(--d, 0) * 130ms + 60ms), calc(var(--d, 0) * 0.3s + 0.9s); }
@@ -2922,4 +2922,60 @@ body::before { display: none; }
   .op-sfx[data-at="swarm"] { --y: 20%; }
   .op-sfx[data-at="lock"] { --y: 32%; }
   .op-sfx[data-at="climb"] { --x: 50%; --y: 22%; }
+}
+
+/* The opening's scene fades in once its shaders are ready. */
+.pro-canvas { opacity: 0; transition: opacity 0.6s ease; }
+.pro-canvas.ready { opacity: 1; }
+
+/* ═══ Comic effects, round two ══════════════════════════════════════════ */
+
+/* Halftone print-in: blocks arrive as dots that grow into the full image,
+   like ink taking on paper. comic-fx.js drops the mask once printed. */
+@property --ht { syntax: '<length>'; inherits: false; initial-value: 14px; }
+:root[data-comic] :is(.fcard, .fitem, .shot, .run).reveal {
+  opacity: 1; transform: none; transition: none;
+  --ht: 0px;
+  -webkit-mask-image: radial-gradient(circle, #000 var(--ht), transparent calc(var(--ht) + 0.6px));
+  mask-image: radial-gradient(circle, #000 var(--ht), transparent calc(var(--ht) + 0.6px));
+  -webkit-mask-size: 18px 18px; mask-size: 18px 18px;
+}
+:root[data-comic] :is(.fcard, .fitem, .shot, .run).reveal.in { animation: ht-print 0.85s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+:root[data-comic] :is(.fcard, .fitem, .shot, .run).reveal.printed { -webkit-mask-image: none; mask-image: none; animation: none; }
+@keyframes ht-print { from { --ht: 0px; } to { --ht: 14px; } }
+
+/* Speed lines at the edges while the page flies by. */
+.fx-speed {
+  position: fixed; inset: 0; z-index: 30; pointer-events: none;
+  opacity: 0; visibility: hidden;
+  background: repeating-conic-gradient(from 0deg at 50% 50%, color-mix(in srgb, var(--text) 50%, transparent) 0deg 0.6deg, transparent 0.6deg 4.8deg);
+  -webkit-mask-image: radial-gradient(78% 78% at 50% 50%, transparent 52%, #000 100%);
+  mask-image: radial-gradient(78% 78% at 50% 50%, transparent 52%, #000 100%);
+}
+.fx-speed.on { visibility: visible; }
+
+/* The cast reacts when you hover its card or screen. */
+:is(.fitem-who, .fcard, .yonkoma) .chr :is(.chr-img, .chr-blink) {
+  transition: scale 0.3s cubic-bezier(0.2, 1.6, 0.4, 1), rotate 0.3s cubic-bezier(0.2, 1.6, 0.4, 1);
+}
+.fitem:hover .fitem-who .chr :is(.chr-img, .chr-blink) { scale: 1.16; rotate: -10deg; }
+.fcard:hover .chr :is(.chr-img, .chr-blink) { scale: 1.1; rotate: -6deg; }
+.fitem-line { transition: scale 0.25s cubic-bezier(0.2, 1.6, 0.4, 1); }
+.fitem:hover .fitem-line { scale: 1.06; }
+.peek .chr { transition: rotate 0.35s cubic-bezier(0.2, 1.6, 0.4, 1); }
+.shot:hover .peek .chr { rotate: calc(var(--r, 0deg) - 16deg); }
+
+/* A gloss sweeps across the gold buttons on hover. */
+:is(.nav-cta, .op-cover .btn-accent) { position: relative; overflow: hidden; isolation: isolate; }
+:is(.nav-cta, .op-cover .btn-accent)::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.7) 48%, transparent 66%);
+  translate: -130% 0;
+  transition: translate 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+:is(.nav-cta, .op-cover .btn-accent):hover::after { translate: 130% 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.fitem-who, .fcard, .yonkoma) .chr :is(.chr-img, .chr-blink), .fitem-line, .peek .chr, :is(.nav-cta, .op-cover .btn-accent)::after { transition: none; }
+  .fx-speed { display: none; }
 }

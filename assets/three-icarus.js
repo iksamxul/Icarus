@@ -692,8 +692,9 @@ function prologue(section) {
 
   let visible = false;
   let raf = 0;
+  let ready = false; // shaders compiled: until then nothing renders, so nothing stalls
   const motion = () => !reduced.matches;
-  function running() { return visible && !document.hidden && motion(); }
+  function running() { return ready && visible && !document.hidden && motion(); }
   function frame(time) {
     raf = 0;
     draw(time);
@@ -707,21 +708,30 @@ function prologue(section) {
     if (!run) {
       if (raf) cancelAnimationFrame(raf);
       raf = 0;
-      if (!motion()) { progress = 1; draw(0); }
+      if (!motion() && ready) { progress = 1; draw(0); }
     }
   }
 
   new IntersectionObserver((entries) => { visible = entries[entries.length - 1].isIntersecting; sync(); }).observe(section);
   document.addEventListener('visibilitychange', sync);
   reduced.addEventListener('change', sync);
-  new ResizeObserver(() => { resize(); if (!raf) draw(performance.now()); }).observe(canvas);
-  window.addEventListener('prologue:progress', (ev) => { progress = ev.detail; if (!raf) draw(performance.now()); });
+  new ResizeObserver(() => { resize(); if (!raf && ready) draw(performance.now()); }).observe(canvas);
+  window.addEventListener('prologue:progress', (ev) => { progress = ev.detail; if (!raf && ready) draw(performance.now()); });
   if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
     window.addEventListener('pointermove', (ev) => { pointerTo = ev.clientX / window.innerWidth - 0.5; }, { passive: true });
   }
   resize();
-  sync();
-  draw(0);
+  // Compile the shaders off the critical path where the browser can, then
+  // fade the scene in and tell the page the opening is ready.
+  const start = () => {
+    ready = true;
+    draw(performance.now());
+    canvas.classList.add('ready');
+    sync();
+    window.dispatchEvent(new Event('opening:ready'));
+  };
+  if (renderer.compileAsync) renderer.compileAsync(scene, camera).then(start, start);
+  else start();
 }
 
 /* ── Start ─────────────────────────────────────────────────────────── */
@@ -745,5 +755,15 @@ if (webgl()) {
       console.warn('ICARUS showcase: prologue scene unavailable.', err);
     }
   }
-  cast().catch((err) => console.warn('ICARUS showcase: 3D cast unavailable, keeping the flat one.', err));
+  // The cast is baked once the opening is up and the page has a quiet
+  // moment (or after a short wait at the latest): it is all further down.
+  const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 200));
+  let started = false;
+  const bakeCast = () => {
+    if (started) return;
+    started = true;
+    idle(() => cast().catch((err) => console.warn('ICARUS showcase: 3D cast unavailable, keeping the flat one.', err)), { timeout: 1200 });
+  };
+  window.addEventListener('opening:ready', bakeCast, { once: true });
+  setTimeout(bakeCast, 2500);
 }
