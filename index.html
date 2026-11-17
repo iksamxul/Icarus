@@ -48,12 +48,12 @@
     }, 1200 * (n + 1));
   };
 </script>
-<link rel="stylesheet" href="assets/styles.css">
+<link rel="stylesheet" href="assets/styles.css?v=20261117a">
 <script type="importmap">{ "imports": { "three": "./assets/vendor/three/three.module.min.js" } }</script>
-<script src="assets/swarm.js" defer></script>
-<script src="assets/story.js" defer></script>
-<script src="assets/site.js" defer></script>
-<script type="module" src="assets/three-icarus.js"></script>
+<script src="assets/swarm.js?v=20261117a" defer></script>
+<script src="assets/story.js?v=20261117a" defer></script>
+<script src="assets/site.js?v=20261117a" defer></script>
+<script type="module" src="assets/three-icarus.js?v=20261117a"></script>
 </head>
 <body>
 
@@ -97,7 +97,6 @@
     <a href="#how">How it works</a>
     <a href="#features">Features</a>
     <a href="#inside">Screens</a>
-    <a href="#download">Download</a>
   </nav>
   <div class="theme" role="group" aria-label="Colour theme">
     <button type="button" data-theme-set="dark" aria-pressed="true"><svg class="ico" aria-hidden="true"><use href="#i-moon"/></svg><span>Dark</span></button>
@@ -109,17 +108,49 @@
 <main id="top">
 
   <!-- ─── Hero ─────────────────────────────────────────────────────────── -->
-  <section class="hero wrap" aria-labelledby="hero-title">
-    <p class="label cover-tag"><span>Vol. 1</span>I Can Actually Run Useful Stuff</p>
-    <h1 id="hero-title" class="title-ink"><span class="t1">Icarus,</span> <span class="t2">take the&nbsp;mouse.</span></h1>
-    <p class="lede">ICARUS is a desktop app where a swarm of visible cursors operates live web pages. Each cursor is an AI agent with its own model loop. A lead agent splits your task into small jobs, the agents take them at once, each in its own browser tab, and when everyone is busy, helpers join.</p>
-    <div class="actions">
-      <a class="btn btn-accent" href="#download"><svg class="ico" aria-hidden="true"><use href="#i-download"/></svg>Download for Windows</a>
-      <a class="btn" href="#how">How it works</a>
+  <!-- ─── The opening ─────────────────────────────────────────────────────
+       One pinned 3D scene: the lead in front of the sun, the swarm scattered
+       around it. Scrolling calls the 24 agents in, and they form wings on
+       the lead: the cursor becomes Icarus. The cover's words give way to
+       the prologue's. Without motion it is the finished frame with both. -->
+  <section class="prologue opening" id="prologue" data-prologue aria-labelledby="hero-title">
+    <div class="pro-pin">
+      <canvas class="pro-canvas" aria-hidden="true"></canvas>
+      <div class="pro-copy wrap">
+        <div class="op-act op-cover hero" data-act="cover">
+          <p class="label cover-tag"><span>Vol. 1</span>I Can Actually Run Useful Stuff</p>
+          <h1 id="hero-title" class="title-ink"><span class="t1">Icarus,</span> <span class="t2">take the&nbsp;mouse.</span></h1>
+          <p class="lede">A desktop app where a swarm of visible cursors works your live web pages. A lead splits the task, every agent takes its own tab, and helpers join when everyone is busy.</p>
+          <div class="actions">
+            <a class="btn btn-accent" href="#download"><svg class="ico" aria-hidden="true"><use href="#i-download"/></svg>Download for Windows</a>
+            <a class="btn" href="#how">How it works</a>
+          </div>
+        </div>
+        <div class="op-act op-swarm" data-act="swarm">
+          <p class="label">Prologue</p>
+          <h2 id="pro-h">One cursor is a tool. Twenty&#8209;four is a swarm.</h2>
+          <div class="pro-steps">
+            <p class="pro-step" data-step="1">The lead calls them in. The roster takes the leading edge.</p>
+            <p class="pro-step" data-step="2">Helpers fill out the wings: up to 24 agents at once, each with its own cursor and tab.</p>
+          </div>
+        </div>
+      </div>
+      <p class="op-hint" aria-hidden="true"><svg class="ico"><use href="#i-arrow"/></svg>Scroll to call the swarm</p>
     </div>
+  </section>
 
+  <!-- ─── Watch a run ─────────────────────────────────────────────────────
+       The live stage: a real task split by the lead, eight small jobs, the
+       roster and its helpers, every result checked on the page. -->
+  <section class="sec wrap watch" id="watch" aria-labelledby="watch-title">
+    <header class="sec-h split reveal">
+      <div>
+        <p class="label">Watch a run</p>
+        <h2 id="watch-title">One lamp, eight small jobs, all at once.</h2>
+      </div>
+      <p>The lead splits a real task. Wing, Wax, Sun and Tide take the first four, and when everyone is busy, helpers join with tabs of their own. Every result is checked on the page.</p>
+    </header>
     <figure class="stage pane inked" data-swarm data-glass-avoid>
-      <p class="nar stage-nar" aria-hidden="true">Live: the swarm, right now.</p>
       <figcaption class="sr-only">Illustration of a run. The lead cursor reads a task and splits it into eight small jobs. The four roster agents, Wing, Wax, Sun and Tide, take the first four in their own tabs: placing the order, logging the cost, reading the old order through an MCP tool and finding the delivery date. With everyone busy, four helpers join, Gust, Plume, Quill and Ember, each with its own cursor and tab: checking stock, confirming the address, attaching the old receipt and checking the budget. The lead then checks every result on the page.</figcaption>
 
       <div class="stage-bar">
@@ -213,21 +244,6 @@
        A live WebGL scene pinned for a few screens: a loose cloud of cursors
        gathers into wings as you scroll. It runs only while on screen, and
        the glass nav steps aside meanwhile (data-glass-avoid). ─────────── -->
-  <section class="prologue" id="prologue" data-prologue data-glass-avoid aria-labelledby="pro-h">
-    <div class="pro-pin">
-      <canvas class="pro-canvas" aria-hidden="true"></canvas>
-      <div class="pro-copy wrap">
-        <p class="label">Prologue</p>
-        <h2 id="pro-h">One cursor is a tool. Twenty&#8209;four is a swarm.</h2>
-        <div class="pro-steps">
-          <p class="pro-step" data-step="0">Scattered, the way a Friday afternoon feels.</p>
-          <p class="pro-step" data-step="1">The lead calls them in. The roster takes the leading edge.</p>
-          <p class="pro-step" data-step="2">Helpers fill out the wings: up to 24 agents at once, each with its own cursor and tab.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- ─── The story: a webtoon episode ───────────────────────────────────
        Vertical panels, read by scrolling, like a manhwa. Each panel plays
        its beat once when it arrives (story.js adds .in), and its cast idles
@@ -554,61 +570,35 @@
         </figure>
         <div class="fcap"><h3>Your own accounts</h3><p>Claude Code, Codex or Antigravity CLI (Gemini), already signed in. Pick models and reasoning effort per provider, lead or agent.</p><code>claude-code · codex · agy</code></div>
       </article>
-      <article class="fcard reveal" style="--span:2;--c:var(--wax)">
-        <figure class="pn" data-pn style="--ar:4/3">
-          <div class="bg tint"></div>
-          <div class="bg focus soft" style="--fx:28%;--fy:64%"></div>
-          <div class="chr" data-who="wax" data-face="happy" data-a="left" style="--x:26%;--y:62%;--s:40cqw;--r:6deg;--d:0"><svg class="glyph" style="--c:var(--wax)"><use href="#cur"/></svg></div>
-          <p class="bal p" data-tail="bl" data-a="pop" style="--x:66%;--y:30%;--w:56cqw;--d:1">Plug in your tools.</p>
-        </figure>
-        <div class="fcap"><h3>Folders, PC &amp; MCP</h3><p>Work inside a designated local folder with live-reload preview, control desktop apps with live vision, and connect stdio or HTTP MCP servers.</p><code>workspace · desktop vision · mcp</code></div>
-      </article>
-      <article class="fcard reveal" style="--span:2;--c:var(--lead)">
-        <figure class="pn" data-pn style="--ar:4/3">
-          <div class="bg tint"></div>
-          <div class="bg focus soft" style="--fx:28%;--fy:64%"></div>
-          <div class="chr" data-who="lead" data-face="stern" data-a="left" style="--x:26%;--y:62%;--s:40cqw;--r:-6deg;--d:0"><svg class="glyph" style="--c:var(--lead)"><use href="#cur"/></svg></div>
-          <p class="bal p" data-tail="bl" data-a="pop" style="--x:66%;--y:30%;--w:56cqw;--d:1">Keys stay home.</p>
-        </figure>
-        <div class="fcap"><h3>Credentials stay local</h3><p>API keys, env values and headers live in the local runtime; the app and its logs only see them masked.</p><code>apiKey: ••••••••</code></div>
-      </article>
-      <article class="fcard reveal" style="--span:2;--c:var(--wing)">
-        <figure class="pn" data-pn style="--ar:4/3">
-          <div class="bg tint"></div>
-          <div class="bg focus soft" style="--fx:28%;--fy:64%"></div>
-          <div class="chr" data-who="wing" data-face="sparkle" data-a="left" style="--x:26%;--y:62%;--s:40cqw;--r:6deg;--d:0"><svg class="glyph" style="--c:var(--wing)"><use href="#cur"/></svg></div>
-          <p class="bal p" data-tail="bl" data-a="pop" style="--x:66%;--y:30%;--w:56cqw;--d:1">Real clicks. Real keys.</p>
-        </figure>
-        <div class="fcap"><h3>Real input</h3><p>Dispatched through the Chrome DevTools Protocol, not simulated by scripts in the page.</p><code>Input.dispatchMouseEvent</code></div>
-      </article>
-      <article class="fcard reveal" style="--span:2;--c:var(--wing)">
-        <figure class="pn" data-pn style="--ar:4/3">
-          <div class="bg tint"></div>
-          <div class="bg focus soft" style="--fx:28%;--fy:64%"></div>
-          <div class="chr" data-who="wing" data-face="shock" data-a="left" style="--x:26%;--y:62%;--s:40cqw;--r:-6deg;--d:0"><svg class="glyph" style="--c:var(--wing)"><use href="#cur"/></svg></div>
-          <p class="bal p" data-tail="bl" data-a="pop" style="--x:66%;--y:30%;--w:56cqw;--d:1">It moved? I look again.</p>
-        </figure>
-        <div class="fcap"><h3>Targets re-resolved</h3><p>Just before each press the target is found again. If the page changed, the agent re-targets or re-reads.</p><code>e12 → re-resolved</code></div>
-      </article>
-      <article class="fcard reveal" style="--span:2;--c:var(--gust)">
-        <figure class="pn" data-pn style="--ar:4/3">
-          <div class="bg tint"></div>
-          <div class="bg focus soft" style="--fx:28%;--fy:64%"></div>
-          <div class="chr" data-who="gust" data-face="happy" data-a="left" style="--x:26%;--y:62%;--s:40cqw;--r:6deg;--d:0"><svg class="glyph" style="--c:var(--gust)"><use href="#cur"/></svg></div>
-          <p class="bal p" data-tail="bl" data-a="pop" style="--x:66%;--y:30%;--w:56cqw;--d:1">Busy? We'll help!</p>
-        </figure>
-        <div class="fcap"><h3>A pool, not a queue</h3><p>Up to 24 agents and cursors work together. Choose separate tabs or a shared preview where the whole swarm collaborates on one live page.</p><code>Agents at once: up to 24 · shared preview</code></div>
-      </article>
-      <article class="fcard reveal" style="--span:2;--c:var(--wax)">
-        <figure class="pn" data-pn style="--ar:4/3">
-          <div class="bg tint"></div>
-          <div class="bg focus soft" style="--fx:28%;--fy:64%"></div>
-          <div class="chr" data-who="wax" data-face="nervous" data-a="left" style="--x:26%;--y:62%;--s:40cqw;--r:-6deg;--d:0"><svg class="glyph" style="--c:var(--wax)"><use href="#cur"/></svg></div>
-          <p class="bal p" data-tail="bl" data-a="pop" style="--x:66%;--y:30%;--w:56cqw;--d:1">No answer… I wait.</p>
-        </figure>
-        <div class="fcap"><h3>Uncertain submits</h3><p>A submit with no clear answer is held as uncertain. It is never sent twice.</p><code>uncertain · held</code></div>
-      </article>
-      <article class="fcard reveal" style="--span:3;--c:var(--lead)">
+    </div>
+    <ul class="flist">
+      <li class="fitem reveal" style="--c:var(--wax)">
+        <div class="fitem-who" aria-hidden="true"><div class="chr" data-who="wax" data-face="happy"><svg class="glyph" style="--c:var(--wax)"><use href="#cur"/></svg></div><span class="fitem-line">Plug in your tools.</span></div>
+        <h3>Folders, PC &amp; MCP</h3><p>Work inside a designated local folder with live-reload preview, control desktop apps with live vision, and connect stdio or HTTP MCP servers.</p><code>workspace · desktop vision · mcp</code>
+      </li>
+      <li class="fitem reveal" style="--c:var(--lead)">
+        <div class="fitem-who" aria-hidden="true"><div class="chr" data-who="lead" data-face="stern"><svg class="glyph" style="--c:var(--lead)"><use href="#cur"/></svg></div><span class="fitem-line">Keys stay home.</span></div>
+        <h3>Credentials stay local</h3><p>API keys, env values and headers live in the local runtime; the app and its logs only see them masked.</p><code>apiKey: ••••••••</code>
+      </li>
+      <li class="fitem reveal" style="--c:var(--wing)">
+        <div class="fitem-who" aria-hidden="true"><div class="chr" data-who="wing" data-face="sparkle"><svg class="glyph" style="--c:var(--wing)"><use href="#cur"/></svg></div><span class="fitem-line">Real clicks. Real keys.</span></div>
+        <h3>Real input</h3><p>Dispatched through the Chrome DevTools Protocol, not simulated by scripts in the page.</p><code>Input.dispatchMouseEvent</code>
+      </li>
+      <li class="fitem reveal" style="--c:var(--wing)">
+        <div class="fitem-who" aria-hidden="true"><div class="chr" data-who="wing" data-face="shock"><svg class="glyph" style="--c:var(--wing)"><use href="#cur"/></svg></div><span class="fitem-line">It moved? I look again.</span></div>
+        <h3>Targets re-resolved</h3><p>Just before each press the target is found again. If the page changed, the agent re-targets or re-reads.</p><code>e12 → re-resolved</code>
+      </li>
+      <li class="fitem reveal" style="--c:var(--gust)">
+        <div class="fitem-who" aria-hidden="true"><div class="chr" data-who="gust" data-face="happy"><svg class="glyph" style="--c:var(--gust)"><use href="#cur"/></svg></div><span class="fitem-line">Busy? We'll help!</span></div>
+        <h3>A pool, not a queue</h3><p>Up to 24 agents and cursors work together. Choose separate tabs or a shared preview where the whole swarm collaborates on one live page.</p><code>Agents at once: up to 24 · shared preview</code>
+      </li>
+      <li class="fitem reveal" style="--c:var(--wax)">
+        <div class="fitem-who" aria-hidden="true"><div class="chr" data-who="wax" data-face="nervous"><svg class="glyph" style="--c:var(--wax)"><use href="#cur"/></svg></div><span class="fitem-line">No answer… I wait.</span></div>
+        <h3>Uncertain submits</h3><p>A submit with no clear answer is held as uncertain. It is never sent twice.</p><code>uncertain · held</code>
+      </li>
+    </ul>
+    <div class="mpage">
+      <article class="fcard reveal" style="--span:3;--c:var(--rose)">
         <figure class="pn" data-pn style="--ar:16/9">
           <div class="bg tint"></div>
           <div class="bg focus soft" style="--fx:28%;--fy:64%"></div>
@@ -617,7 +607,7 @@
         </figure>
         <div class="fcap"><h3>Stop cancels everything</h3><p>One press aborts model requests, cancels MCP calls and dispatches nothing more, for every agent.</p><code>notifications/cancelled</code></div>
       </article>
-      <article class="fcard reveal" style="--span:3;--c:var(--lead)">
+      <article class="fcard reveal" style="--span:3;--c:var(--sky)">
         <figure class="pn" data-pn style="--ar:16/9">
           <div class="bg tint"></div>
           <div class="bg focus soft" style="--fx:28%;--fy:64%"></div>
@@ -765,8 +755,18 @@
 <p class="wrap tbc" aria-label="To be continued"><span>To be continued…</span><b>つづく</b></p>
 
 <footer class="wrap foot">
-  <a class="brand" href="#top" aria-label="ICARUS, back to top"><img src="assets/mark.svg" width="32" height="32" alt=""><span>ICARUS</span></a>
-  <p>I Can Actually Run Useful Stuff.</p>
+  <div class="foot-id">
+    <a class="brand" href="#top" aria-label="ICARUS, back to top"><img src="assets/mark.svg" width="32" height="32" alt=""><span>ICARUS</span></a>
+    <p>I Can Actually Run Useful Stuff</p>
+  </div>
+  <nav class="foot-links" aria-label="Footer">
+    <a href="#prologue">Swarm</a>
+    <a href="#story">Story</a>
+    <a href="#how">How it works</a>
+    <a href="#features">Features</a>
+    <a href="#inside">Screens</a>
+    <a href="#download">Download</a>
+  </nav>
   <p class="credits">Motion inspired by <a href="https://califa.github.io/swarm-site/" rel="noopener">Swarm</a> by Joel Califa and <a href="https://github.com/DhvanilPatel/swarm-cursors" rel="noopener">Swarm Rebuild</a> by Dhvanil Patel</p>
 </footer>
 

@@ -43,16 +43,19 @@
   /* Scroll spy: the nav's glass pill follows the section being read. It
      appears in place the first time, then slides between links. */
   const links = [...document.querySelectorAll('.nav-links a[href^="#"]')];
-  const sections = links.map((a) => document.querySelector(a.getAttribute('href')));
+  const linkFor = new Map(links.map((a) => [a.getAttribute('href').slice(1), a]));
+  // Every section counts, linked or not: in a section without a nav link
+  // (Download, which has the main button, and From source) the pill hides
+  // instead of staying on the last linked one.
+  const sections = [...document.querySelectorAll('main section[id]')];
   const pill = document.querySelector('.nav-pill');
   let current;
 
   function spy(force) {
     const line = innerHeight * 0.4;
-    const atEnd = scrollY + innerHeight >= document.documentElement.scrollHeight - 2;
-    let active = null;
-    sections.forEach((sec, i) => { if (sec && sec.getBoundingClientRect().top <= line) active = links[i]; });
-    if (atEnd && links.length) active = links[links.length - 1];
+    let hit = null;
+    sections.forEach((sec) => { if (sec.getBoundingClientRect().top <= line) hit = sec; });
+    const active = hit ? linkFor.get(hit.id) || null : null;
     if (active === current && !force) return;
     const appearing = !current;
     current = active;

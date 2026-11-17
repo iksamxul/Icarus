@@ -185,7 +185,11 @@
     proP = p;
     pro.dataset.p = p.toFixed(4);
     window.dispatchEvent(new CustomEvent('prologue:progress', { detail: p }));
-    const step = p < 0.3 ? 0 : p < 0.62 ? 1 : 2;
+    // The opening: the cover's words first, then the swarm's as the wings
+    // form. The hint goes as soon as the reader starts to scroll.
+    pro.dataset.act = p < 0.24 ? 'cover' : 'swarm';
+    pro.toggleAttribute('data-scrolled', p > 0.02);
+    const step = p < 0.24 ? 0 : p < 0.6 ? 1 : 2;
     if (step !== proStep) {
       proStep = step;
       steps.forEach((el) => el.classList.toggle('on', Number(el.dataset.step) === step));

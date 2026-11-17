@@ -464,7 +464,35 @@ async function cast() {
   }
 }
 
-/* ── 2. The prologue: a cloud that becomes wings ───────────────────── */
+/* ── 2. The opening: the lead, the sun, and a swarm that becomes wings ─ */
+
+// A comic ray burst for behind the sun, drawn once on a canvas.
+function burstTexture() {
+  const c = document.createElement('canvas');
+  c.width = c.height = 512;
+  const g = c.getContext('2d');
+  g.translate(256, 256);
+  const n = 32;
+  for (let i = 0; i < n; i += 1) {
+    g.rotate((Math.PI * 2) / n);
+    g.beginPath();
+    g.moveTo(0, 0);
+    g.lineTo(260, -18);
+    g.lineTo(260, 18);
+    g.closePath();
+    g.fillStyle = i % 2 ? 'rgba(255, 200, 61, 0.6)' : 'rgba(255, 138, 31, 0.38)';
+    g.fill();
+  }
+  g.globalCompositeOperation = 'destination-in';
+  const fade = g.createRadialGradient(0, 0, 70, 0, 0, 256);
+  fade.addColorStop(0, 'rgba(0, 0, 0, 1)');
+  fade.addColorStop(1, 'rgba(0, 0, 0, 0)');
+  g.fillStyle = fade;
+  g.fillRect(-256, -256, 512, 512);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
 
 function prologue(section) {
   // Size the stage first: the canvas measures it.
@@ -474,27 +502,67 @@ function prologue(section) {
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   const scene = new THREE.Scene();
   toonLights(scene);
-  const camera = new THREE.PerspectiveCamera(34, 1, 1, 1000);
+  const camera = new THREE.PerspectiveCamera(34, 1, 1, 1400);
+  const ramp = rampTexture();
+  const inkMat = new THREE.MeshBasicMaterial({ color: INK, side: THREE.BackSide });
 
   // Seeded randomness: the same cloud on every visit.
   let seed = 7;
   const rand = () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
 
+  // The swarm: one instanced body and one ink shell sharing matrices.
   const geo = arrowGeometry(3);
   const shell = arrowGeometry(3, 0.6);
   for (const g of [geo, shell]) g.translate(-6.75, 9.15, -(DEPTH / 2)); // spin about the middle
-  const N = 25; // the lead + 24 agents, the most the app runs at once
-  const mesh = new THREE.InstancedMesh(geo, new THREE.MeshToonMaterial({ color: '#ffffff', gradientMap: rampTexture() }), N);
-  const ink = new THREE.InstancedMesh(shell, new THREE.MeshBasicMaterial({ color: INK, side: THREE.BackSide }), N);
+  const N = 25; // the lead's place + 24 agents, the most the app runs at once
+  const mesh = new THREE.InstancedMesh(geo, new THREE.MeshToonMaterial({ color: '#ffffff', gradientMap: ramp }), N);
+  const ink = new THREE.InstancedMesh(shell, inkMat, N);
   ink.instanceMatrix = mesh.instanceMatrix; // one set of matrices for body and outline
   scene.add(ink, mesh);
-
-  // Index 0 is the lead, the body between the wings. 1..4 the roster,
-  // then helpers in the app's own colour order.
+  // Index 0 is the lead's place between the wings; the lead itself is its
+  // own mesh below, wearing its face. 1..4 the roster, then helpers in the
+  // app's own colour order.
   const palette = [COLORS.lead, FIXED[0], FIXED[1], FIXED[2], FIXED[3]];
   for (let i = 5; i < N; i += 1) palette.push(agentColor(i + 1));
   const color = new THREE.Color();
   for (let i = 0; i < N; i += 1) mesh.setColorAt(i, color.set(palette[i]));
+  const hidden = new THREE.Matrix4().makeScale(0, 0, 0);
+
+  // The lead, with its face painted on the front cap.
+  const face = faceCanvas();
+  paintFace(face.ctx, COLORS.lead, 'sparkle');
+  face.tex.needsUpdate = true;
+  const leadGeo = arrowGeometry(5);
+  const leadShell = arrowGeometry(5, 0.55);
+  for (const g of [leadGeo, leadShell]) g.translate(-6.75, 9.15, -(DEPTH / 2));
+  const leadSide = new THREE.MeshToonMaterial({ color: COLORS.lead, gradientMap: ramp });
+  leadSide.color.multiplyScalar(0.92);
+  const lead = new THREE.Group();
+  lead.add(
+    new THREE.Mesh(leadGeo, [new THREE.MeshToonMaterial({ map: face.tex, gradientMap: ramp }), leadSide]),
+    new THREE.Mesh(leadShell, inkMat),
+  );
+  lead.scale.setScalar(1.7);
+  scene.add(lead);
+
+  // The sun: a toon sphere with an ink rim, a slow comic burst behind it.
+  const SUN_R = 34;
+  const sun = new THREE.Group();
+  sun.add(
+    new THREE.Mesh(new THREE.SphereGeometry(SUN_R * 1.035, 48, 32), inkMat),
+    new THREE.Mesh(
+      new THREE.SphereGeometry(SUN_R, 64, 48),
+      new THREE.MeshToonMaterial({ color: '#ffc83d', gradientMap: ramp, emissive: new THREE.Color('#ff8a1f'), emissiveIntensity: 0.32 }),
+    ),
+  );
+  sun.position.set(18, 26, -92);
+  scene.add(sun);
+  const burst = new THREE.Mesh(
+    new THREE.PlaneGeometry(SUN_R * 5.6, SUN_R * 5.6),
+    new THREE.MeshBasicMaterial({ map: burstTexture(), transparent: true, depthWrite: false }),
+  );
+  burst.position.copy(sun.position).add(new THREE.Vector3(0, 0, -SUN_R * 1.4));
+  scene.add(burst);
 
   const cloud = [];
   const wing = [];
@@ -506,10 +574,11 @@ function prologue(section) {
   for (let i = 0; i < N; i += 1) {
     const r = 46 + rand() * 70;
     const a = rand() * Math.PI * 2;
-    cloud.push(new THREE.Vector3(Math.cos(a) * r * 1.25, (rand() - 0.5) * 80 + 8, Math.sin(a) * r * 0.5 - 30));
+    // Scattered behind the lead, never in front of its face.
+    cloud.push(new THREE.Vector3(Math.cos(a) * r * 1.3, (rand() - 0.5) * 62 + 2, -38 - rand() * 72));
     spinA.push(new THREE.Quaternion().setFromEuler(e.set(rand() * 6.3, rand() * 6.3, rand() * 6.3)));
     spinB.push(new THREE.Vector3(rand() - 0.5, rand() - 0.5, rand() - 0.5).normalize());
-    scaleOf.push(i === 0 ? 1.7 : i <= 4 ? 1.25 : 1.05);
+    scaleOf.push(i <= 4 ? 1.25 : 1.05);
   }
   // Wings: twelve feathers a side, the roster on the leading edge.
   wing.push(new THREE.Vector3(0, 6, 6));
@@ -531,33 +600,46 @@ function prologue(section) {
     const lean = side * (0.5 + u * 0.7) - side * w * 0.25;
     formQ.push(new THREE.Quaternion().setFromEuler(e.set(0.15, side > 0 ? Math.PI : 0, side > 0 ? lean : -lean)));
   }
+  // On the cover the lead turns three-quarters to the reader, face first.
+  const coverQ = new THREE.Quaternion().setFromEuler(e.set(-0.16, 0.34, 0.1));
 
   const m4 = new THREE.Matrix4();
   const p = new THREE.Vector3();
   const q = new THREE.Quaternion();
   const qs = new THREE.Quaternion();
   const s = new THREE.Vector3();
+  const look = new THREE.Vector3();
+  const coverLook = new THREE.Vector3();
+  const wingLook = new THREE.Vector3();
   const ease = (t) => (t <= 0 ? 0 : t >= 1 ? 1 : (1 - (1 + 7 * t) * Math.exp(-7 * t)) / (1 - 8 * Math.exp(-7)));
+  const smooth = (t) => t * t * (3 - 2 * t);
   const clamp = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
 
   let progress = parseFloat(section.dataset.p || '0') || 0;
   let fitR = 160;
-  let lift = 16;
   let pointer = 0;
   let pointerTo = 0;
 
   function draw(time) {
     const t = time / 1000;
-    const k = ease(clamp((progress - 0.08) / 0.55));
-    for (let i = 0; i < N; i += 1) {
+    const still = reduced.matches;
+    const k = ease(clamp((progress - 0.2) / 0.5)); // the swarm forms its wings
+    const up = smooth(clamp((progress - 0.72) / 0.28)); // then Icarus climbs toward the sun
+    const climb = up * 12;
+    const back = up * 10;
+    mesh.setMatrixAt(0, hidden);
+    // The sun starts low and in frame beside the lead, then settles behind the wings.
+    sun.position.set(-22 + 22 * k, 12 + 14 * k, -92);
+    burst.position.set(sun.position.x, sun.position.y, sun.position.z - SUN_R * 1.4);
+    for (let i = 1; i < N; i += 1) {
       const c = cloud[i];
       const f = wing[i];
       const drift = (1 - k) * 2.2;
-      const beat = Math.sin(t * 1.5) * 0.07 * k * Math.abs(f.x);
+      const beat = Math.sin(t * 1.5) * 0.07 * (k + up * 0.6) * Math.abs(f.x);
       p.set(
         c.x + (f.x - c.x) * k + Math.sin(t * 0.4 + i) * drift,
-        c.y + (f.y - c.y) * k + Math.cos(t * 0.5 + i * 1.7) * drift + beat,
-        c.z + (f.z - c.z) * k,
+        c.y + (f.y - c.y) * k + Math.cos(t * 0.5 + i * 1.7) * drift + beat + climb * k,
+        c.z + (f.z - c.z) * k - back * k,
       );
       qs.setFromAxisAngle(spinB[i], t * 0.35 * (1 - k)).multiply(spinA[i]);
       q.copy(qs).slerp(formQ[i], k);
@@ -566,11 +648,23 @@ function prologue(section) {
       mesh.setMatrixAt(i, m4.compose(p, q, s));
     }
     mesh.instanceMatrix.needsUpdate = true;
+
+    const bob = still ? 0 : Math.sin(t * 1.3) * 0.9 * (1 - k * 0.5);
+    lead.position.set(wing[0].x, wing[0].y + bob + climb, wing[0].z - back);
+    lead.quaternion.copy(coverQ).slerp(formQ[0], k);
+    if (!still) lead.rotateZ(Math.sin(t * 0.9) * 0.035);
+
     pointer += (pointerTo - pointer) * 0.06;
-    const ang = 0.55 * (1 - k) - 0.06 + pointer * 0.12 + (reduced.matches ? 0 : Math.sin(t * 0.15) * 0.04);
-    const R = fitR * (1.32 - 0.32 * k);
-    camera.position.set(Math.sin(ang) * R, 10 + 16 * (1 - k), Math.cos(ang) * R);
-    camera.lookAt(0, 2 - lift * k, 0);
+    const ang = 0.46 * (1 - k) - 0.05 + pointer * 0.1 + (still ? 0 : Math.sin(t * 0.15) * 0.03);
+    const R = fitR * (0.42 + 0.58 * k + 0.06 * up);
+    coverLook.set(lead.position.x, lead.position.y - 2, lead.position.z);
+    wingLook.set(0, 2 + climb * 0.7, -back * 0.5);
+    look.copy(coverLook).lerp(wingLook, k);
+    camera.position.set(look.x + Math.sin(ang) * R, look.y + 8 + 12 * (1 - k), look.z + Math.cos(ang) * R);
+    camera.lookAt(look);
+
+    burst.quaternion.copy(camera.quaternion);
+    if (!still) burst.rotateZ(t * 0.04);
     renderer.render(scene, camera);
   }
 
@@ -585,9 +679,15 @@ function prologue(section) {
     camera.aspect = w / h;
     camera.fov = w < h ? 46 : 34;
     camera.updateProjectionMatrix();
+    // Wide screens: the words sit on the left, so the scene plays on the
+    // right. Portrait: the words sit at the bottom, so it plays up top.
+    const wide = w >= 900 && w > h * 1.1;
+    const tall = w < h;
+    if (wide) camera.setViewOffset(w, h, -w * 0.2, 0, w, h);
+    else if (tall) camera.setViewOffset(w, h, 0, h * (w < 600 ? 0.2 : 0.1), w, h);
+    else camera.clearViewOffset();
     const halfH = Math.atan(Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect);
-    fitR = 80 / (w < h ? 0.96 : 0.85) / Math.tan(halfH);
-    lift = w < h ? fitR * 0.2 : 16;
+    fitR = 80 / (tall ? 0.96 : 0.85) / Math.tan(halfH) / (wide ? 0.62 : 1);
   }
 
   let visible = false;
