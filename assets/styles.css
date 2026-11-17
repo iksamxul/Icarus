@@ -2810,3 +2810,116 @@ body::before { display: none; }
 /* Without motion the two sets of words stack instead of sharing a cell. */
 .prologue.opening:not([data-motion]) .pro-copy { display: block; }
 .prologue.opening:not([data-motion]) .op-act { grid-area: auto; }
+
+/* ═══ Comic effects (comic-fx.js) ═══════════════════════════════════════ */
+
+/* 1. Sound effects you make: a starburst and a word at the pointer. */
+.fx-layer { position: fixed; inset: 0; z-index: 60; pointer-events: none; overflow: hidden; }
+.fx-burst {
+  position: absolute; width: 132px; height: 132px;
+  translate: -50% -50%; rotate: var(--r, 0deg);
+  animation: fx-pop 0.78s cubic-bezier(0.2, 1.4, 0.4, 1) forwards;
+}
+.fx-star { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.fx-star path { fill: var(--c, var(--gold)); stroke: var(--ink); stroke-width: 4; stroke-linejoin: round; }
+.fx-word {
+  position: absolute; left: 50%; top: 50%; translate: -50% -50%;
+  font: italic 900 22px/1 var(--font-title);
+  letter-spacing: 0.01em; white-space: nowrap; color: #ffffff;
+  filter: drop-shadow(1.6px 0 0 var(--ink)) drop-shadow(-1.6px 0 0 var(--ink)) drop-shadow(0 1.6px 0 var(--ink)) drop-shadow(0 -1.6px 0 var(--ink)) drop-shadow(2px 2.5px 0 var(--ink));
+}
+@keyframes fx-pop {
+  0% { opacity: 0; scale: 0.2; }
+  16% { opacity: 1; scale: 1.16; }
+  28% { scale: 0.94; }
+  38% { scale: 1; }
+  78% { opacity: 1; scale: 1; }
+  100% { opacity: 0; scale: 1.2; }
+}
+@media (max-width: 600px) {
+  .fx-burst { width: 104px; height: 104px; }
+  .fx-word { font-size: 18px; }
+}
+
+/* 2. The theme switch turns the page: Day from the top right, Night from
+   the bottom left. Without View Transitions it is instant. */
+::view-transition-old(root) { animation: none; }
+::view-transition-new(root) { animation: page-turn 0.64s cubic-bezier(0.22, 1, 0.36, 1) both; }
+:root[data-turn="dark"]::view-transition-new(root) { animation-name: page-turn-back; }
+@keyframes page-turn { from { clip-path: polygon(100% 0, 100% 0, 100% 0); } to { clip-path: polygon(100% 0, -120% 0, 100% 220%); } }
+@keyframes page-turn-back { from { clip-path: polygon(0 100%, 0 100%, 0 100%); } to { clip-path: polygon(0 100%, 220% 100%, 0 -120%); } }
+
+/* 3. The opening's sound effects, on the scene's side. */
+.op-fx { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.op-sfx {
+  position: absolute; left: var(--x); top: var(--y); margin: 0;
+  translate: -50% -50%; rotate: var(--r, 0deg);
+  font: 900 clamp(44px, 6.2vw, 100px)/1 var(--font-sfx);
+  letter-spacing: -0.04em; white-space: nowrap; text-align: center;
+  color: var(--sfx, var(--gold));
+  filter: drop-shadow(3px 0 0 var(--ink)) drop-shadow(-3px 0 0 var(--ink)) drop-shadow(0 3px 0 var(--ink)) drop-shadow(0 -3px 0 var(--ink)) drop-shadow(5px 6px 0 var(--ink));
+  opacity: 0; scale: 0.4;
+  transition: opacity 0.25s ease, scale 0.5s cubic-bezier(0.2, 1.5, 0.4, 1);
+}
+.op-sfx.on { opacity: 1; scale: 1; }
+.op-sfx small {
+  display: block; width: max-content; margin: 0.4em auto 0; padding: 0.35em 0.75em;
+  border-radius: 999px; background: var(--ink); color: #ffffff;
+  font: 800 15px/1 var(--font-comic); letter-spacing: 0;
+}
+.op-sfx[data-at="swarm"] { --x: 57%; --y: 22%; --r: -10deg; --sfx: #9be0ff; }
+.op-sfx[data-at="lock"] { --x: 88%; --y: 32%; --r: 8deg; --sfx: var(--gold); }
+.op-sfx[data-at="climb"] { --x: 72%; --y: 15%; --r: -6deg; --sfx: #ffb3d1; }
+.op-flash {
+  position: absolute; left: 70%; top: 46%;
+  width: 72vmin; aspect-ratio: 1; translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 246, 207, 0.8), rgba(255, 200, 61, 0.32) 42%, transparent 70%);
+  opacity: 0;
+}
+.op-flash.go { animation: op-flash 0.7s ease-out; }
+@keyframes op-flash { 0% { opacity: 0; scale: 0.6; } 25% { opacity: 0.7; scale: 1; } 100% { opacity: 0; scale: 1.25; } }
+@media (max-width: 899px), (orientation: portrait) {
+  .op-sfx { font-size: clamp(38px, 11vw, 72px); }
+  .op-sfx[data-at="swarm"] { --x: 28%; --y: 14%; }
+  .op-sfx[data-at="lock"] { --x: 74%; --y: 24%; }
+  .op-sfx[data-at="climb"] { --x: 50%; --y: 10%; }
+  .op-flash { left: 50%; top: 26%; }
+}
+
+/* 4. Titles slam in word by word. */
+:root[data-comic] .slam .w { display: inline-block; }
+:root[data-comic] .slam:not(.in) .w { opacity: 0; }
+:root[data-comic] .slam.in .w { animation: word-slam 0.5s cubic-bezier(0.2, 1.5, 0.4, 1) both; animation-delay: calc(var(--i) * 70ms); }
+@keyframes word-slam {
+  0% { opacity: 0; transform: translateY(-0.5em) scale(1.8) rotate(-8deg); }
+  55% { opacity: 1; transform: translateY(0.04em) scale(0.94) rotate(1deg); }
+  100% { opacity: 1; transform: none; }
+}
+
+/* 5. Panels inked as you read: the stroke runs round the frame, then the
+   real border takes over. */
+.ink-draw { display: none; }
+:root[data-comic] .ink-draw {
+  display: block; position: absolute; inset: 0; z-index: 8;
+  width: 100%; height: 100%; overflow: visible; pointer-events: none;
+}
+:root[data-comic] .ink-draw rect { fill: none; stroke: var(--ink); stroke-width: 6; stroke-dasharray: 1; stroke-dashoffset: 1; }
+:root[data-comic] .pn.in .ink-draw rect { animation: ink-draw 0.9s cubic-bezier(0.65, 0, 0.35, 1) forwards; }
+@keyframes ink-draw { to { stroke-dashoffset: 0; } }
+:root[data-comic] .pn.inking { border-color: transparent; }
+
+/* 6. Motion-comic depth: the backdrop drifts against the cast. */
+:root[data-comic] .episode .pn .bg, :root[data-comic] .yonkoma .pn .bg {
+  scale: 1.08;
+  translate: 0 calc(var(--par, 0) * 3%);
+}
+/* Keep the opening's sound effects clear of the nav. */
+.op-sfx[data-at="swarm"] { --y: 26%; }
+.op-sfx[data-at="lock"] { --y: 38%; }
+.op-sfx[data-at="climb"] { --x: 66%; --y: 27%; }
+@media (max-width: 899px), (orientation: portrait) {
+  .op-sfx[data-at="swarm"] { --y: 20%; }
+  .op-sfx[data-at="lock"] { --y: 32%; }
+  .op-sfx[data-at="climb"] { --x: 50%; --y: 22%; }
+}

@@ -22,8 +22,10 @@
   applyTheme(root.getAttribute('data-theme') === 'light' ? 'light' : 'dark');
   themeButtons.forEach((b) => b.addEventListener('click', () => {
     if (b.dataset.themeSet === root.getAttribute('data-theme')) return;
-    // A short crossfade between themes where the browser can do it and
-    // motion is welcome; otherwise the switch is instant.
+    // A comic page turn where the browser can do it and motion is welcome
+    // (Day turns in from the top right, Night from the bottom left);
+    // otherwise the switch is instant.
+    root.dataset.turn = b.dataset.themeSet;
     if (document.startViewTransition && !reduced.matches) document.startViewTransition(() => applyTheme(b.dataset.themeSet));
     else applyTheme(b.dataset.themeSet);
     try { localStorage.setItem(THEME_KEY, b.dataset.themeSet); } catch (e) { /* private mode */ }
