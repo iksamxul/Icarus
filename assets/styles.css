@@ -3212,3 +3212,6 @@ body::before { display: none; }
   .v1-touches { padding: 32px 16px 16px; }
   .v1-touches ul { grid-template-columns: minmax(0, 1fr); gap: 12px; }
 }
+
+/* A capture wider than the 16:10 frame keeps its right edge, where the sheet is. */
+.shot-media img.shot-r { object-position: 100% 50%; }

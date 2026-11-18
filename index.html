@@ -48,13 +48,13 @@
     }, 1200 * (n + 1));
   };
 </script>
-<link rel="stylesheet" href="assets/styles.css?v=20261118g">
+<link rel="stylesheet" href="assets/styles.css?v=20261118h">
 <script type="importmap">{ "imports": { "three": "./assets/vendor/three/three.module.min.js" } }</script>
-<script src="assets/swarm.js?v=20261118g" defer></script>
-<script src="assets/story.js?v=20261118g" defer></script>
-<script src="assets/site.js?v=20261118g" defer></script>
-<script src="assets/comic-fx.js?v=20261118g" defer></script>
-<script type="module" src="assets/three-icarus.js?v=20261118g"></script>
+<script src="assets/swarm.js?v=20261118h" defer></script>
+<script src="assets/story.js?v=20261118h" defer></script>
+<script src="assets/site.js?v=20261118h" defer></script>
+<script src="assets/comic-fx.js?v=20261118h" defer></script>
+<script type="module" src="assets/three-icarus.js?v=20261118h"></script>
 </head>
 <body>
 
@@ -642,8 +642,8 @@
        Built from design/v1-features.md and design/v1-features-2.md: 81
        features (F1-F51, M1-M30) and 100 quality-of-life fixes (Q1-Q80,
        R1-R20), each built and exercised in the running app, word for word.
-       The finishing touches strip is not counted. Everything here ships
-       with the next Windows build; the download further down is v0.1.0.
+       The finishing touches strip is not counted. All of it is in ICARUS
+       1.0.0, the download further down.
   ──────────────────────────────────────────────────────────────────────── -->
   <section class="sec wrap" id="v1" aria-labelledby="v1-title">
     <p class="cap-meanwhile reveal">Meanwhile, in the workshop…</p>
@@ -652,7 +652,7 @@
         <p class="label">New in v1</p>
         <h2 id="v1-title">81 features and 100 little fixes.</h2>
       </div>
-      <p>Two batches, each item built into ICARUS v1 and checked in the running app. They arrive with the next Windows build; the download below is still v0.1.0.</p>
+      <p>Two batches, each item built into ICARUS v1 and checked in the running app. All of it is out now in ICARUS 1.0.0, the download below.</p>
     </header>
     <div class="v1-tally">
       <p class="v1-count reveal" data-kind="f"><b data-count="81">81</b><span>new features</span></p>
@@ -965,13 +965,11 @@
   </section>
 
   <!-- ─── Screens ──────────────────────────────────────────────────────────
-       App screenshots. A pair (shot-dark, shot-light) follows the edition;
-       a single capture shows in both. See shots/README.md for the files.
-         shots/run-{dark,light}[-1x].webp           2280 × 1410 (1x: 1140 wide)
-         shots/plan-review[-1x].webp                2280 × 1410 (Night only)
-         shots/replay[-1x].webp                     1924 × 1190 (Night only, cropped)
-         shots/rail-folded-{dark,light}[-1x].webp   2280 × 1410
-         shots/connections-{dark,light}[-1x].webp   3038 × 1786 (1x: 1519 wide)
+       Screenshots of the packaged ICARUS 1.0.0, one per edition: the dark
+       one shows in dark, the light one in light (see shots/README.md).
+         shots/{live-view,roster,history,settings,verified}-{dark,light}[-1x].webp
+                                                  3038 × 1880 (1x: 1519 wide)
+         shots/connections-{dark,light}[-1x].webp   3038 × 1734 (1x: 1519 × 867)
        A failed load retries a few times (a dropped connection must not
        leave the frame empty) before the drawn wireframe shows instead.
   ──────────────────────────────────────────────────────────────────────── -->
@@ -980,9 +978,9 @@
     <header class="sec-h split reveal">
       <div>
         <p class="label">Inside the app</p>
-        <h2 id="inside-title">The live view, and what sits around it.</h2>
+        <h2 id="inside-title">The live view, and everything around it.</h2>
       </div>
-      <p>From the v1 build, which arrives with the next Windows release: the swarm at work, the plan before it starts, a run played back. And the models it all runs on.</p>
+      <p>ICARUS 1.0.0 as it ships: the swarm at work, the agents you give it, the models it runs on, what a run leaves behind and how you set it up.</p>
     </header>
 
     <div class="shots">
@@ -990,8 +988,8 @@
         <div class="shot-frame pane inked">
           <div class="peek" aria-hidden="true"><div class="chr" data-who="wing" data-face="happy" data-a="left" style="--s:92px;--r:-10deg;--d:0"><svg class="glyph" style="--c:var(--wing)"><use href="#cur"/></svg></div><p class="bal p" data-tail="bl" style="--x:180%;--y:-10%;--w:220px">That&#8217;s us, live!</p></div>
           <div class="shot-media">
-            <img class="shot-dark" src="shots/run-dark-1x.webp" srcset="shots/run-dark-1x.webp 1140w, shots/run-dark.webp 2280w" sizes="(min-width: 1152px) 1104px, calc(100vw - 48px)" width="2280" height="1410" alt="ICARUS in Night, mid-run and paused: Wing, Wax and Sun each hold one order in its own tab, and the cast rail shows its tool tiles" loading="lazy" decoding="async" onerror="shotRetry(this)">
-            <img class="shot-light" src="shots/run-light-1x.webp" srcset="shots/run-light-1x.webp 1140w, shots/run-light.webp 2280w" sizes="(min-width: 1152px) 1104px, calc(100vw - 48px)" width="2280" height="1410" alt="ICARUS in Day, mid-run: Wing, Wax and Sun type each order&#8217;s reference in their own tabs while the lead watches" loading="lazy" decoding="async" onerror="shotRetry(this)">
+            <img class="shot-dark" src="shots/live-view-dark-1x.webp" srcset="shots/live-view-dark-1x.webp 1519w, shots/live-view-dark.webp 3038w" sizes="(min-width: 1152px) 1104px, calc(100vw - 48px)" width="3038" height="1880" alt="ICARUS 1.0.0 in Night, mid-run: Wing works one order while helpers Gust and Plume take the other two, each clicking its shipping option in its own tab, with the tool tiles under the cast" loading="lazy" decoding="async" onerror="shotRetry(this)">
+            <img class="shot-light" src="shots/live-view-light-1x.webp" srcset="shots/live-view-light-1x.webp 1519w, shots/live-view-light.webp 3038w" sizes="(min-width: 1152px) 1104px, calc(100vw - 48px)" width="3038" height="1880" alt="ICARUS 1.0.0 in Day, mid-run: Wing works one order while helpers Gust and Plume take the other two, each clicking its shipping option in its own tab, with the tool tiles under the cast" loading="lazy" decoding="async" onerror="shotRetry(this)">
             <div class="ph ph-live" aria-hidden="true">
               <div class="ph-top"><i></i><i></i><i></i><i></i><i></i></div>
               <div class="ph-grid"><i></i><i></i><i></i><i></i></div>
@@ -1003,67 +1001,83 @@
             </div>
           </div>
         </div>
-        <figcaption><b>Live view</b><span>Wing, Wax and Sun take an order each, every one in its own tab. Pause, live hints and Stop sit on the task bar; the tool tiles sit under the cast.</span></figcaption>
+        <figcaption><b>Live view</b><span>Wing takes one order; with Wing busy, helpers Gust and Plume join for the other two, one tab each. The tool tiles sit under the cast.</span></figcaption>
       </figure>
 
       <figure class="shot reveal">
         <div class="shot-frame pane inked">
-          <div class="peek" aria-hidden="true"><div class="chr" data-who="lead" data-face="sparkle" data-a="left" style="--s:92px;--r:-10deg;--d:0"><svg class="glyph" style="--c:var(--lead)"><use href="#cur"/></svg></div><p class="bal p" data-tail="bl" style="--x:180%;--y:-10%;--w:220px">My plan. Your call.</p></div>
+          <div class="peek" aria-hidden="true"><div class="chr" data-who="lead" data-face="sparkle" data-a="left" style="--s:92px;--r:-10deg;--d:0"><svg class="glyph" style="--c:var(--lead)"><use href="#cur"/></svg></div><p class="bal p" data-tail="bl" style="--x:180%;--y:-10%;--w:220px">The roster.</p></div>
           <div class="shot-media">
-            <img src="shots/plan-review-1x.webp" srcset="shots/plan-review-1x.webp 1140w, shots/plan-review.webp 2280w" sizes="(min-width: 1152px) 544px, (min-width: 761px) calc(50vw - 32px), calc(100vw - 48px)" width="2280" height="1410" alt="ICARUS Review the plan sheet: the lead&#8217;s three subtasks, one per order, each with its instructions and its agent, before anything runs" loading="lazy" decoding="async" onerror="shotRetry(this)">
+            <img class="shot-dark" src="shots/roster-dark-1x.webp" srcset="shots/roster-dark-1x.webp 1519w, shots/roster-dark.webp 3038w" sizes="(min-width: 1152px) 544px, (min-width: 761px) calc(50vw - 32px), calc(100vw - 48px)" width="3038" height="1880" alt="ICARUS Project and roster sheet in Night: Wing and Wax with their colour swatches, strengths, connections, standing instructions and MCP tools" loading="lazy" decoding="async" onerror="shotRetry(this)">
+            <img class="shot-light" src="shots/roster-light-1x.webp" srcset="shots/roster-light-1x.webp 1519w, shots/roster-light.webp 3038w" sizes="(min-width: 1152px) 544px, (min-width: 761px) calc(50vw - 32px), calc(100vw - 48px)" width="3038" height="1880" alt="ICARUS Project and roster sheet in Day: Wing and Wax with their colour swatches, strengths, connections, standing instructions and MCP tools" loading="lazy" decoding="async" onerror="shotRetry(this)">
             <div class="ph ph-list" aria-hidden="true">
               <i style="--c:var(--lead)"></i><i style="--c:var(--wing)"></i><i style="--c:var(--wax)"></i><i style="--c:var(--sun)"></i><i style="--c:var(--tide)"></i>
             </div>
           </div>
         </div>
-        <figcaption><b>Review the plan</b><span>Read the lead&#8217;s subtasks before anything runs, change them or hand one to another agent, then start.</span></figcaption>
-      </figure>
-
-      <figure class="shot reveal">
-        <div class="shot-frame pane inked">
-          <div class="peek" aria-hidden="true"><div class="chr" data-who="wax" data-face="happy" data-a="left" style="--s:92px;--r:-10deg;--d:0"><svg class="glyph" style="--c:var(--wax)"><use href="#cur"/></svg></div><p class="bal p" data-tail="bl" style="--x:180%;--y:-10%;--w:220px">Again, at 4&#215;!</p></div>
-          <div class="shot-media">
-            <img src="shots/replay-1x.webp" srcset="shots/replay-1x.webp 962w, shots/replay.webp 1924w" sizes="(min-width: 1152px) 544px, (min-width: 761px) calc(50vw - 32px), calc(100vw - 48px)" width="1924" height="1190" alt="ICARUS Run details for a stopped run: Run again, Retry 2 unfinished, and the replay scrubber playing the run back at four times speed" loading="lazy" decoding="async" onerror="shotRetry(this)">
-            <div class="ph ph-conn" aria-hidden="true">
-              <div><i></i><i></i><i></i></div><div><i></i><i></i><i></i><i></i></div>
-            </div>
-          </div>
-        </div>
-        <figcaption><b>Run details and replay</b><span>Run it again, retry only what did not finish, or play it back step by step.</span></figcaption>
-      </figure>
-
-      <figure class="shot reveal">
-        <div class="shot-frame pane inked">
-          <div class="peek" aria-hidden="true"><div class="chr" data-who="sun" data-face="cool" data-a="left" style="--s:92px;--r:-10deg;--d:0"><svg class="glyph" style="--c:var(--sun)"><use href="#cur"/></svg></div><p class="bal p" data-tail="bl" style="--x:180%;--y:-10%;--w:220px">Room to work.</p></div>
-          <div class="shot-media">
-            <img class="shot-dark" src="shots/rail-folded-dark-1x.webp" srcset="shots/rail-folded-dark-1x.webp 1140w, shots/rail-folded-dark.webp 2280w" sizes="(min-width: 1152px) 544px, (min-width: 761px) calc(50vw - 32px), calc(100vw - 48px)" width="2280" height="1410" alt="ICARUS in Night with the cast rail folded to portraits: all three orders verified, each on its own page" loading="lazy" decoding="async" onerror="shotRetry(this)">
-            <img class="shot-light" src="shots/rail-folded-light-1x.webp" srcset="shots/rail-folded-light-1x.webp 1140w, shots/rail-folded-light.webp 2280w" sizes="(min-width: 1152px) 544px, (min-width: 761px) calc(50vw - 32px), calc(100vw - 48px)" width="2280" height="1410" alt="ICARUS in Day with the cast rail folded to portraits: all three orders verified, each on its own page" loading="lazy" decoding="async" onerror="shotRetry(this)">
-            <div class="ph ph-live" aria-hidden="true">
-              <div class="ph-top"><i></i><i></i><i></i><i></i><i></i></div>
-              <div class="ph-grid"><i></i><i></i><i></i><i></i></div>
-              <div class="ph-dock"><i></i><i></i></div>
-              <svg class="glyph ph-cur" style="--c:var(--wing);left:30%;top:32%"><use href="#cur"/></svg>
-              <svg class="glyph ph-cur" style="--c:var(--wax);left:74%;top:38%"><use href="#cur"/></svg>
-              <svg class="glyph ph-cur" style="--c:var(--sun);left:22%;top:66%"><use href="#cur"/></svg>
-              <svg class="glyph ph-cur" style="--c:var(--tide);left:66%;top:70%"><use href="#cur"/></svg>
-            </div>
-          </div>
-        </div>
-        <figcaption><b>Folded rail</b><span>Fold the cast to portraits and the stage gets the room. All three orders here are verified on their own pages.</span></figcaption>
+        <figcaption><b>Roster</b><span>Each agent&#8217;s colour, strength, connection, standing instructions and MCP tools.</span></figcaption>
       </figure>
 
       <figure class="shot reveal">
         <div class="shot-frame pane inked">
           <div class="peek" aria-hidden="true"><div class="chr" data-who="tide" data-face="cool" data-a="left" style="--s:92px;--r:-10deg;--d:0"><svg class="glyph" style="--c:var(--tide)"><use href="#cur"/></svg></div><p class="bal p" data-tail="bl" style="--x:180%;--y:-10%;--w:220px">Your models.</p></div>
           <div class="shot-media">
-            <img class="shot-dark" src="shots/connections-dark-1x.webp" srcset="shots/connections-dark-1x.webp 1519w, shots/connections-dark.webp 3038w" sizes="(min-width: 1152px) 544px, (min-width: 761px) calc(50vw - 32px), calc(100vw - 48px)" width="3038" height="1786" alt="ICARUS Models and MCP sheet: LM Studio connected, plus Claude, ChatGPT and Gemini through your own signed-in accounts" loading="lazy" decoding="async" onerror="shotRetry(this)">
-            <img class="shot-light" src="shots/connections-light-1x.webp" srcset="shots/connections-light-1x.webp 1519w, shots/connections-light.webp 3038w" sizes="(min-width: 1152px) 544px, (min-width: 761px) calc(50vw - 32px), calc(100vw - 48px)" width="3038" height="1786" alt="ICARUS Models and MCP sheet: LM Studio connected, plus Claude, ChatGPT and Gemini through your own signed-in accounts" loading="lazy" decoding="async" onerror="shotRetry(this)">
+            <img class="shot-dark shot-r" src="shots/connections-dark-1x.webp" srcset="shots/connections-dark-1x.webp 1519w, shots/connections-dark.webp 3038w" sizes="(min-width: 1152px) 544px, (min-width: 761px) calc(50vw - 32px), calc(100vw - 48px)" width="3038" height="1734" alt="ICARUS Models and MCP sheet in Night: the lead on the Test provider, LM Studio switched off, and Claude as an account connection through Claude Code, no API key" loading="lazy" decoding="async" onerror="shotRetry(this)">
+            <img class="shot-light shot-r" src="shots/connections-light-1x.webp" srcset="shots/connections-light-1x.webp 1519w, shots/connections-light.webp 3038w" sizes="(min-width: 1152px) 544px, (min-width: 761px) calc(50vw - 32px), calc(100vw - 48px)" width="3038" height="1734" alt="ICARUS Models and MCP sheet in Day: the lead on the Test provider, LM Studio switched off, and Claude as an account connection through Claude Code, no API key" loading="lazy" decoding="async" onerror="shotRetry(this)">
             <div class="ph ph-conn" aria-hidden="true">
               <div><i></i><i></i><i></i></div><div><i></i><i></i><i></i><i></i></div>
             </div>
           </div>
         </div>
         <figcaption><b>Models and MCP</b><span>LM Studio locally, or Claude, ChatGPT and Gemini on your own accounts, no API key.</span></figcaption>
+      </figure>
+
+      <figure class="shot reveal">
+        <div class="shot-frame pane inked">
+          <div class="peek" aria-hidden="true"><div class="chr" data-who="sun" data-face="cool" data-a="left" style="--s:92px;--r:-10deg;--d:0"><svg class="glyph" style="--c:var(--sun)"><use href="#cur"/></svg></div><p class="bal p" data-tail="bl" style="--x:180%;--y:-10%;--w:220px">Every step, kept.</p></div>
+          <div class="shot-media">
+            <img class="shot-dark" src="shots/history-dark-1x.webp" srcset="shots/history-dark-1x.webp 1519w, shots/history-dark.webp 3038w" sizes="(min-width: 1152px) 544px, (min-width: 761px) calc(50vw - 32px), calc(100vw - 48px)" width="3038" height="1880" alt="ICARUS Run details in Night after a run with all 3 verified: the summary, Run again and the exports, the run in numbers, and who worked when on one timeline" loading="lazy" decoding="async" onerror="shotRetry(this)">
+            <img class="shot-light" src="shots/history-light-1x.webp" srcset="shots/history-light-1x.webp 1519w, shots/history-light.webp 3038w" sizes="(min-width: 1152px) 544px, (min-width: 761px) calc(50vw - 32px), calc(100vw - 48px)" width="3038" height="1880" alt="ICARUS Run details in Day after a run with all 3 verified: the summary, Run again and the exports, the run in numbers, and who worked when on one timeline" loading="lazy" decoding="async" onerror="shotRetry(this)">
+            <div class="ph ph-conn" aria-hidden="true">
+              <div><i></i><i></i><i></i></div><div><i></i><i></i><i></i><i></i></div>
+            </div>
+          </div>
+        </div>
+        <figcaption><b>Run details</b><span>Every run is kept: its numbers, who worked when, and one click to run it again, replay it or save a report.</span></figcaption>
+      </figure>
+
+      <figure class="shot reveal">
+        <div class="shot-frame pane inked">
+          <div class="peek" aria-hidden="true"><div class="chr" data-who="wax" data-face="happy" data-a="left" style="--s:92px;--r:-10deg;--d:0"><svg class="glyph" style="--c:var(--wax)"><use href="#cur"/></svg></div><p class="bal p" data-tail="bl" style="--x:180%;--y:-10%;--w:220px">Your way.</p></div>
+          <div class="shot-media">
+            <img class="shot-dark" src="shots/settings-dark-1x.webp" srcset="shots/settings-dark-1x.webp 1519w, shots/settings-dark.webp 3038w" sizes="(min-width: 1152px) 544px, (min-width: 761px) calc(50vw - 32px), calc(100vw - 48px)" width="3038" height="1880" alt="ICARUS Settings sheet in Night: Night, Day or follow Windows, motion and density, and switches for cursors, desktop cursors, speech balloons, sound-effect words and target boxes" loading="lazy" decoding="async" onerror="shotRetry(this)">
+            <img class="shot-light" src="shots/settings-light-1x.webp" srcset="shots/settings-light-1x.webp 1519w, shots/settings-light.webp 3038w" sizes="(min-width: 1152px) 544px, (min-width: 761px) calc(50vw - 32px), calc(100vw - 48px)" width="3038" height="1880" alt="ICARUS Settings sheet in Day: Night, Day or follow Windows, motion and density, and switches for cursors, desktop cursors, speech balloons, sound-effect words and target boxes" loading="lazy" decoding="async" onerror="shotRetry(this)">
+            <div class="ph ph-list" aria-hidden="true">
+              <i style="--c:var(--lead)"></i><i style="--c:var(--wing)"></i><i style="--c:var(--wax)"></i><i style="--c:var(--sun)"></i><i style="--c:var(--tide)"></i>
+            </div>
+          </div>
+        </div>
+        <figcaption><b>Settings</b><span>Night, Day or follow Windows, motion and density, and each part of the swarm&#8217;s show on or off.</span></figcaption>
+      </figure>
+
+      <figure class="shot shot-main reveal">
+        <div class="shot-frame pane inked">
+          <div class="peek" aria-hidden="true"><div class="chr" data-who="wing" data-face="sparkle" data-a="left" style="--s:92px;--r:-10deg;--d:0"><svg class="glyph" style="--c:var(--wing)"><use href="#cur"/></svg></div><p class="bal p" data-tail="bl" style="--x:180%;--y:-10%;--w:220px">All three, verified!</p></div>
+          <div class="shot-media">
+            <img class="shot-dark" src="shots/verified-dark-1x.webp" srcset="shots/verified-dark-1x.webp 1519w, shots/verified-dark.webp 3038w" sizes="(min-width: 1152px) 1104px, calc(100vw - 48px)" width="3038" height="1880" alt="ICARUS in Night after a run: all three orders confirmed, each verified on its own page, while the lead looks over Sun&#8217;s result" loading="lazy" decoding="async" onerror="shotRetry(this)">
+            <img class="shot-light" src="shots/verified-light-1x.webp" srcset="shots/verified-light-1x.webp 1519w, shots/verified-light.webp 3038w" sizes="(min-width: 1152px) 1104px, calc(100vw - 48px)" width="3038" height="1880" alt="ICARUS in Day after a run: all three orders confirmed, each verified on its own page, while the lead looks over Sun&#8217;s result" loading="lazy" decoding="async" onerror="shotRetry(this)">
+            <div class="ph ph-live" aria-hidden="true">
+              <div class="ph-top"><i></i><i></i><i></i><i></i><i></i></div>
+              <div class="ph-grid"><i></i><i></i><i></i><i></i></div>
+              <div class="ph-dock"><i></i><i></i></div>
+              <svg class="glyph ph-cur" style="--c:var(--wing);left:30%;top:32%"><use href="#cur"/></svg>
+              <svg class="glyph ph-cur" style="--c:var(--wax);left:74%;top:38%"><use href="#cur"/></svg>
+              <svg class="glyph ph-cur" style="--c:var(--sun);left:22%;top:66%"><use href="#cur"/></svg>
+              <svg class="glyph ph-cur" style="--c:var(--tide);left:66%;top:70%"><use href="#cur"/></svg>
+            </div>
+          </div>
+        </div>
+        <figcaption><b>Verified</b><span>A run is done only when every result checks out on its own page.</span></figcaption>
       </figure>
     </div>
     <p class="cap-meanwhile reveal cap-end">And now, your turn…</p>
@@ -1080,13 +1094,13 @@
       <header class="sec-h">
         <p class="label">Download</p>
         <h2 id="download-title">Get ICARUS for Windows.</h2>
-        <p>Version 0.1.0 for Windows 10 and 11, 64-bit. It runs on your own machine, with your own models.</p>
+        <p>Version 1.0.0 for Windows 10 and 11, 64-bit. It runs on your own machine, with your own models.</p>
       </header>
       <div class="dl-cards">
         <a class="dl-card dl-main" href="https://github.com/iksamxul/Icarus/releases/latest/download/ICARUS-Setup.exe">
           <span class="dl-orb" aria-hidden="true"><svg class="ico"><use href="#i-download"/></svg></span>
-          <span class="dl-t"><b>Installer</b><small><span>ICARUS-Setup.exe</span> · <span>195&nbsp;MB</span></small></span>
-          <span class="dl-d">A comic setup in four episodes, with the cast flying around while it installs. No admin needed. Adds Start menu and desktop shortcuts, and an uninstaller in Settings › Apps.</span>
+          <span class="dl-t"><b>Installer</b><small><span>ICARUS-Setup.exe</span> · <span>196&nbsp;MB</span></small></span>
+          <span class="dl-d">A comic setup in five scenes, starring the cast. No admin needed. Adds a Start menu entry, an optional desktop shortcut and an uninstaller in Settings › Apps, and updates an earlier install in place.</span>
           <span class="dl-tag">Recommended</span>
         </a>
         <a class="dl-card" href="https://github.com/iksamxul/Icarus/releases/latest/download/ICARUS-portable.zip">
@@ -1101,7 +1115,7 @@
           <li><svg class="ico" aria-hidden="true"><use href="#i-check-circle"/></svg><span>The demo order desk starts automatically. Its pages and tools are included; no Node installation or separate server needed.</span></li>
           <li><svg class="ico" aria-hidden="true"><use href="#i-chip"/></svg><span>Pick models and reasoning effort from dropdowns on every provider, synced automatically with downloaded <a href="https://lmstudio.ai">LM Studio</a> models.</span></li>
           <li><svg class="ico" aria-hidden="true"><use href="#i-key"/></svg><span>Your own accounts use the Claude Code, Codex and Antigravity CLIs signed in on that PC. No API key.</span></li>
-          <li><svg class="ico" aria-hidden="true"><use href="#i-check-circle"/></svg><span>Designate a local folder for live-reloading builds, and optionally enable Computer &amp; application access + Live vision. Settings stay in <code>%APPDATA%\ICARUS</code>.</span></li>
+          <li><svg class="ico" aria-hidden="true"><use href="#i-check-circle"/></svg><span>Designate a local folder for live-reloading builds, and optionally enable Computer &amp; application access + Live vision. Settings stay in <code>%APPDATA%\ICARUS</code> and carry over from 0.1.0.</span></li>
         </ul>
         <p class="dl-more"><a href="https://github.com/iksamxul/Icarus/releases/latest">All releases and SHA-256 checksums</a><span aria-hidden="true">·</span><a href="#run">or build it from source</a></p>
       </div>
