@@ -48,13 +48,13 @@
     }, 1200 * (n + 1));
   };
 </script>
-<link rel="stylesheet" href="assets/styles.css?v=20261118f">
+<link rel="stylesheet" href="assets/styles.css?v=20261118g">
 <script type="importmap">{ "imports": { "three": "./assets/vendor/three/three.module.min.js" } }</script>
-<script src="assets/swarm.js?v=20261118f" defer></script>
-<script src="assets/story.js?v=20261118f" defer></script>
-<script src="assets/site.js?v=20261118f" defer></script>
-<script src="assets/comic-fx.js?v=20261118f" defer></script>
-<script type="module" src="assets/three-icarus.js?v=20261118f"></script>
+<script src="assets/swarm.js?v=20261118g" defer></script>
+<script src="assets/story.js?v=20261118g" defer></script>
+<script src="assets/site.js?v=20261118g" defer></script>
+<script src="assets/comic-fx.js?v=20261118g" defer></script>
+<script type="module" src="assets/three-icarus.js?v=20261118g"></script>
 </head>
 <body>
 
@@ -639,31 +639,44 @@
   </section>
 
   <!-- ─── New in v1 ───────────────────────────────────────────────────────
-       Built from design/v1-features.md (51 features, 80 quality-of-life
-       fixes, each built and exercised in the running app). They ship with
-       the next Windows build; the download further down is still v0.1.0.
+       Built from design/v1-features.md and design/v1-features-2.md: 81
+       features (F1-F51, M1-M30) and 100 quality-of-life fixes (Q1-Q80,
+       R1-R20), each built and exercised in the running app, word for word.
+       The finishing touches strip is not counted. Everything here ships
+       with the next Windows build; the download further down is v0.1.0.
   ──────────────────────────────────────────────────────────────────────── -->
   <section class="sec wrap" id="v1" aria-labelledby="v1-title">
     <p class="cap-meanwhile reveal">Meanwhile, in the workshop…</p>
     <header class="sec-h split reveal">
       <div>
         <p class="label">New in v1</p>
-        <h2 id="v1-title">51 features and 80 little fixes.</h2>
+        <h2 id="v1-title">81 features and 100 little fixes.</h2>
       </div>
-      <p>Each one is built into ICARUS v1 and checked in the running app. They arrive with the next Windows build; the download below is still v0.1.0.</p>
+      <p>Two batches, each item built into ICARUS v1 and checked in the running app. They arrive with the next Windows build; the download below is still v0.1.0.</p>
     </header>
     <div class="v1-tally">
-      <p class="v1-count reveal" data-kind="f"><b data-count="51">51</b><span>new features</span></p>
-      <p class="v1-count reveal" data-kind="q"><b data-count="80">80</b><span>quality-of-life fixes</span></p>
+      <p class="v1-count reveal" data-kind="f"><b data-count="81">81</b><span>new features</span></p>
+      <p class="v1-count reveal" data-kind="q"><b data-count="100">100</b><span>quality-of-life fixes</span></p>
     </div>
+    <aside class="v1-touches reveal" aria-labelledby="v1-touches-title">
+      <h3 id="v1-touches-title">Plus the finishing touches</h3>
+      <ul>
+        <li><b>Tool tiles on the cast rail</b> <span>History, Search, Usage, Projects, Approvals, Downloads and Settings, one click each</span></li>
+        <li><b>Model names on the cast</b> <span>cast chips and status lines say which model works, like Gemini 4 Hydrogen</span></li>
+        <li><b>Rounded everywhere</b> <span>every field rounded, and dropdowns open as rounded lists inside the app</span></li>
+        <li><b>Fold the story strip</b> <span>click its caption</span></li>
+        <li><b>Desktop notifications</b></li>
+        <li><b>Faster start-up</b></li>
+      </ul>
+    </aside>
     <div class="v1-tools">
       <div class="v1-filter" role="group" aria-label="Show">
-        <button type="button" data-v1="all" aria-pressed="true">All <span>131</span></button>
-        <button type="button" data-v1="f" aria-pressed="false">Features <span>51</span></button>
-        <button type="button" data-v1="q" aria-pressed="false">Quality of life <span>80</span></button>
+        <button type="button" data-v1="all" aria-pressed="true">All <span>181</span></button>
+        <button type="button" data-v1="f" aria-pressed="false">Features <span>81</span></button>
+        <button type="button" data-v1="q" aria-pressed="false">Quality of life <span>100</span></button>
       </div>
       <label class="v1-search"><svg class="ico" aria-hidden="true"><use href="#i-search"/></svg><input type="search" placeholder="Search" aria-label="Search the v1 list" autocomplete="off"></label>
-      <p class="v1-shown" aria-live="polite">Showing 131 of 131</p>
+      <p class="v1-shown" aria-live="polite">Showing 181 of 181</p>
     </div>
     <div class="v1-grid">
       <article class="v1-cat reveal" data-kind="f">
@@ -679,6 +692,30 @@
           <li><code class="v1-id">F8</code><p><b>Export a run as JSON</b></p></li>
           <li><code class="v1-id">F9</code><p><b>Step log filters</b> <span>by agent, by kind, problems only, and text search</span></p></li>
           <li><code class="v1-id">F10</code><p><b>Delete one run from history, or clear it</b></p></li>
+        </ul>
+      </article>
+      <article class="v1-cat reveal" data-kind="f">
+        <h3>Run control <span class="v1-n">8</span></h3>
+        <ul>
+          <li><code class="v1-id">M1</code><p><b>Schedules</b> <span>run a saved task every N hours or daily at a time, while ICARUS is open; an unattended run never gets a command approved for it</span></p></li>
+          <li><code class="v1-id">M2</code><p><b>Pause and resume a run</b> <span>agents finish the action in hand and wait; Stop still works while paused</span></p></li>
+          <li><code class="v1-id">M3</code><p><b>Supervised mode (per project)</b> <span>approve each page action before an agent does it</span></p></li>
+          <li><code class="v1-id">M4</code><p><b>Review the plan first (per project)</b> <span>see the lead's subtasks, edit titles and instructions, reassign agents, then start or cancel</span></p></li>
+          <li><code class="v1-id">M5</code><p><b>Retry only the failed subtasks of a past run</b></p></li>
+          <li><code class="v1-id">M6</code><p><b>Automatic retry</b> <span>a failed subtask gets one more try before the run gives up on it (per project)</span></p></li>
+          <li><code class="v1-id">M7</code><p><b>Run budgets</b> <span>a time limit and a step limit per run (per project)</span></p></li>
+          <li><code class="v1-id">M8</code><p><b>Live hints</b> <span>send a message to one agent or to all of them while they work</span></p></li>
+        </ul>
+      </article>
+      <article class="v1-cat reveal" data-kind="f">
+        <h3>Insight <span class="v1-n">6</span></h3>
+        <ul>
+          <li><code class="v1-id">M18</code><p><b>Search every run (<kbd>Ctrl+Shift+F</kbd>)</b> <span>tasks, steps, tool results and summaries across projects</span></p></li>
+          <li><code class="v1-id">M19</code><p><b>Usage dashboard</b> <span>runs per day, how many verified, time taken, busiest agents and models</span></p></li>
+          <li><code class="v1-id">M20</code><p><b>Compare two runs side by side</b></p></li>
+          <li><code class="v1-id">M21</code><p><b>Replay a run</b> <span>play its story back step by step with a scrubber</span></p></li>
+          <li><code class="v1-id">M22</code><p><b>Shareable report</b> <span>one self-contained HTML file with the timeline, plan, evidence and steps</span></p></li>
+          <li><code class="v1-id">M23</code><p><b>Results table</b> <span>every subtask's outcome, summary and evidence, copied or saved as CSV</span></p></li>
         </ul>
       </article>
       <article class="v1-cat reveal" data-kind="f">
@@ -705,7 +742,16 @@
         </ul>
       </article>
       <article class="v1-cat reveal" data-kind="f">
-        <h3>Browser <span class="v1-n">10</span></h3>
+        <h3>Agents and knowledge <span class="v1-n">4</span></h3>
+        <ul>
+          <li><code class="v1-id">M9</code><p><b>Per-agent instructions the agent always follows</b></p></li>
+          <li><code class="v1-id">M10</code><p><b>Project notes the lead and every agent read first (no secrets: they are redacted from history)</b></p></li>
+          <li><code class="v1-id">M11</code><p><b>Agent library</b> <span>keep an agent and add it to any project</span></p></li>
+          <li><code class="v1-id">M12</code><p><b>Model failover</b> <span>a backup connection per project for subtasks whose model fails; never a local model that is not loaded; the run says which connection answered</span></p></li>
+        </ul>
+      </article>
+      <article class="v1-cat reveal" data-kind="f">
+        <h3>Browser <span class="v1-n">15</span></h3>
         <ul>
           <li><code class="v1-id">F24</code><p><b>Find in page (<kbd>Ctrl+F</kbd>) with match count and next/previous</b></p></li>
           <li><code class="v1-id">F25</code><p><b>Save a snapshot of the stage, or of one tab, as a PNG</b></p></li>
@@ -717,6 +763,11 @@
           <li><code class="v1-id">F31</code><p><b>Maximise one panel while the tabs are tiled, and restore it</b></p></li>
           <li><code class="v1-id">F32</code><p><b>Follow mode</b> <span>the stage shows the tab of the agent that acted last</span></p></li>
           <li><code class="v1-id">F33</code><p><b>Tile layout</b> <span>automatic, two columns or three columns</span></p></li>
+          <li><code class="v1-id">M13</code><p><b>Separate sign-ins per project (opt-in)</b> <span>its tabs keep their own cookies and storage</span></p></li>
+          <li><code class="v1-id">M14</code><p><b>Element picker</b> <span>point at something on the page to mention it in the task</span></p></li>
+          <li><code class="v1-id">M15</code><p><b>Tab sessions</b> <span>save the open tabs under a name and open them again later</span></p></li>
+          <li><code class="v1-id">M16</code><p><b>Downloads</b> <span>files the pages download land in Downloads\ICARUS and are listed, with Show in folder</span></p></li>
+          <li><code class="v1-id">M17</code><p><b>Phone view per tab</b> <span>a phone-sized page with a phone browser's identity</span></p></li>
         </ul>
       </article>
       <article class="v1-cat reveal" data-kind="f">
@@ -740,6 +791,18 @@
         </ul>
       </article>
       <article class="v1-cat reveal" data-kind="f">
+        <h3>Workspace and app <span class="v1-n">7</span></h3>
+        <ul>
+          <li><code class="v1-id">M24</code><p><b>Workspace files</b> <span>browse the designated folder and read files, without leaving ICARUS</span></p></li>
+          <li><code class="v1-id">M25</code><p><b>Approvals log</b> <span>every command and program the agents asked for, and what you said</span></p></li>
+          <li><code class="v1-id">M26</code><p><b>Export and import all settings (projects, roster, connections and MCP servers, never keys), with the risky switches off on import</b></p></li>
+          <li><code class="v1-id">M27</code><p><b>Projects overview</b> <span>every project with its last outcome, runs and success rate, one click to open or run again</span></p></li>
+          <li><code class="v1-id">M28</code><p><b>First-run tour that points out the cast, the task bar, the tabs and the settings</b></p></li>
+          <li><code class="v1-id">M29</code><p><b>Mini mode</b> <span>a small always-on-top window with the run's progress and Stop while you work elsewhere</span></p></li>
+          <li><code class="v1-id">M30</code><p><b>Tray icon</b> <span>the run's state at a glance, Show ICARUS and Stop the run</span></p></li>
+        </ul>
+      </article>
+      <article class="v1-cat reveal" data-kind="f">
         <h3>Settings and help <span class="v1-n">7</span></h3>
         <ul>
           <li><code class="v1-id">F44</code><p><b>Settings sheet (<kbd>Ctrl+,</kbd>)</b> <span>appearance Night, Day or follow Windows</span></p></li>
@@ -758,7 +821,7 @@
         </ul>
       </article>
       <article class="v1-cat reveal" data-kind="q">
-        <h3>Task bar <span class="v1-n">15</span></h3>
+        <h3>Task bar <span class="v1-n">17</span></h3>
         <ul>
           <li><code class="v1-id">Q1</code><p><b><kbd>Ctrl+Enter</kbd> runs the task, also in a multi-line task</b></p></li>
           <li><code class="v1-id">Q2</code><p><b>Up arrow in an empty task bar brings back the last task</b></p></li>
@@ -775,10 +838,12 @@
           <li><code class="v1-id">Q13</code><p><b>The progress bar shows failed subtasks in red</b></p></li>
           <li><code class="v1-id">Q14</code><p><b>The task bar shows how many tasks are queued</b></p></li>
           <li><code class="v1-id">Q15</code><p><b>Drop text or a link on the task bar to fill it</b></p></li>
+          <li><code class="v1-id">R9</code><p><b>Clear all recent tasks (command)</b></p></li>
+          <li><code class="v1-id">R10</code><p><b>The task bar counts characters near the 4000 limit</b></p></li>
         </ul>
       </article>
       <article class="v1-cat reveal" data-kind="q">
-        <h3>Cast rail <span class="v1-n">10</span></h3>
+        <h3>Cast rail <span class="v1-n">12</span></h3>
         <ul>
           <li><code class="v1-id">Q16</code><p><b>An agent card's tooltip shows its whole current line</b></p></li>
           <li><code class="v1-id">Q17</code><p><b>An open step list follows the newest step</b></p></li>
@@ -790,10 +855,12 @@
           <li><code class="v1-id">Q23</code><p><b>Collapse the rail to portraits with a button (remembered)</b></p></li>
           <li><code class="v1-id">Q24</code><p><b>Model chips show the full model id on hover</b></p></li>
           <li><code class="v1-id">Q25</code><p><b>The connections pill lists every problem on hover</b></p></li>
+          <li><code class="v1-id">R11</code><p><b>Right-click an agent card for its tab, its steps and the roster</b></p></li>
+          <li><code class="v1-id">R17</code><p><b>The connections pill shows when connections are being checked</b></p></li>
         </ul>
       </article>
       <article class="v1-cat reveal" data-kind="q">
-        <h3>Tabs and address bar <span class="v1-n">14</span></h3>
+        <h3>Tabs and address bar <span class="v1-n">17</span></h3>
         <ul>
           <li><code class="v1-id">Q26</code><p><b>Middle-click closes a tab</b></p></li>
           <li><code class="v1-id">Q27</code><p><b>When the tabs do not fit, the mouse wheel scrolls the tab strip sideways</b></p></li>
@@ -809,6 +876,9 @@
           <li><code class="v1-id">Q37</code><p><b>Copy the page address (<kbd>Ctrl+Shift+C</kbd> or the tab menu)</b></p></li>
           <li><code class="v1-id">Q38</code><p><b>A new tab puts the cursor in the address bar</b></p></li>
           <li><code class="v1-id">Q39</code><p><b>Closing a project's last tab opens its start page again instead of leaving the stage empty</b></p></li>
+          <li><code class="v1-id">R2</code><p><b>Drag tabs to reorder them</b></p></li>
+          <li><code class="v1-id">R3</code><p><b>Pin a tab</b> <span>it stays first and has no close button</span></p></li>
+          <li><code class="v1-id">R18</code><p><b>Middle-click a bookmark in the project menu to open it in a new tab</b></p></li>
         </ul>
       </article>
       <article class="v1-cat reveal" data-kind="q">
@@ -833,7 +903,21 @@
         </ul>
       </article>
       <article class="v1-cat reveal" data-kind="q">
-        <h3>Sheets <span class="v1-n">14</span></h3>
+        <h3>History <span class="v1-n">9</span></h3>
+        <ul>
+          <li><code class="v1-id">R4</code><p><b>History filters by outcome</b></p></li>
+          <li><code class="v1-id">R5</code><p><b>History rows work with the arrow keys and <kbd>Enter</kbd></b></p></li>
+          <li><code class="v1-id">R6</code><p><b>Export the History list as CSV</b></p></li>
+          <li><code class="v1-id">R7</code><p><b>Run details jump to the first problem step</b></p></li>
+          <li><code class="v1-id">R12</code><p><b>Copy a past run's task from its History row</b></p></li>
+          <li><code class="v1-id">R14</code><p><b><kbd>Esc</kbd> in run details goes back to the list</b></p></li>
+          <li><code class="v1-id">R15</code><p><b><kbd>Ctrl+Shift+H</kbd> opens the newest run's details</b></p></li>
+          <li><code class="v1-id">R19</code><p><b>Run again from a History row</b></p></li>
+          <li><code class="v1-id">R20</code><p><b>Timeline bars say how long each step took</b></p></li>
+        </ul>
+      </article>
+      <article class="v1-cat reveal" data-kind="q">
+        <h3>Sheets <span class="v1-n">15</span></h3>
         <ul>
           <li><code class="v1-id">Q51</code><p><b><kbd>Ctrl+S</kbd> saves the project sheet</b></p></li>
           <li><code class="v1-id">Q52</code><p><b>Closing the project sheet with unsaved changes asks first</b></p></li>
@@ -849,10 +933,11 @@
           <li><code class="v1-id">Q62</code><p><b>Removing a connection says which agents use it</b></p></li>
           <li><code class="v1-id">Q63</code><p><b>Saving says so</b></p></li>
           <li><code class="v1-id">Q64</code><p><b>Testing the lead's model shows the response time</b></p></li>
+          <li><code class="v1-id">R8</code><p><b>Duplicate a saved task</b></p></li>
         </ul>
       </article>
       <article class="v1-cat reveal" data-kind="q">
-        <h3>Everywhere <span class="v1-n">16</span></h3>
+        <h3>Everywhere <span class="v1-n">19</span></h3>
         <ul>
           <li><code class="v1-id">Q65</code><p><b>Short notices for saves, copies and errors that go away by themselves</b></p></li>
           <li><code class="v1-id">Q66</code><p><b>A dashboard error shows a Reload button instead of a blank window</b></p></li>
@@ -870,6 +955,9 @@
           <li><code class="v1-id">Q78</code><p><b>Notices and menus follow the motion setting</b></p></li>
           <li><code class="v1-id">Q79</code><p><b>The command list shows each command's shortcut</b></p></li>
           <li><code class="v1-id">Q80</code><p><b>Copy a subtask's evidence from the run details</b></p></li>
+          <li><code class="v1-id">R1</code><p><b>Closing ICARUS during a run asks first</b></p></li>
+          <li><code class="v1-id">R13</code><p><b>Close the lead's tabs after a run (setting)</b></p></li>
+          <li><code class="v1-id">R16</code><p><b>A notice when a scheduled task starts or has to wait</b></p></li>
         </ul>
       </article>
     </div>
@@ -877,11 +965,13 @@
   </section>
 
   <!-- ─── Screens ──────────────────────────────────────────────────────────
-       App screenshots, one per edition: the dark one shows in dark, the
-       light one in light (see shots/README.md for how they are captured).
-         shots/live-view-{dark,light}[-1x].webp     3038 × 1880 (1x: 1519 wide)
-         shots/roster-{dark,light}[-1x].webp        3038 × 1880
-         shots/connections-{dark,light}[-1x].webp   3038 × 1786
+       App screenshots. A pair (shot-dark, shot-light) follows the edition;
+       a single capture shows in both. See shots/README.md for the files.
+         shots/run-{dark,light}[-1x].webp           2280 × 1410 (1x: 1140 wide)
+         shots/plan-review[-1x].webp                2280 × 1410 (Night only)
+         shots/replay[-1x].webp                     1924 × 1190 (Night only, cropped)
+         shots/rail-folded-{dark,light}[-1x].webp   2280 × 1410
+         shots/connections-{dark,light}[-1x].webp   3038 × 1786 (1x: 1519 wide)
        A failed load retries a few times (a dropped connection must not
        leave the frame empty) before the drawn wireframe shows instead.
   ──────────────────────────────────────────────────────────────────────── -->
@@ -890,18 +980,18 @@
     <header class="sec-h split reveal">
       <div>
         <p class="label">Inside the app</p>
-        <h2 id="inside-title">The live view, the roster and the wiring.</h2>
+        <h2 id="inside-title">The live view, and what sits around it.</h2>
       </div>
-      <p>The view the swarm works in, the agents you give it, and the model and MCP servers it runs on.</p>
+      <p>From the v1 build, which arrives with the next Windows release: the swarm at work, the plan before it starts, a run played back. And the models it all runs on.</p>
     </header>
 
     <div class="shots">
       <figure class="shot shot-main reveal">
         <div class="shot-frame pane inked">
-          <div class="peek" aria-hidden="true"><div class="chr" data-who="wing" data-face="happy" data-a="left" style="--s:92px;--r:-10deg;--d:0"><svg class="glyph" style="--c:var(--wing)"><use href="#cur"/></svg></div><p class="bal p" data-tail="bl" style="--x:180%;--y:-10%;--w:220px">That's us, live!</p></div>
+          <div class="peek" aria-hidden="true"><div class="chr" data-who="wing" data-face="happy" data-a="left" style="--s:92px;--r:-10deg;--d:0"><svg class="glyph" style="--c:var(--wing)"><use href="#cur"/></svg></div><p class="bal p" data-tail="bl" style="--x:180%;--y:-10%;--w:220px">That&#8217;s us, live!</p></div>
           <div class="shot-media">
-            <img class="shot-dark" src="shots/live-view-dark-1x.webp" srcset="shots/live-view-dark-1x.webp 1519w, shots/live-view-dark.webp 3038w" sizes="(min-width: 1152px) 1104px, calc(100vw - 48px)" width="3038" height="1880" alt="ICARUS live view: Wing works one order while helpers Gust and Plume take the other two, each in its own tab with its own cursor" loading="lazy" decoding="async" onerror="shotRetry(this)">
-            <img class="shot-light" src="shots/live-view-light-1x.webp" srcset="shots/live-view-light-1x.webp 1519w, shots/live-view-light.webp 3038w" sizes="(min-width: 1152px) 1104px, calc(100vw - 48px)" width="3038" height="1880" alt="ICARUS live view: Wing works one order while helpers Gust and Plume take the other two, each in its own tab with its own cursor" loading="lazy" decoding="async" onerror="shotRetry(this)">
+            <img class="shot-dark" src="shots/run-dark-1x.webp" srcset="shots/run-dark-1x.webp 1140w, shots/run-dark.webp 2280w" sizes="(min-width: 1152px) 1104px, calc(100vw - 48px)" width="2280" height="1410" alt="ICARUS in Night, mid-run and paused: Wing, Wax and Sun each hold one order in its own tab, and the cast rail shows its tool tiles" loading="lazy" decoding="async" onerror="shotRetry(this)">
+            <img class="shot-light" src="shots/run-light-1x.webp" srcset="shots/run-light-1x.webp 1140w, shots/run-light.webp 2280w" sizes="(min-width: 1152px) 1104px, calc(100vw - 48px)" width="2280" height="1410" alt="ICARUS in Day, mid-run: Wing, Wax and Sun type each order&#8217;s reference in their own tabs while the lead watches" loading="lazy" decoding="async" onerror="shotRetry(this)">
             <div class="ph ph-live" aria-hidden="true">
               <div class="ph-top"><i></i><i></i><i></i><i></i><i></i></div>
               <div class="ph-grid"><i></i><i></i><i></i><i></i></div>
@@ -913,21 +1003,53 @@
             </div>
           </div>
         </div>
-        <figcaption><b>Live view</b><span>Wing takes one order; with Wing busy, helpers Gust and Plume join for the other two. One tab each.</span></figcaption>
+        <figcaption><b>Live view</b><span>Wing, Wax and Sun take an order each, every one in its own tab. Pause, live hints and Stop sit on the task bar; the tool tiles sit under the cast.</span></figcaption>
       </figure>
 
       <figure class="shot reveal">
         <div class="shot-frame pane inked">
-          <div class="peek" aria-hidden="true"><div class="chr" data-who="lead" data-face="sparkle" data-a="left" style="--s:92px;--r:-10deg;--d:0"><svg class="glyph" style="--c:var(--lead)"><use href="#cur"/></svg></div><p class="bal p" data-tail="bl" style="--x:180%;--y:-10%;--w:220px">The roster.</p></div>
+          <div class="peek" aria-hidden="true"><div class="chr" data-who="lead" data-face="sparkle" data-a="left" style="--s:92px;--r:-10deg;--d:0"><svg class="glyph" style="--c:var(--lead)"><use href="#cur"/></svg></div><p class="bal p" data-tail="bl" style="--x:180%;--y:-10%;--w:220px">My plan. Your call.</p></div>
           <div class="shot-media">
-            <img class="shot-dark" src="shots/roster-dark-1x.webp" srcset="shots/roster-dark-1x.webp 1519w, shots/roster-dark.webp 3038w" sizes="(min-width: 1152px) 544px, (min-width: 761px) calc(50vw - 32px), calc(100vw - 48px)" width="3038" height="1880" alt="ICARUS Project and roster sheet: Wing, Wax, Sun and Tide with their strengths, connections and MCP tools" loading="lazy" decoding="async" onerror="shotRetry(this)">
-            <img class="shot-light" src="shots/roster-light-1x.webp" srcset="shots/roster-light-1x.webp 1519w, shots/roster-light.webp 3038w" sizes="(min-width: 1152px) 544px, (min-width: 761px) calc(50vw - 32px), calc(100vw - 48px)" width="3038" height="1880" alt="ICARUS Project and roster sheet: Wing, Wax, Sun and Tide with their strengths, connections and MCP tools" loading="lazy" decoding="async" onerror="shotRetry(this)">
+            <img src="shots/plan-review-1x.webp" srcset="shots/plan-review-1x.webp 1140w, shots/plan-review.webp 2280w" sizes="(min-width: 1152px) 544px, (min-width: 761px) calc(50vw - 32px), calc(100vw - 48px)" width="2280" height="1410" alt="ICARUS Review the plan sheet: the lead&#8217;s three subtasks, one per order, each with its instructions and its agent, before anything runs" loading="lazy" decoding="async" onerror="shotRetry(this)">
             <div class="ph ph-list" aria-hidden="true">
               <i style="--c:var(--lead)"></i><i style="--c:var(--wing)"></i><i style="--c:var(--wax)"></i><i style="--c:var(--sun)"></i><i style="--c:var(--tide)"></i>
             </div>
           </div>
         </div>
-        <figcaption><b>Roster</b><span>Each agent's strength, its connection and the MCP tools it may use.</span></figcaption>
+        <figcaption><b>Review the plan</b><span>Read the lead&#8217;s subtasks before anything runs, change them or hand one to another agent, then start.</span></figcaption>
+      </figure>
+
+      <figure class="shot reveal">
+        <div class="shot-frame pane inked">
+          <div class="peek" aria-hidden="true"><div class="chr" data-who="wax" data-face="happy" data-a="left" style="--s:92px;--r:-10deg;--d:0"><svg class="glyph" style="--c:var(--wax)"><use href="#cur"/></svg></div><p class="bal p" data-tail="bl" style="--x:180%;--y:-10%;--w:220px">Again, at 4&#215;!</p></div>
+          <div class="shot-media">
+            <img src="shots/replay-1x.webp" srcset="shots/replay-1x.webp 962w, shots/replay.webp 1924w" sizes="(min-width: 1152px) 544px, (min-width: 761px) calc(50vw - 32px), calc(100vw - 48px)" width="1924" height="1190" alt="ICARUS Run details for a stopped run: Run again, Retry 2 unfinished, and the replay scrubber playing the run back at four times speed" loading="lazy" decoding="async" onerror="shotRetry(this)">
+            <div class="ph ph-conn" aria-hidden="true">
+              <div><i></i><i></i><i></i></div><div><i></i><i></i><i></i><i></i></div>
+            </div>
+          </div>
+        </div>
+        <figcaption><b>Run details and replay</b><span>Run it again, retry only what did not finish, or play it back step by step.</span></figcaption>
+      </figure>
+
+      <figure class="shot reveal">
+        <div class="shot-frame pane inked">
+          <div class="peek" aria-hidden="true"><div class="chr" data-who="sun" data-face="cool" data-a="left" style="--s:92px;--r:-10deg;--d:0"><svg class="glyph" style="--c:var(--sun)"><use href="#cur"/></svg></div><p class="bal p" data-tail="bl" style="--x:180%;--y:-10%;--w:220px">Room to work.</p></div>
+          <div class="shot-media">
+            <img class="shot-dark" src="shots/rail-folded-dark-1x.webp" srcset="shots/rail-folded-dark-1x.webp 1140w, shots/rail-folded-dark.webp 2280w" sizes="(min-width: 1152px) 544px, (min-width: 761px) calc(50vw - 32px), calc(100vw - 48px)" width="2280" height="1410" alt="ICARUS in Night with the cast rail folded to portraits: all three orders verified, each on its own page" loading="lazy" decoding="async" onerror="shotRetry(this)">
+            <img class="shot-light" src="shots/rail-folded-light-1x.webp" srcset="shots/rail-folded-light-1x.webp 1140w, shots/rail-folded-light.webp 2280w" sizes="(min-width: 1152px) 544px, (min-width: 761px) calc(50vw - 32px), calc(100vw - 48px)" width="2280" height="1410" alt="ICARUS in Day with the cast rail folded to portraits: all three orders verified, each on its own page" loading="lazy" decoding="async" onerror="shotRetry(this)">
+            <div class="ph ph-live" aria-hidden="true">
+              <div class="ph-top"><i></i><i></i><i></i><i></i><i></i></div>
+              <div class="ph-grid"><i></i><i></i><i></i><i></i></div>
+              <div class="ph-dock"><i></i><i></i></div>
+              <svg class="glyph ph-cur" style="--c:var(--wing);left:30%;top:32%"><use href="#cur"/></svg>
+              <svg class="glyph ph-cur" style="--c:var(--wax);left:74%;top:38%"><use href="#cur"/></svg>
+              <svg class="glyph ph-cur" style="--c:var(--sun);left:22%;top:66%"><use href="#cur"/></svg>
+              <svg class="glyph ph-cur" style="--c:var(--tide);left:66%;top:70%"><use href="#cur"/></svg>
+            </div>
+          </div>
+        </div>
+        <figcaption><b>Folded rail</b><span>Fold the cast to portraits and the stage gets the room. All three orders here are verified on their own pages.</span></figcaption>
       </figure>
 
       <figure class="shot reveal">

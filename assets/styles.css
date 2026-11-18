@@ -3177,3 +3177,38 @@ body::before { display: none; }
   .v1-search input { width: 100%; }
   .v1-filter { flex-wrap: wrap; }
 }
+
+/* The finishing touches: a pinned note under the two counters, its title a
+   gold tab like the app's own section tabs. Not part of the counted list. */
+.v1-touches {
+  position: relative;
+  margin-top: 36px; padding: 32px 24px 20px;
+  background: var(--card);
+  border: 3px solid var(--ink); border-radius: 18px;
+  box-shadow: 6px 6px 0 var(--ink);
+}
+.v1-touches h3 {
+  position: absolute; top: -18px; left: 20px;
+  padding: 6px 12px;
+  background: var(--gold); color: #17122a;
+  border: 2.5px solid var(--ink); border-radius: 10px;
+  box-shadow: 3px 3px 0 var(--ink);
+  rotate: -2deg;
+  font: 800 15px/1.2 var(--font-comic);
+}
+.v1-touches ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 24px; margin: 0; padding: 0; list-style: none; }
+.v1-touches li { position: relative; padding-left: 24px; font-size: 15px; line-height: 1.5; color: var(--text-dim); }
+.v1-touches li::before {
+  content: ""; position: absolute; left: 0; top: 5px;
+  width: 12px; height: 12px;
+  background: var(--sky); border: 2px solid var(--ink); border-radius: 3px;
+  rotate: 12deg;
+}
+.v1-touches li:nth-child(3n + 2)::before { background: var(--gold); rotate: -10deg; }
+.v1-touches li:nth-child(3n)::before { background: var(--rose); rotate: 4deg; }
+.v1-touches li b { display: block; color: var(--text); font-weight: 700; }
+@media (max-width: 1000px) { .v1-touches ul { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) {
+  .v1-touches { padding: 32px 16px 16px; }
+  .v1-touches ul { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+}
