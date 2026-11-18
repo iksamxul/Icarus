@@ -3053,3 +3053,30 @@ body::before { display: none; }
 :root[data-vt="iris"]::view-transition-new(root) { animation: iris-open 0.44s cubic-bezier(0.25, 0.75, 0.45, 1) 0.3s both; }
 @keyframes iris-close { from { clip-path: circle(150% at var(--ix, 50%) var(--iy, 50%)); } to { clip-path: circle(0 at var(--ix, 50%) var(--iy, 50%)); } }
 @keyframes iris-open { from { clip-path: circle(0 at 50% 45%); } to { clip-path: circle(150% at 50% 45%); } }
+/* Phones: the live stage's action labels stay small enough not to pile up. */
+@media (max-width: 600px) {
+  .cur-l { font-size: 11px; padding: 3px 7px; border-width: 1px; }
+}
+
+/* Nav hints: a speech balloon under the chapter link you point at. */
+.nav-hint {
+  position: fixed; z-index: 61; left: 0; top: 0;
+  translate: -50% 0;
+  padding: 8px 14px 9px;
+  background: #ffffff; color: #17122a;
+  border: 2.5px solid var(--ink); border-radius: 14px;
+  box-shadow: 3px 3px 0 var(--ink);
+  font: 800 13px/1.2 var(--font-comic);
+  white-space: nowrap; pointer-events: none;
+  opacity: 0; scale: 0.7; transform-origin: 50% 0;
+  transition: opacity 0.15s ease, scale 0.25s cubic-bezier(0.2, 1.5, 0.4, 1);
+}
+.nav-hint::before {
+  content: ""; position: absolute; left: 50%; top: -9px;
+  width: 14px; height: 14px; translate: -50% 0; rotate: 45deg;
+  background: #ffffff;
+  border-left: 2.5px solid var(--ink); border-top: 2.5px solid var(--ink);
+  border-top-left-radius: 3px;
+}
+.nav-hint.on { opacity: 1; scale: 1; }
+@media (prefers-reduced-motion: reduce) { .nav-hint { scale: 1; transition: opacity 0.15s ease; } }

@@ -620,6 +620,7 @@ function prologue(section) {
 
   let progress = parseFloat(section.dataset.p || '0') || 0;
   let fitR = 160;
+  let near = 0.42; // how close the cover starts, as a share of the wings' distance
   let pointer = 0;
   let pointerTo = 0;
 
@@ -659,7 +660,7 @@ function prologue(section) {
 
     pointer += (pointerTo - pointer) * 0.06;
     const ang = 0.46 * (1 - k) - 0.05 + pointer * 0.1 + (still ? 0 : Math.sin(t * 0.15) * 0.03);
-    const R = fitR * (0.42 + 0.58 * k + 0.06 * up);
+    const R = fitR * (near + (1 - near) * k + 0.06 * up);
     coverLook.set(lead.position.x, lead.position.y - 2, lead.position.z);
     wingLook.set(0, 2 + climb * 0.7, -back * 0.5);
     look.copy(coverLook).lerp(wingLook, k);
@@ -691,6 +692,7 @@ function prologue(section) {
     else camera.clearViewOffset();
     const halfH = Math.atan(Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect);
     fitR = 80 / (tall ? 0.96 : 0.85) / Math.tan(halfH) / (wide ? 0.62 : 1);
+    near = tall ? 0.54 : 0.42; // a phone's cover leaves room for the words under it
   }
 
   let visible = false;

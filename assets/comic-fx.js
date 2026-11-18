@@ -126,6 +126,40 @@
     });
   }
 
+  /* ── Nav hints: a little balloon under each chapter link ─────────── */
+
+  const HINTS = {
+    prologue: '24 cursors, one pair of wings',
+    story: 'Episode 1: The Lamp',
+    how: 'One task, many small jobs',
+    features: 'Local models, real input',
+    inside: 'The real app, live',
+  };
+  if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    const hint = document.createElement('div');
+    hint.className = 'nav-hint';
+    hint.setAttribute('aria-hidden', 'true');
+    document.body.append(hint);
+    const show = (a) => {
+      const text = HINTS[a.getAttribute('href').slice(1)];
+      if (!text) return;
+      hint.textContent = text;
+      const r = a.getBoundingClientRect();
+      hint.style.left = `${Math.round(r.left + r.width / 2)}px`;
+      hint.style.top = `${Math.round(r.bottom + 14)}px`;
+      hint.classList.add('on');
+    };
+    const hide = () => hint.classList.remove('on');
+    document.querySelectorAll('.nav-links a[href^="#"]').forEach((a) => {
+      a.addEventListener('pointerenter', () => show(a));
+      a.addEventListener('pointerleave', hide);
+      a.addEventListener('focus', () => show(a));
+      a.addEventListener('blur', hide);
+      a.addEventListener('click', hide);
+    });
+    window.addEventListener('scroll', hide, { passive: true });
+  }
+
   if (still()) return; // the rest only matters when the comic moves
 
   /* ── 3. Titles that slam in ──────────────────────────────────────── */
