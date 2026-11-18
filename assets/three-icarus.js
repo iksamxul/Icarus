@@ -8,11 +8,13 @@
       stalls, which makes every character a crisp 3D asset that costs
       nothing per frame.
    2. The prologue. A live scene at the app's real limit, the lead and 24
-      agents, that drifts as a loose cloud and gathers into a pair of wings
-      as you scroll. It renders only while on screen and the tab is visible,
-      caps the pixel ratio, and marks itself running so the glass nav steps
-      aside: nothing moves behind glass. With reduced motion it draws one
-      still frame.
+      agents: a flock in three layers flying the lead's way, under a comic
+      sun with a face and paper clouds, that folds into a pair of feathered
+      wings as you scroll. Every arrow faces the reader and keeps an even ink
+      line, and on the way to the wings no two ever pass through each other.
+      It renders only while on screen and the tab is visible, caps the pixel
+      ratio, and marks itself running so the glass nav steps aside: nothing
+      moves behind glass. With reduced motion it draws one still frame.
 
    Without WebGL nothing breaks: the flat cursors stay, the comic shows its
    flat characters, and the prologue keeps its words. */
@@ -51,7 +53,7 @@ const ARROW = [[5, 3.2], [5, 19.1], [9.4, 15.3], [12.3, 21.5], [15.3, 20.1], [12
 const DEPTH = 1.3;
 const BEVEL = 0.5;
 
-function arrowGeometry(segments, grow = 0) {
+function arrowGeometry(segments, grow = 0, size = 0.4) {
   const shape = new THREE.Shape();
   ARROW.forEach(([x, y], i) => (i ? shape.lineTo(x - 5, 3.2 - y) : shape.moveTo(x - 5, 3.2 - y)));
   shape.closePath();
@@ -59,7 +61,7 @@ function arrowGeometry(segments, grow = 0) {
   // used for the ink outline.
   return new THREE.ExtrudeGeometry(shape, {
     depth: DEPTH, bevelEnabled: true,
-    bevelThickness: BEVEL + grow * 0.7, bevelSize: 0.4 + grow,
+    bevelThickness: BEVEL + grow * 0.7, bevelSize: size + grow,
     bevelSegments: segments, curveSegments: 1,
   });
 }
@@ -467,32 +469,132 @@ async function cast() {
 /* ── 2. The opening: the lead, the sun, and a swarm that becomes wings ─ */
 
 // A comic ray burst for behind the sun, drawn once on a canvas.
-function burstTexture() {
-  const c = document.createElement('canvas');
-  c.width = c.height = 512;
-  const g = c.getContext('2d');
-  g.translate(256, 256);
-  const n = 32;
-  for (let i = 0; i < n; i += 1) {
-    g.rotate((Math.PI * 2) / n);
-    g.beginPath();
-    g.moveTo(0, 0);
-    g.lineTo(260, -18);
-    g.lineTo(260, 18);
-    g.closePath();
-    g.fillStyle = i % 2 ? 'rgba(255, 200, 61, 0.6)' : 'rgba(255, 138, 31, 0.38)';
-    g.fill();
+/* ── The opening: ink, clouds and the sun's rays ───────────────────── */
+
+// An even ink line: a back-face shell pushed out along smoothed normals by a
+// constant amount, so it never thins or thickens as the shape turns (a grown
+// copy of the shape does).
+function inkGeometry(source) {
+  const g = source.index ? source.toNonIndexed() : source.clone();
+  if (g.attributes.uv) g.deleteAttribute('uv');
+  const pos = g.attributes.position;
+  const key = (i) => `${Math.round(pos.getX(i) * 1000)},${Math.round(pos.getY(i) * 1000)},${Math.round(pos.getZ(i) * 1000)}`;
+  const sums = new Map();
+  const a = new THREE.Vector3();
+  const b = new THREE.Vector3();
+  const c = new THREE.Vector3();
+  for (let i = 0; i < pos.count; i += 3) {
+    a.fromBufferAttribute(pos, i);
+    b.fromBufferAttribute(pos, i + 1).sub(a);
+    c.fromBufferAttribute(pos, i + 2).sub(a);
+    const n = b.cross(c); // weighted by the triangle's area
+    for (let j = 0; j < 3; j += 1) {
+      const kk = key(i + j);
+      const sum = sums.get(kk);
+      if (sum) sum.add(n);
+      else sums.set(kk, n.clone());
+    }
   }
-  g.globalCompositeOperation = 'destination-in';
-  const fade = g.createRadialGradient(0, 0, 70, 0, 0, 256);
-  fade.addColorStop(0, 'rgba(0, 0, 0, 1)');
-  fade.addColorStop(1, 'rgba(0, 0, 0, 0)');
-  g.fillStyle = fade;
-  g.fillRect(-256, -256, 512, 512);
-  const t = new THREE.CanvasTexture(c);
-  t.colorSpace = THREE.SRGBColorSpace;
-  return t;
+  const normals = new Float32Array(pos.count * 3);
+  for (let i = 0; i < pos.count; i += 1) {
+    const n = sums.get(key(i)).clone().normalize();
+    normals[i * 3] = n.x;
+    normals[i * 3 + 1] = n.y;
+    normals[i * 3 + 2] = n.z;
+  }
+  g.setAttribute('normal', new THREE.BufferAttribute(normals, 3));
+  return g;
 }
+
+function inkMaterial(width) {
+  const m = new THREE.MeshBasicMaterial({ color: INK, side: THREE.BackSide });
+  m.onBeforeCompile = (shader) => {
+    shader.uniforms.inkWidth = { value: width };
+    shader.vertexShader = `uniform float inkWidth;\n${shader.vertexShader.replace(
+      '#include <begin_vertex>',
+      '#include <begin_vertex>\n\ttransformed += normalize( normal ) * inkWidth;',
+    )}`;
+  };
+  return m;
+}
+
+// A paper-cut cloud: bumps (x, y, r) on a flat base, cut out and puffed.
+function cloudGeometry(bumps) {
+  const left = Math.min(...bumps.map(([x, , r]) => x - r));
+  const right = Math.max(...bumps.map(([x, , r]) => x + r));
+  const top = (x) => bumps.reduce((y, [cx, cy, r]) => {
+    const dx = x - cx;
+    return Math.abs(dx) < r ? Math.max(y, cy + Math.sqrt(r * r - dx * dx)) : y;
+  }, 0);
+  const shape = new THREE.Shape();
+  shape.moveTo(left, 0);
+  const steps = 64;
+  for (let i = 1; i < steps; i += 1) {
+    const x = left + ((right - left) * i) / steps;
+    shape.lineTo(x, top(x));
+  }
+  shape.lineTo(right, 0);
+  shape.closePath();
+  const g = new THREE.ExtrudeGeometry(shape, {
+    depth: 2.4, bevelEnabled: true, bevelThickness: 0.9, bevelSize: 0.7, bevelSegments: 2, curveSegments: 1,
+  });
+  g.center();
+  return g;
+}
+
+// A comic twinkle: a four-pointed star with curved sides.
+function twinkleGeometry() {
+  const shape = new THREE.Shape();
+  const steps = 48;
+  for (let j = 0; j <= steps; j += 1) {
+    const a = (j / steps) * Math.PI * 2;
+    const r = 0.55 + 2.45 * Math.pow(Math.abs(Math.cos(a * 2)), 6);
+    if (j === 0) shape.moveTo(Math.cos(a) * r, Math.sin(a) * r);
+    else shape.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+  }
+  const g = new THREE.ExtrudeGeometry(shape, {
+    depth: 0.5, bevelEnabled: true, bevelThickness: 0.2, bevelSize: 0.12, bevelSegments: 1, curveSegments: 1,
+  });
+  g.translate(0, 0, -0.25);
+  return g;
+}
+
+/* ── The opening ───────────────────────────────────────────────────── */
+
+// The flock on the cover, in units at the lead's depth on screen (x right,
+// y up, the lead's centre at 0, 0): 5 near, 8 mid, 11 far, all flying the
+// lead's way. Laid out in 2D so each arrow clears the lead, the sun, the
+// words and its neighbours; the far ones may run off the panel's edge.
+const FLOCK = {
+  wide: [[-8.3, -19.5], [2.6, -27.0], [15.2, -22.8], [19.0, -10.1], [19.0, 3.1], [-18.5, -25.9], [-8.6, -31.6], [2.7, -39.1], [12.6, -34.6], [26.1, -27.9], [28.7, -17.4], [30.5, -6.4], [31.1, 4.5], [-19.5, -35.7], [-13.0, -41.6], [-5.0, -45.2], [8.9, -46.8], [17.0, -43.4], [23.3, -37.3], [35.8, -26.1], [38.5, -17.8], [39.9, -9.1], [40.5, 1.7], [38.5, 11.0]],
+  tall: [[20.4, -3.3], [15.5, 9.4], [-3.4, 25.2], [-20.5, 18.1], [-21.6, 0.5], [32.5, 0.1], [27.3, 13.4], [9.4, 20.3], [7.1, 31.6], [-13.2, 32.8], [-24.4, 30.0], [-31.0, 11.2], [-34.1, 0.2], [41.5, -5.4], [39.1, 8.2], [36.0, 19.3], [12.5, 41.1], [2.8, 41.1], [-6.7, 41.1], [-19.7, 41.1], [-33.0, 36.0], [-33.4, 22.4], [-41.1, 8.5], [-42.1, -6.7]],
+};
+// Depth behind the lead and size for each layer: the farther, the smaller.
+const LAYERS = [{ n: 5, d: 8, s: 0.66 }, { n: 8, d: 26, s: 0.575 }, { n: 11, d: 46, s: 0.485 }];
+// The sun: high in the corner on the cover, its rays running off the panel
+// (x, y, depth behind the lead, size); then behind Icarus once the wings are
+// out, growing as he climbs. The page's comic rays fan out from it.
+const SUN_AT = { wide: [27, 21, 110, 1.9], tall: [22, 30, 110, 1.4] };
+const SUN_WING = { wide: [0, 64, 200, 2.0], tall: [0, 62, 200, 1.7] };
+// Clouds: x, y, depth, size, shape. They sit behind the flock, one just in
+// front of the sun.
+const CLOUD_SHAPES = [
+  [[-9, 3, 5], [-2, 6, 7.5], [6.5, 4, 6], [12, 2, 4]],
+  [[-6, 2.5, 4.5], [0.5, 5, 6.5], [7, 3, 5]],
+  [[-7, 2, 4], [-1, 4.5, 5.5], [5, 3.5, 5], [10, 1.8, 3.6]],
+];
+const CLOUDS = {
+  wide: [[18, 11, 70, 0.85, 1], [-10, 28, 70, 0.75, 2], [36, -22, 66, 0.8, 0]],
+  tall: [[14, 21, 70, 0.7, 1], [-30, 34, 70, 0.6, 2], [-38, -10, 60, 0.6, 0], [38, -14, 40, 0.55, 2]],
+};
+// Wings: per side 5 inner and 7 outer feathers fanned from the shoulder,
+// as angles on the left (degrees, 90 up, 180 out); the roster takes the top
+// (leading) feather of each ring. An arrow is 14 units across its heading,
+// so each ring's spacing (radius x angle) leaves a small gap between them.
+const INNER = [105, 128.5, 152, 175.5, 199];
+const OUTER = [100, 115, 130, 145, 160, 175, 190];
+const SLOTS = [['i', 0], ['o', 0], ['i', 1], ['o', 1], ['i', 2], ['o', 2], ['i', 3], ['o', 3], ['i', 4], ['o', 4], ['o', 5], ['o', 6]];
+const TIP = 126.4; // the arrow's own heading in its plane, degrees
 
 function prologue(section) {
   // Size the stage first: the canvas measures it.
@@ -503,30 +605,31 @@ function prologue(section) {
   const scene = new THREE.Scene();
   toonLights(scene);
   const camera = new THREE.PerspectiveCamera(34, 1, 1, 1400);
+  const aim = new THREE.PerspectiveCamera(); // the camera's base framing, for the page's rays
+  const sunScreen = new THREE.Vector3();
+  const pin = canvas.parentElement;
+  let sunX = -1;
+  let sunY = -1;
   const ramp = rampTexture();
-  const inkMat = new THREE.MeshBasicMaterial({ color: INK, side: THREE.BackSide });
+  const UP = new THREE.Vector3(0, 1, 0);
+  const D2R = Math.PI / 180;
 
-  // Seeded randomness: the same cloud on every visit.
+  // Seeded randomness: the same flock on every visit.
   let seed = 7;
   const rand = () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
 
-  // The swarm: one instanced body and one ink shell sharing matrices.
-  const geo = arrowGeometry(3);
-  const shell = arrowGeometry(3, 0.6);
-  for (const g of [geo, shell]) g.translate(-6.75, 9.15, -(DEPTH / 2)); // spin about the middle
-  const N = 25; // the lead's place + 24 agents, the most the app runs at once
+  // The flock: one instanced body and one ink shell sharing matrices.
+  const N = 24; // the most agents the app runs at once
+  // A slim bevel: a wide one spikes out at the arrowhead's sharp corners.
+  const geo = arrowGeometry(3, 0, 0.16);
+  geo.translate(-6.75, 9.15, -(DEPTH / 2)); // turn about the middle
   const mesh = new THREE.InstancedMesh(geo, new THREE.MeshToonMaterial({ color: '#ffffff', gradientMap: ramp }), N);
-  const ink = new THREE.InstancedMesh(shell, inkMat, N);
-  ink.instanceMatrix = mesh.instanceMatrix; // one set of matrices for body and outline
-  scene.add(ink, mesh);
-  // Index 0 is the lead's place between the wings; the lead itself is its
-  // own mesh below, wearing its face. 1..4 the roster, then helpers in the
-  // app's own colour order.
-  const palette = [COLORS.lead, FIXED[0], FIXED[1], FIXED[2], FIXED[3]];
-  for (let i = 5; i < N; i += 1) palette.push(agentColor(i + 1));
+  const ink = new THREE.InstancedMesh(inkGeometry(geo), inkMaterial(0.85), N);
+  ink.instanceMatrix = mesh.instanceMatrix;
+  mesh.frustumCulled = false; // they fly well past where they started
+  ink.frustumCulled = false;
   const color = new THREE.Color();
-  for (let i = 0; i < N; i += 1) mesh.setColorAt(i, color.set(palette[i]));
-  const hidden = new THREE.Matrix4().makeScale(0, 0, 0);
+  scene.add(ink, mesh);
 
   // The lead, with its face painted on the front cap.
   const face = faceCanvas();
@@ -540,80 +643,360 @@ function prologue(section) {
   const lead = new THREE.Group();
   lead.add(
     new THREE.Mesh(leadGeo, [new THREE.MeshToonMaterial({ map: face.tex, gradientMap: ramp }), leadSide]),
-    new THREE.Mesh(leadShell, inkMat),
+    new THREE.Mesh(leadShell, new THREE.MeshBasicMaterial({ color: INK, side: THREE.BackSide })),
   );
   lead.scale.setScalar(1.7);
   scene.add(lead);
 
-  // The sun: a toon sphere with an ink rim, a slow comic burst behind it.
-  const SUN_R = 34;
+  // The sun, one of the cast: a lemon-gold ball with a bold ink rim, an
+  // inker's shine and a content face, ringed by sculpted toon rays, with a
+  // few twinkles. It faces the camera, as a sun in a comic does.
+  const SUN_R = 10.5;
   const sun = new THREE.Group();
+  const flat = (hex) => new THREE.MeshToonMaterial({ color: hex, gradientMap: ramp });
+  const inked = (geom, mat, width, z, parent = sun) => {
+    const g = new THREE.Group();
+    g.add(new THREE.Mesh(inkGeometry(geom), inkMaterial(width)), new THREE.Mesh(geom, mat));
+    g.position.z = z;
+    parent.add(g);
+    return g;
+  };
+  // Twelve rays, long and short, each a real cone so it takes the light.
+  const rays = new THREE.Group();
+  sun.add(rays);
+  const zAxis = new THREE.Vector3(0, 0, 1);
+  for (let i = 0; i < 12; i += 1) {
+    const long = i % 2 === 0;
+    const h = long ? 9.5 : 6.2;
+    const a = (i / 12) * Math.PI * 2;
+    const g = inked(new THREE.ConeGeometry(long ? 2.5 : 2.1, h, 24, 1), flat(long ? '#ffc23d' : '#ff9a3d'), 0.45, -1.2, rays);
+    g.position.set(Math.cos(a) * (SUN_R * 1.08 + h / 2), Math.sin(a) * (SUN_R * 1.08 + h / 2), -1.2);
+    g.quaternion.setFromAxisAngle(zAxis, a - Math.PI / 2);
+  }
+  const ball = new THREE.SphereGeometry(SUN_R, 48, 32);
   sun.add(
-    new THREE.Mesh(new THREE.SphereGeometry(SUN_R * 1.035, 48, 32), inkMat),
-    new THREE.Mesh(
-      new THREE.SphereGeometry(SUN_R, 64, 48),
-      new THREE.MeshToonMaterial({ color: '#ffc83d', gradientMap: ramp, emissive: new THREE.Color('#ff8a1f'), emissiveIntensity: 0.32 }),
-    ),
+    new THREE.Mesh(ball, inkMaterial(1.0)),
+    new THREE.Mesh(ball, new THREE.MeshToonMaterial({ color: '#ffd23f', gradientMap: ramp, emissive: new THREE.Color('#ff9a1f'), emissiveIntensity: 0.3 })),
   );
-  sun.position.set(18, 26, -92);
+  // The shine: a crisp white stroke and a dot on the upper left.
+  const white = new THREE.MeshBasicMaterial({ color: '#fffbea' });
+  const shine = new THREE.Mesh(new THREE.TorusGeometry(SUN_R * 0.66, 0.62, 8, 28, 1.0), white);
+  shine.position.z = SUN_R * 0.78;
+  shine.rotation.z = 1.95;
+  const dot = new THREE.Mesh(new THREE.CircleGeometry(0.85, 20), white);
+  dot.position.set(-SUN_R * 0.62, SUN_R * 0.08, SUN_R * 0.8);
+  sun.add(shine, dot);
+  {
+    // The face: content, eyes closed, a small smile and blush, like the cast.
+    const fc = document.createElement('canvas');
+    fc.width = fc.height = 256;
+    const g = fc.getContext('2d');
+    g.lineCap = 'round';
+    g.strokeStyle = INK;
+    g.lineWidth = 11;
+    for (const x of [92, 164]) { g.beginPath(); g.arc(x, 118, 19, Math.PI * 1.1, Math.PI * 1.9); g.stroke(); }
+    g.beginPath(); g.arc(128, 142, 26, Math.PI * 0.18, Math.PI * 0.82); g.stroke();
+    g.fillStyle = 'rgba(255, 95, 120, 0.55)';
+    for (const x of [70, 186]) { g.beginPath(); g.ellipse(x, 150, 18, 10, 0, 0, Math.PI * 2); g.fill(); }
+    const tex = new THREE.CanvasTexture(fc);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    const sunFace = new THREE.Mesh(new THREE.CircleGeometry(SUN_R * 0.9, 48), new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false }));
+    sunFace.position.z = SUN_R * 1.002;
+    sun.add(sunFace);
+  }
+  const twinkle = twinkleGeometry();
+  const twinkles = [[38, 2.25, 1], [152, 2.35, 0.75], [232, 2.25, 0.9], [318, 2.4, 0.65]].map(([deg, r, size], n) => {
+    const g = inked(twinkle, new THREE.MeshBasicMaterial({ color: '#fffbea' }), 0.35, 0.5);
+    g.position.set(Math.cos(deg * D2R) * SUN_R * r, Math.sin(deg * D2R) * SUN_R * r, 0.5);
+    g.userData = { size, phase: n * 1.7 };
+    return g;
+  });
   scene.add(sun);
-  const burst = new THREE.Mesh(
-    new THREE.PlaneGeometry(SUN_R * 5.6, SUN_R * 5.6),
-    new THREE.MeshBasicMaterial({ map: burstTexture(), transparent: true, depthWrite: false }),
-  );
-  burst.position.copy(sun.position).add(new THREE.Vector3(0, 0, -SUN_R * 1.4));
-  scene.add(burst);
 
-  const cloud = [];
-  const wing = [];
-  const spinA = [];
-  const spinB = [];
-  const formQ = [];
-  const scaleOf = [];
-  const e = new THREE.Euler();
+  // Clouds: paper cut-outs, ink edged, coloured for Night or Day.
+  const cloudMat = new THREE.MeshToonMaterial({ color: '#55499e', gradientMap: ramp });
+  const cloudInk = inkMaterial(0.55);
+  const cloudGeos = CLOUD_SHAPES.map((b) => { const g = cloudGeometry(b); return [g, inkGeometry(g)]; });
+  const clouds = [0, 1, 2, 3].map(() => {
+    const c = new THREE.Group();
+    c.add(new THREE.Mesh(cloudGeos[0][1], cloudInk), new THREE.Mesh(cloudGeos[0][0], cloudMat));
+    scene.add(c);
+    return c;
+  });
+  const paintClouds = () => cloudMat.color.set(root.dataset.theme === 'light' ? '#ffffff' : '#55499e');
+  paintClouds();
+
+  // Wings: the feather slots, relative to the lead. Slots 0-3 are the
+  // leading edge, where the roster flies; each slot keeps its agent's colour.
+  const wingSide = [];
+  const wingAng = [];
+  const wingR = [];
+  const wingZ = [];
+  const wingS = [];
+  const slotOf = []; // which slot each arrow on the cover flies to
   for (let i = 0; i < N; i += 1) {
-    const r = 46 + rand() * 70;
-    const a = rand() * Math.PI * 2;
-    // Between the lead and the sun's near side (the sun spans z -126..-58):
-    // behind the lead's face, never inside the sun.
-    // and leaning away from the words on the left.
-    const cx = Math.cos(a) * r * 1.3;
-    cloud.push(new THREE.Vector3(cx < 0 ? cx * 0.55 : cx, (rand() - 0.5) * 62 + 2, -12 - rand() * 36));
-    spinA.push(new THREE.Quaternion().setFromEuler(e.set(rand() * 6.3, rand() * 6.3, rand() * 6.3)));
-    spinB.push(new THREE.Vector3(rand() - 0.5, rand() - 0.5, rand() - 0.5).normalize());
-    scaleOf.push(i <= 4 ? 1.25 : 1.05);
+    const side = i % 2 === 0 ? -1 : 1;
+    const j = Math.floor(i / 2);
+    const [ring, n] = SLOTS[j];
+    wingSide.push(side);
+    wingAng.push((ring === 'i' ? INNER : OUTER)[n]);
+    wingR.push(ring === 'i' ? 28 : 50);
+    wingZ.push((ring === 'i' ? -4 : -9) - n * 0.5);
+    wingS.push(ring === 'i' ? 0.8 : 0.92);
   }
-  // Wings: twelve feathers a side, the roster on the leading edge.
-  wing.push(new THREE.Vector3(0, 6, 6));
-  formQ.push(new THREE.Quaternion().setFromEuler(e.set(0.1, 0, 0.12)));
-  const perSide = (N - 1) / 2;
-  const cols = 6;
-  const rows = Math.ceil(perSide / cols);
-  for (let k = 0; k < N - 1; k += 1) {
-    const side = k % 2 === 0 ? -1 : 1;
-    const j = Math.floor(k / 2);
-    const row = Math.floor(j / cols);
-    const col = j % cols;
-    const u = (col + 0.5) / cols;
-    const w = rows > 1 ? row / (rows - 1) : 0;
-    const x = side * (7 + u * 62);
-    const y = 10 + Math.sin(u * Math.PI * 0.85) * 16 - u * u * 10 - w * (6 + 20 * (1 - u * 0.55));
-    const z = -u * 14 - w * 5;
-    wing.push(new THREE.Vector3(x, y, z));
-    const lean = side * (0.5 + u * 0.7) - side * w * 0.25;
-    formQ.push(new THREE.Quaternion().setFromEuler(e.set(0.15, side > 0 ? Math.PI : 0, side > 0 ? lean : -lean)));
-  }
-  // On the cover the lead turns three-quarters to the reader, face first.
-  const coverQ = new THREE.Quaternion().setFromEuler(e.set(-0.16, 0.34, 0.1));
 
+  // The cover: each agent's place and pose, the clouds and the sun, laid out
+  // for the camera's first framing. Redone only when that framing changes.
+  const lead0 = new THREE.Vector3(0, 6, 6);
+  const cover = Array.from({ length: N }, () => new THREE.Vector3());
+  const coverQ = Array.from({ length: N }, () => new THREE.Quaternion());
+  const scaleOf = [];
+  const phase = [];
+  const flight = new THREE.Vector3();
+  const sunCover = new THREE.Vector3();
+  const sunWing = new THREE.Vector3();
+  let sunSize = 1;
+  let sunWingSize = 1;
+  const cloudAt = [];
+  const cloudR = [];
   const m4 = new THREE.Matrix4();
+  const e = new THREE.Euler();
+  const qj = new THREE.Quaternion();
+
+  function viewFrom(k) {
+    // The camera where draw() puts it at the start (k = 0) or with the wings
+    // formed (k = 1), before the pointer and the slow sway.
+    const ang = 0.46 * (1 - k) - 0.05;
+    const R = fitR * (near + (1 - near) * k);
+    const look = k ? new THREE.Vector3(0, 2, 0) : new THREE.Vector3(lead0.x, lead0.y - 2, lead0.z);
+    const eye = new THREE.Vector3(look.x + Math.sin(ang) * R, look.y + 8 + 12 * (1 - k), look.z + Math.cos(ang) * R);
+    const f = look.clone().sub(eye).normalize();
+    const r = new THREE.Vector3().crossVectors(f, UP).normalize();
+    return { eye, f, r, u: new THREE.Vector3().crossVectors(r, f) };
+  }
+  // The point that shows (x, y) units from the lead on screen, d units behind it.
+  function place(v, x, y, d, out) {
+    const D = lead0.clone().sub(v.eye).dot(v.f);
+    const g = (D + d) / D;
+    return out.copy(lead0).addScaledVector(v.r, x * g).addScaledVector(v.u, y * g).addScaledVector(v.f, d);
+  }
+  function facing(at, eye, out) {
+    return out.setFromRotationMatrix(m4.lookAt(eye, at, UP)); // front cap to the camera
+  }
+
+  // On the way to the wings each arrow turns to its feather's heading, so
+  // neighbours would swing into each other. Each arrow takes the first depth
+  // lane in which its whole trip, as draw() flies it, stays clear of every
+  // arrow already placed: apart on screen, or apart in depth. The cover
+  // needs no lanes, so this runs in an idle moment after the layout (or at
+  // once, if the reader scrolls first).
+  let ends = [];
+  let lanesReady = false;
+  const lane = new Array(N).fill(0);
+  function solveLanes() {
+    const size = (a, kk) => scaleOf[a] + (wingS[slotOf[a]] - scaleOf[a]) * kk;
+    const trip = (a, l, kk, out) => {
+      const lift = Math.sin(Math.PI * kk);
+      out.copy(cover[a]).lerp(ends[slotOf[a]], kk);
+      out.y += lift * 8;
+      out.z -= lift * (5 + l * 9);
+      return out;
+    };
+    // The arrow's outline, centred like its geometry, as it is at a point of
+    // the trip: its turn, its size and its depth range, all as draw() has them.
+    const outline = ARROW.map(([x, y]) => [x - 5 - 6.75, 3.2 - y + 9.15]);
+    const tq = new THREE.Quaternion();
+    const tw = new THREE.Quaternion();
+    const ax = new THREE.Vector3();
+    const ay = new THREE.Vector3();
+    const az = new THREE.Vector3();
+    const cache = new Map();
+    const shapeAt = (a, l, step) => {
+      const key = a * 4096 + l * 32 + step;
+      const hit = cache.get(key);
+      if (hit) return hit;
+      const kk = (step + 1) * 0.06;
+      const sl = slotOf[a];
+      const g = wingSide[sl] < 0 ? wingAng[sl] : 180 - wingAng[sl];
+      tq.copy(coverQ[a]).slerp(tw.setFromEuler(e.set(0.08, 0, (g - TIP) * D2R)), kk);
+      ax.set(1, 0, 0).applyQuaternion(tq);
+      ay.set(0, 1, 0).applyQuaternion(tq);
+      az.set(0, 0, 1).applyQuaternion(tq);
+      const c = trip(a, l, kk, new THREE.Vector3());
+      const sc = size(a, kk);
+      const pts = outline.map(([x, y]) => [c.x + sc * (x * ax.x + y * ay.x), c.y + sc * (x * ax.y + y * ay.y), c.z + sc * (x * ax.z + y * ay.z)]);
+      const half = sc * 1.15 * Math.abs(az.z) + 0.6;
+      const xs = pts.map((v) => v[0]);
+      const ys = pts.map((v) => v[1]);
+      const shape = {
+        pts, gap: 1.2 * sc, c: c.clone(), r: 12 * sc, kk,
+        lo: Math.min(...pts.map((v) => v[2])) - half, hi: Math.max(...pts.map((v) => v[2])) + half,
+        x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys),
+      };
+      cache.set(key, shape);
+      return shape;
+    };
+    const inPoly = (x, y, pts) => {
+      let c = false;
+      for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+        const [xi, yi] = pts[i];
+        const [xj, yj] = pts[j];
+        if ((yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) c = !c;
+      }
+      return c;
+    };
+    const segGap = (p1, p2, p3, p4) => {
+      // the distance between two segments in the screen plane (0 if they cross)
+      const d = (px, py, ax1, ay1, bx, by) => {
+        const vx = bx - ax1;
+        const vy = by - ay1;
+        const t = Math.max(0, Math.min(1, ((px - ax1) * vx + (py - ay1) * vy) / (vx * vx + vy * vy || 1)));
+        return Math.hypot(px - ax1 - t * vx, py - ay1 - t * vy);
+      };
+      const cross = (o, q1, r) => (q1[0] - o[0]) * (r[1] - o[1]) - (q1[1] - o[1]) * (r[0] - o[0]);
+      if (cross(p1, p2, p3) * cross(p1, p2, p4) < 0 && cross(p3, p4, p1) * cross(p3, p4, p2) < 0) return 0;
+      return Math.min(d(p1[0], p1[1], p3[0], p3[1], p4[0], p4[1]), d(p2[0], p2[1], p3[0], p3[1], p4[0], p4[1]),
+        d(p3[0], p3[1], p1[0], p1[1], p2[0], p2[1]), d(p4[0], p4[1], p1[0], p1[1], p2[0], p2[1]));
+    };
+    const touch = (A, B) => {
+      if (A.hi < B.lo || B.hi < A.lo) return false; // apart in depth
+      const gap0 = A.gap + B.gap;
+      if (A.x1 + gap0 < B.x0 || B.x1 + gap0 < A.x0 || A.y1 + gap0 < B.y0 || B.y1 + gap0 < A.y0) return false; // apart on screen
+      if (A.pts.some(([x, y]) => inPoly(x, y, B.pts)) || B.pts.some(([x, y]) => inPoly(x, y, A.pts))) return true;
+      const gap = A.gap + B.gap;
+      for (let i = 0, j = A.pts.length - 1; i < A.pts.length; j = i++) {
+        for (let m = 0, n = B.pts.length - 1; m < B.pts.length; n = m++) {
+          if (segGap(A.pts[j], A.pts[i], B.pts[n], B.pts[m]) < gap) return true;
+        }
+      }
+      return false;
+    };
+    const clear = (a, l, b) => {
+      for (let step = 0; step < 16; step += 1) { // the trip from 6% to 96%: the cover and the wings are clear by layout
+        if (touch(shapeAt(a, l, step), shapeAt(b, lane[b], step))) return false;
+      }
+      return true;
+    };
+    // The sun and the clouds are in the way too: no trip may pass through them.
+    const sunAt = new THREE.Vector3();
+    const blocked = (a, l) => {
+      for (let step = 0; step < 16; step += 1) {
+        const A = shapeAt(a, l, step);
+        const size = sunSize + (sunWingSize - sunSize) * A.kk;
+        sunAt.copy(sunCover).lerp(sunWing, A.kk);
+        if (A.c.distanceTo(sunAt) < (SUN_R * 1.08 + 10.5) * size + A.r) return true;
+        for (let n = 0; n < cloudAt.length; n += 1) {
+          const cl = cloudAt[n];
+          const dy = cl.y - A.kk * 4 - A.c.y;
+          if (Math.hypot(cl.x - A.c.x, dy, cl.z - A.c.z) < cloudR[n] + A.r) return true;
+        }
+      }
+      return false;
+    };
+    const placed = [];
+    for (let a = 0; a < N; a += 1) {
+      let best = 0;
+      let fewest = Infinity;
+      for (let l = 0; l <= 12; l += 1) {
+        const hits = (blocked(a, l) ? 1 : 0) + placed.filter((b) => !clear(a, l, b)).length;
+        if (hits < fewest) { fewest = hits; best = l; }
+        if (!hits) break;
+      }
+      lane[a] = best;
+      placed.push(a);
+    }
+    lanesReady = true;
+  }
+  function scheduleLanes() {
+    lanesReady = false;
+    lane.fill(0);
+    const later = window.requestIdleCallback || ((fn) => setTimeout(fn, 300));
+    later(() => { if (!lanesReady) solveLanes(); }, { timeout: 2000 });
+  }
+
+  let framing = '';
+  let framedR = 0;
+  function layout(kind) {
+    framing = kind;
+    framedR = fitR;
+    seed = 7;
+    const v0 = viewFrom(0);
+    const v1 = viewFrom(1);
+    const pts = FLOCK[kind];
+    let i = 0;
+    for (const L of LAYERS) {
+      for (let j = 0; j < L.n; j += 1, i += 1) {
+        const [x, y] = pts[i];
+        place(v0, x, y, L.d, cover[i]);
+        // Facing the reader, pointing the lead's way, with a gentle tilt:
+        // never more than 25 degrees of turn, 15 of pitch.
+        facing(cover[i], v0.eye, coverQ[i]);
+        e.set((rand() - 0.5) * 30 * D2R, (rand() - 0.5) * 50 * D2R, (0.1 + (rand() - 0.5) * 0.24));
+        coverQ[i].multiply(qj.setFromEuler(e));
+        scaleOf[i] = L.s;
+        phase[i] = x * 0.09 + y * 0.05;
+      }
+    }
+    // Who flies to which feather: the pairing with the shortest total path.
+    // Shortest pairings never cross, so no two arrows meet on the way.
+    const slotAt = (sl, out) => {
+      const a = wingAng[sl];
+      const g = wingSide[sl] < 0 ? a : 180 - a;
+      return out.set(wingSide[sl] * 6 + Math.cos(g * D2R) * wingR[sl], 3 + Math.sin(g * D2R) * wingR[sl], wingZ[sl]).add(lead0);
+    };
+    ends = Array.from({ length: N }, (_, sl) => slotAt(sl, new THREE.Vector3()));
+    const len = (a, sl) => Math.hypot(cover[a].x - ends[sl].x, cover[a].y - ends[sl].y);
+    for (let a = 0; a < N; a += 1) slotOf[a] = a;
+    for (let pass = 0, changed = true; changed && pass < 60; pass += 1) {
+      changed = false;
+      for (let a = 0; a < N; a += 1) {
+        for (let b = a + 1; b < N; b += 1) {
+          if (len(a, slotOf[b]) + len(b, slotOf[a]) < len(a, slotOf[a]) + len(b, slotOf[b]) - 1e-6) {
+            [slotOf[a], slotOf[b]] = [slotOf[b], slotOf[a]];
+            changed = true;
+          }
+        }
+      }
+    }
+    for (let a = 0; a < N; a += 1) {
+      const sl = slotOf[a];
+      mesh.setColorAt(a, color.set(sl < 4 ? FIXED[sl] : agentColor(sl + 2)));
+    }
+    mesh.instanceColor.needsUpdate = true;
+    scheduleLanes();
+    flight.copy(v0.r).multiplyScalar(-0.59).addScaledVector(v0.u, 0.81); // the lead's heading
+    const [sx, sy, sd, ss] = SUN_AT[kind];
+    place(v0, sx, sy, sd, sunCover);
+    const [wx, wy, wd, ws] = SUN_WING[kind];
+    place(v1, wx, wy, wd, sunWing);
+    sunSize = ss;
+    sunWingSize = ws;
+    cloudAt.length = 0;
+    clouds.forEach((c, n) => { c.visible = n < CLOUDS[kind].length; });
+    CLOUDS[kind].forEach(([x, y, d, s, shape], n) => {
+      const c = clouds[n];
+      const [body, edge] = cloudGeos[shape];
+      c.children[0].geometry = edge;
+      c.children[1].geometry = body;
+      place(v0, x, y, d, c.position);
+      facing(c.position, v0.eye, c.quaternion);
+      c.scale.setScalar(s);
+      cloudAt.push(c.position.clone());
+      body.computeBoundingSphere();
+      cloudR[n] = body.boundingSphere.radius * s;
+    });
+  }
+
   const p = new THREE.Vector3();
+  const w = new THREE.Vector3();
   const q = new THREE.Quaternion();
-  const qs = new THREE.Quaternion();
+  const wq = new THREE.Quaternion();
   const s = new THREE.Vector3();
   const look = new THREE.Vector3();
   const coverLook = new THREE.Vector3();
   const wingLook = new THREE.Vector3();
+  const leadCoverQ = new THREE.Quaternion().setFromEuler(e.set(-0.16, 0.34, 0.1)); // three-quarters to the reader
+  const leadWingQ = new THREE.Quaternion().setFromEuler(e.set(0.1, 0, 0.12));
   const ease = (t) => (t <= 0 ? 0 : t >= 1 ? 1 : (1 - (1 + 7 * t) * Math.exp(-7 * t)) / (1 - 8 * Math.exp(-7)));
   const smooth = (t) => t * t * (3 - 2 * t);
   const clamp = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
@@ -625,80 +1008,122 @@ function prologue(section) {
   let pointerTo = 0;
 
   function draw(time) {
-    const t = time / 1000;
     const still = reduced.matches;
-    const k = ease(clamp((progress - 0.2) / 0.5)); // the swarm forms its wings
+    const t = still ? 0 : time / 1000;
+    const k = ease(clamp((progress - 0.2) / 0.5)); // the flock forms its wings
+    if (k > 0 && !lanesReady) solveLanes();
     const up = smooth(clamp((progress - 0.72) / 0.28)); // then Icarus climbs toward the sun
     const climb = up * 12;
     const back = up * 10;
-    mesh.setMatrixAt(0, hidden);
-    // The sun starts low and in frame beside the lead, then settles behind the wings.
-    sun.position.set(-22 + 22 * k, 12 + 14 * k, -92);
-    burst.position.set(sun.position.x, sun.position.y, sun.position.z - SUN_R * 1.4);
-    for (let i = 1; i < N; i += 1) {
-      const c = cloud[i];
-      const f = wing[i];
-      const drift = (1 - k) * 2.2;
-      const beat = Math.sin(t * 1.5) * 0.07 * (k + up * 0.6) * Math.abs(f.x);
-      p.set(
-        c.x + (f.x - c.x) * k + Math.sin(t * 0.4 + i) * drift,
-        c.y + (f.y - c.y) * k + Math.cos(t * 0.5 + i * 1.7) * drift + beat + climb * k,
-        c.z + (f.z - c.z) * k - back * k,
-      );
-      qs.setFromAxisAngle(spinB[i], t * 0.35 * (1 - k)).multiply(spinA[i]);
-      q.copy(qs).slerp(formQ[i], k);
-      const sc = scaleOf[i] * (0.74 + 0.26 * k); // smaller while scattered: they frame the lead, not crowd it
-      s.set(sc, sc, sc);
-      mesh.setMatrixAt(i, m4.compose(p, q, s));
+
+    const bob = still ? 0 : Math.sin(t * 1.3) * 0.9 * (1 - k * 0.5);
+    lead.position.set(lead0.x, lead0.y + bob + climb, lead0.z - back);
+    lead.quaternion.copy(leadCoverQ).slerp(leadWingQ, k);
+    if (!still) lead.rotateZ(Math.sin(t * 0.9) * 0.035);
+
+    const flap = still ? 0 : Math.sin(t * 1.7) * 6 * k; // degrees, both wings up together
+    for (let i = 0; i < N; i += 1) {
+      const sl = slotOf[i];
+      const ki = k;
+      const lift = Math.sin(Math.PI * ki);
+      const idle = still ? 0 : 1 - ki;
+      // Cover: bob, a small surge along the heading, a little sway; no spin.
+      const ph = phase[i];
+      p.copy(cover[i]);
+      if (idle) {
+        p.y += Math.sin(t * 1.15 + ph) * 1.1 * idle;
+        p.addScaledVector(flight, Math.sin(t * 0.55 + ph) * 0.8 * idle);
+      }
+      q.copy(coverQ[i]);
+      if (idle) q.multiply(qj.setFromEuler(e.set(0, Math.sin(t * 0.65 + ph * 1.3) * 0.07 * idle, Math.sin(t * 0.9 + ph) * 0.06 * idle)));
+      // Wings: a feather fanned from the shoulder, flapping gently.
+      const side = wingSide[sl];
+      const ang = side < 0 ? wingAng[sl] - flap : 180 - wingAng[sl] + flap;
+      w.set(side * 6 + Math.cos(ang * D2R) * wingR[sl], 3 + Math.sin(ang * D2R) * wingR[sl], wingZ[sl]).add(lead.position);
+      wq.setFromEuler(e.set(0.08, 0, (ang - TIP) * D2R));
+      // On the way, they swoop up and pass behind the lead, each in its lane.
+      p.lerp(w, ki);
+      p.y += lift * 8;
+      p.z -= lift * (5 + lane[i] * 9);
+      q.slerp(wq, ki);
+      const sc = scaleOf[i] + (wingS[sl] - scaleOf[i]) * ki;
+      mesh.setMatrixAt(i, m4.compose(p, q, s.set(sc, sc, sc)));
     }
     mesh.instanceMatrix.needsUpdate = true;
 
-    const bob = still ? 0 : Math.sin(t * 1.3) * 0.9 * (1 - k * 0.5);
-    lead.position.set(wing[0].x, wing[0].y + bob + climb, wing[0].z - back);
-    lead.quaternion.copy(coverQ).slerp(formQ[0], k);
-    if (!still) lead.rotateZ(Math.sin(t * 0.9) * 0.035);
+    clouds.forEach((c, n) => {
+      const a = cloudAt[n];
+      if (!a) return;
+      c.position.set(a.x + (still ? 0 : Math.sin(t * 0.08 + n * 2.1) * 1.6), a.y - up * 18 - k * 4, a.z);
+    });
 
     pointer += (pointerTo - pointer) * 0.06;
-    const ang = 0.46 * (1 - k) - 0.05 + pointer * 0.1 + (still ? 0 : Math.sin(t * 0.15) * 0.03);
+    const turn = 0.46 * (1 - k) - 0.05 + pointer * 0.1 + (still ? 0 : Math.sin(t * 0.15) * 0.03);
     const R = fitR * (near + (1 - near) * k + 0.06 * up);
     coverLook.set(lead.position.x, lead.position.y - 2, lead.position.z);
     wingLook.set(0, 2 + climb * 0.7, -back * 0.5);
     look.copy(coverLook).lerp(wingLook, k);
-    camera.position.set(look.x + Math.sin(ang) * R, look.y + 8 + 12 * (1 - k), look.z + Math.cos(ang) * R);
+    camera.position.set(look.x + Math.sin(turn) * R, look.y + 8 + 12 * (1 - k), look.z + Math.cos(turn) * R);
     camera.lookAt(look);
 
-    burst.quaternion.copy(camera.quaternion);
-    if (!still) burst.rotateZ(t * 0.04);
+    // The sun faces the reader, turns slowly, and grows as Icarus nears it.
+    sun.position.copy(sunCover).lerp(sunWing, k);
+    aim.position.set(look.x + Math.sin(0.46 * (1 - k) - 0.05) * R, look.y + 8 + 12 * (1 - k), look.z + Math.cos(0.46 * (1 - k) - 0.05) * R);
+    aim.lookAt(look);
+    aim.updateMatrixWorld();
+    const sp = sunScreen.copy(sun.position).project(aim);
+    const sx = Math.round((sp.x + 1) * 250) / 5;
+    const sy = Math.round((1 - sp.y) * 250) / 5;
+    if (sx !== sunX || sy !== sunY) {
+      sunX = sx;
+      sunY = sy;
+      pin.style.setProperty('--sun-x', `${sx}%`);
+      pin.style.setProperty('--sun-y', `${sy}%`);
+    }
+    sun.quaternion.copy(camera.quaternion);
+    sun.scale.setScalar((sunSize + (sunWingSize - sunSize) * k) * (1 + 0.1 * up));
+    rays.rotation.z = still ? 0 : t * 0.045;
+    for (const tw of twinkles) {
+      const { size, phase: ph } = tw.userData;
+      tw.scale.setScalar(size * (still ? 1 : 0.72 + 0.28 * Math.sin(t * 1.6 + ph)));
+      tw.rotation.z = still ? 0 : Math.sin(t * 0.5 + ph) * 0.15;
+    }
     renderer.render(scene, camera);
   }
 
   function resize() {
-    const w = canvas.clientWidth;
-    const h = canvas.clientHeight;
-    if (!w || !h) return;
+    const cw = canvas.clientWidth;
+    const ch = canvas.clientHeight;
+    if (!cw || !ch) return;
     // Toon shading is flat colour: a modest pixel ratio stays crisp and
     // keeps the frame cheap.
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
-    renderer.setSize(w, h, false);
-    camera.aspect = w / h;
-    camera.fov = w < h ? 46 : 34;
+    renderer.setSize(cw, ch, false);
+    camera.aspect = cw / ch;
+    camera.fov = cw < ch ? 46 : 34;
     camera.updateProjectionMatrix();
+    aim.copy(camera);
     // Wide screens: the words sit on the left, so the scene plays on the
     // right. Portrait: the words sit at the bottom, so it plays up top.
-    const wide = w >= 900 && w > h * 1.1;
-    const tall = w < h;
-    if (wide) camera.setViewOffset(w, h, -w * 0.2, 0, w, h);
-    else if (tall) camera.setViewOffset(w, h, 0, h * (w < 600 ? 0.2 : 0.1), w, h);
+    const wide = cw >= 900 && cw > ch * 1.1;
+    const tall = cw < ch;
+    if (wide) camera.setViewOffset(cw, ch, -cw * 0.2, 0, cw, ch);
+    else if (tall) camera.setViewOffset(cw, ch, 0, ch * (cw < 600 ? 0.2 : 0.1), cw, ch);
     else camera.clearViewOffset();
     const halfH = Math.atan(Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect);
     fitR = 80 / (tall ? 0.96 : 0.85) / Math.tan(halfH) / (wide ? 0.62 : 1);
     near = tall ? 0.54 : 0.42; // a phone's cover leaves room for the words under it
+    // Lay the cover out again only when the framing changes, not when a
+    // phone's address bar comes and goes.
+    const kind = tall ? 'tall' : 'wide';
+    if (kind !== framing || Math.abs(fitR - framedR) > framedR * 0.15) layout(kind);
   }
 
   let visible = false;
   let raf = 0;
   let ready = false; // shaders compiled: until then nothing renders, so nothing stalls
   const motion = () => !reduced.matches;
+  const redraw = () => { if (!raf && ready) draw(performance.now()); };
   function running() { return ready && visible && !document.hidden && motion(); }
   function frame(time) {
     raf = 0;
@@ -720,8 +1145,9 @@ function prologue(section) {
   new IntersectionObserver((entries) => { visible = entries[entries.length - 1].isIntersecting; sync(); }).observe(section);
   document.addEventListener('visibilitychange', sync);
   reduced.addEventListener('change', sync);
-  new ResizeObserver(() => { resize(); if (!raf && ready) draw(performance.now()); }).observe(canvas);
-  window.addEventListener('prologue:progress', (ev) => { progress = ev.detail; if (!raf && ready) draw(performance.now()); });
+  new ResizeObserver(() => { resize(); redraw(); }).observe(canvas);
+  new MutationObserver(() => { paintClouds(); redraw(); }).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+  window.addEventListener('prologue:progress', (ev) => { progress = ev.detail; redraw(); });
   if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
     window.addEventListener('pointermove', (ev) => { pointerTo = ev.clientX / window.innerWidth - 0.5; }, { passive: true });
   }

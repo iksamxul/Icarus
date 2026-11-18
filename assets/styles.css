@@ -1592,7 +1592,10 @@ code, pre { font-family: var(--font-mono); }
   font: 700 clamp(15px, 1.4vw, 18px)/1.4 var(--font-comic);
 }
 .pro-copy h2 { text-shadow: 0.045em 0.055em 0 rgba(139, 108, 255, 0.75); }
-.prologue.has-3d .pro-pin { background: repeating-conic-gradient(from 0deg at 50% 36%, rgba(255, 255, 255, 0.035) 0deg 1.2deg, transparent 1.2deg 6deg); }
+/* The opening's comic rays fan out from the sun (the 3D scene sets
+   --sun-x and --sun-y to where the sun sits on screen). */
+.prologue.has-3d .pro-pin { background: repeating-conic-gradient(from 0deg at var(--sun-x, 70%) var(--sun-y, 20%), rgba(255, 214, 120, 0.06) 0deg 1.4deg, transparent 1.4deg 6deg); }
+:root[data-theme="light"] .prologue.has-3d .pro-pin { background: repeating-conic-gradient(from 0deg at var(--sun-x, 70%) var(--sun-y, 20%), rgba(255, 150, 30, 0.1) 0deg 1.4deg, transparent 1.4deg 6deg); }
 
 /* How it works: a yonkoma. */
 .yonkoma { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 44px; }
