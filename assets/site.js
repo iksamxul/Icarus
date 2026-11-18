@@ -26,7 +26,10 @@
     // (Day turns in from the top right, Night from the bottom left);
     // otherwise the switch is instant.
     root.dataset.turn = b.dataset.themeSet;
-    if (document.startViewTransition && !reduced.matches) document.startViewTransition(() => applyTheme(b.dataset.themeSet));
+    if (document.startViewTransition && !reduced.matches) {
+      root.dataset.vt = 'turn';
+      document.startViewTransition(() => applyTheme(b.dataset.themeSet)).finished.finally(() => { delete root.dataset.vt; });
+    }
     else applyTheme(b.dataset.themeSet);
     try { localStorage.setItem(THEME_KEY, b.dataset.themeSet); } catch (e) { /* private mode */ }
   }));

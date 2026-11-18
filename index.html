@@ -48,13 +48,13 @@
     }, 1200 * (n + 1));
   };
 </script>
-<link rel="stylesheet" href="assets/styles.css?v=20261118c">
+<link rel="stylesheet" href="assets/styles.css?v=20261118d">
 <script type="importmap">{ "imports": { "three": "./assets/vendor/three/three.module.min.js" } }</script>
-<script src="assets/swarm.js?v=20261118c" defer></script>
-<script src="assets/story.js?v=20261118c" defer></script>
-<script src="assets/site.js?v=20261118c" defer></script>
-<script src="assets/comic-fx.js?v=20261118c" defer></script>
-<script type="module" src="assets/three-icarus.js?v=20261118c"></script>
+<script src="assets/swarm.js?v=20261118d" defer></script>
+<script src="assets/story.js?v=20261118d" defer></script>
+<script src="assets/site.js?v=20261118d" defer></script>
+<script src="assets/comic-fx.js?v=20261118d" defer></script>
+<script type="module" src="assets/three-icarus.js?v=20261118d"></script>
 </head>
 <body>
 
@@ -294,8 +294,12 @@
       <div class="beat">
       <figure class="pn" data-pn style="--ar:4/3">
         <div class="bg bg-gloom"></div>
-        <div class="bg gloom-lines"></div>
-        <div class="chr" data-who="you" data-face="cry" data-a="zoom" style="--x:31%;--y:60%;--s:46cqw;--r:-4deg"><svg class="glyph" style="--c:var(--you)"><use href="#cur"/></svg><i class="emo gloom"></i></div>
+        <div class="p raincloud" aria-hidden="true" style="--x:22%;--y:14%"><svg viewBox="0 0 200 170">
+          <g class="rc-rain"><path d="M58 104l-10 30M86 108l-10 34M114 106l-10 36M142 106l-10 30M72 140l-6 18M128 142l-6 18"/></g>
+          <path class="rc-cloud" d="M44 100c-24 0-30-30-8-38-4-28 30-38 46-20 10-28 58-28 64 4 26-10 52 14 36 38 20 10 10 32-12 30z"/>
+          <path class="rc-lit" d="M52 64c-2-14 14-22 26-14M104 40c10-6 24-2 28 10"/>
+        </svg></div>
+        <div class="chr" data-who="you" data-face="cry" data-a="zoom" style="--x:31%;--y:60%;--s:46cqw;--r:-4deg"><svg class="glyph" style="--c:var(--you)"><use href="#cur"/></svg></div>
         <p class="bal p" data-tail="bl" data-a="pop" style="--x:72%;--y:24%;--w:40cqw;--d:2">I just want to reorder a lamp…</p>
         <p class="bal think p" data-tail="bl" data-a="pop" style="--x:72%;--y:66%;--w:38cqw;--d:4">…and log the cost. And find out when it arrives. And—</p>
       </figure>
@@ -526,7 +530,7 @@
         <p class="bal p" data-tail="bl" data-a="pop" style="--x:64%;--y:30%;--w:62cqw;--d:2">Split it small.</p>
       </figure>
       <figure class="pn" data-pn style="--ar:4/5">
-        <div class="bg bg-sentai"></div>
+        <div class="bg bg-go"></div>
         <p class="nar p" data-a="down" style="--x:50%;--y:10%;--w:84cqw"><b>2</b> Agents take the jobs, many at once.</p>
         <div class="chr" data-who="wing" data-face="sparkle" data-a="hop" style="--x:28%;--y:42%;--s:36cqw;--r:-10deg;--d:1"><svg class="glyph" style="--c:var(--wing)"><use href="#cur"/></svg></div>
         <div class="chr" data-who="wax" data-face="happy" data-a="hop" style="--x:72%;--y:44%;--s:36cqw;--r:8deg;--d:2"><svg class="glyph" style="--c:var(--wax)"><use href="#cur"/></svg></div>

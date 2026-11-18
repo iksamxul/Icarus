@@ -2757,9 +2757,9 @@ body::before { display: none; }
 
 /* 2. The theme switch turns the page: Day from the top right, Night from
    the bottom left. Without View Transitions it is instant. */
-::view-transition-old(root) { animation: none; }
-::view-transition-new(root) { animation: page-turn 0.64s cubic-bezier(0.22, 1, 0.36, 1) both; }
-:root[data-turn="dark"]::view-transition-new(root) { animation-name: page-turn-back; }
+:root[data-vt="turn"]::view-transition-old(root) { animation: none; }
+:root[data-vt="turn"]::view-transition-new(root) { animation: page-turn 0.64s cubic-bezier(0.22, 1, 0.36, 1) both; }
+:root[data-vt="turn"][data-turn="dark"]::view-transition-new(root) { animation-name: page-turn-back; }
 @keyframes page-turn { from { clip-path: polygon(100% 0, 100% 0, 100% 0); } to { clip-path: polygon(100% 0, -120% 0, 100% 220%); } }
 @keyframes page-turn-back { from { clip-path: polygon(0 100%, 0 100%, 0 100%); } to { clip-path: polygon(0 100%, 220% 100%, 0 -120%); } }
 
@@ -2989,3 +2989,67 @@ body::before { display: none; }
 .stage-stamp { display: none; }
 .stage-stamp.go { display: grid; }
 .watch { overflow-x: clip; overflow-clip-margin: 16px; }
+
+/* ═══ Crisp comic lighting (no soft glows) ══════════════════════════════ */
+
+/* The lead's moment: two-tone sunburst rays and an inked gold starburst. */
+.bg-hero {
+  background: repeating-conic-gradient(from 0deg at 54% 56%, #5a3ad6 0deg 7deg, #4527b8 7deg 14deg);
+}
+.bg-hero::before, .bg-hero::after {
+  content: ""; position: absolute; left: 54%; top: 56%;
+  width: 76cqw; aspect-ratio: 1; translate: -50% -50%;
+  clip-path: polygon(50.0% 4.0%, 55.2% 17.4%, 65.5% 2.4%, 66.8% 17.0%, 79.4% 9.5%, 73.3% 26.7%, 87.2% 23.0%, 83.0% 33.2%, 97.6% 34.5%, 82.6% 44.8%, 100.0% 50.0%, 86.5% 55.8%, 93.7% 64.2%, 79.4% 65.0%, 90.5% 79.4%, 76.2% 76.2%, 79.4% 90.5%, 65.0% 79.4%, 64.2% 93.7%, 55.8% 86.5%, 50.0% 100.0%, 44.8% 82.6%, 34.5% 97.6%, 33.2% 83.0%, 23.0% 87.2%, 26.7% 73.3%, 9.5% 79.4%, 17.0% 66.8%, 2.4% 65.5%, 17.4% 55.2%, 4.0% 50.0%, 13.5% 44.2%, 2.4% 34.5%, 20.6% 35.0%, 9.5% 20.6%, 23.8% 23.8%, 23.0% 12.8%, 35.0% 20.6%, 34.5% 2.4%, 44.2% 13.5%);
+}
+.bg-hero::before { background: var(--ink); }
+.bg-hero::after {
+  scale: 0.95;
+  background: radial-gradient(circle at 50% 50%, #fff3c4 0 18%, #ffc83d 19% 40%, #ff8a1f 41%);
+}
+
+/* The roster: hard-edged spotlights from above, a pool at each one's feet. */
+.bg-sentai {
+  background:
+    radial-gradient(11% 5% at 14% 72%, rgba(56, 182, 255, 0.6) 0 96%, transparent 100%),
+    radial-gradient(11% 5% at 38% 68%, rgba(255, 79, 139, 0.6) 0 96%, transparent 100%),
+    radial-gradient(11% 5% at 62% 70%, rgba(255, 200, 61, 0.6) 0 96%, transparent 100%),
+    radial-gradient(11% 5% at 86% 72%, rgba(139, 108, 255, 0.65) 0 96%, transparent 100%),
+    conic-gradient(from 168deg at 14% -14%, rgba(56, 182, 255, 0.32) 0deg 24deg, transparent 24deg),
+    conic-gradient(from 168deg at 38% -14%, rgba(255, 79, 139, 0.32) 0deg 24deg, transparent 24deg),
+    conic-gradient(from 168deg at 62% -14%, rgba(255, 200, 61, 0.28) 0deg 24deg, transparent 24deg),
+    conic-gradient(from 168deg at 86% -14%, rgba(139, 108, 255, 0.36) 0deg 24deg, transparent 24deg),
+    linear-gradient(#0d0a1f, #241650);
+}
+
+/* Yonkoma 2: an action backdrop, diagonal stripes and one gold slash. */
+.bg-go {
+  background:
+    linear-gradient(135deg, transparent 47%, var(--ink) 47% 47.6%, var(--gold) 47.6% 51%, var(--ink) 51% 51.6%, transparent 51.6%),
+    repeating-linear-gradient(135deg, #2b1f6a 0 6cqw, #35277f 6cqw 12cqw);
+}
+
+/* Verified: one spotlight from above and a pool on the floor. */
+.bg-noir {
+  background:
+    radial-gradient(30% 6% at 50% 90%, rgba(130, 205, 255, 0.4) 0 96%, transparent 100%),
+    conic-gradient(from 160deg at 50% -18%, rgba(130, 205, 255, 0.26) 0deg 40deg, transparent 40deg),
+    linear-gradient(#1a1446, #0c0820);
+}
+
+/* The wish: an inked storm cloud with its own rain. */
+.raincloud { width: 36cqw; z-index: 3; }
+.raincloud svg { display: block; width: 100%; height: auto; overflow: visible; }
+.raincloud .rc-cloud { fill: #5d6694; stroke: var(--ink); stroke-width: 5; stroke-linejoin: round; }
+.raincloud .rc-lit { fill: none; stroke: #9aa6d6; stroke-width: 5; stroke-linecap: round; }
+.raincloud .rc-rain path { fill: none; stroke: #8fb2ff; stroke-width: 5; stroke-linecap: round; stroke-dasharray: 10 14; }
+:root[data-comic] .pn.vis .raincloud .rc-rain path { animation: rain-fall 0.7s linear infinite; }
+:root[data-comic] .pn.vis .raincloud { animation: bob 3s ease-in-out infinite; }
+@keyframes rain-fall { to { stroke-dashoffset: -24; } }
+
+/* A cartoon iris for jumps within the page: the scene closes to a circle
+   around the click, black for a beat, then opens on the new section. */
+:root[data-vt="iris"]::view-transition { background: #0b0814; }
+:root[data-vt="iris"]::view-transition-old(root) { animation: iris-close 0.32s cubic-bezier(0.55, 0, 0.75, 0.25) both; }
+:root[data-vt="iris"]::view-transition-new(root) { animation: iris-open 0.44s cubic-bezier(0.25, 0.75, 0.45, 1) 0.3s both; }
+@keyframes iris-close { from { clip-path: circle(150% at var(--ix, 50%) var(--iy, 50%)); } to { clip-path: circle(0 at var(--ix, 50%) var(--iy, 50%)); } }
+@keyframes iris-open { from { clip-path: circle(0 at 50% 45%); } to { clip-path: circle(150% at 50% 45%); } }

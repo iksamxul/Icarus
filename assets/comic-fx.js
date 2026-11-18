@@ -272,6 +272,34 @@
     }).observe(status, { attributes: true, attributeFilter: ['data-state'] });
   }
 
+  /* ── A cartoon iris for jumps within the page ────────────────────── */
+
+  if (document.startViewTransition) {
+    document.addEventListener('click', (e) => {
+      if (still() || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const a = e.target.closest('a[href^="#"]');
+      if (!a) return;
+      const id = a.getAttribute('href').slice(1);
+      const target = id && document.getElementById(id);
+      if (!target) return;
+      e.preventDefault();
+      const keyboard = !e.detail;
+      root.style.setProperty('--ix', `${keyboard ? window.innerWidth / 2 : e.clientX}px`);
+      root.style.setProperty('--iy', `${keyboard ? window.innerHeight / 2 : e.clientY}px`);
+      root.dataset.vt = 'iris';
+      const t = document.startViewTransition(() => {
+        target.scrollIntoView({ behavior: 'instant', block: 'start' });
+        history.pushState(null, '', `#${id}`);
+      });
+      t.finished.finally(() => { delete root.dataset.vt; });
+      if (keyboard) {
+        // Keyboard users land on the section, as a normal jump would put them.
+        if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+        target.focus({ preventScroll: true });
+      }
+    });
+  }
+
   /* ── 5. Motion-comic depth ───────────────────────────────────────── */
 
   const deep = [...document.querySelectorAll('.episode .pn, .yonkoma .pn')];
