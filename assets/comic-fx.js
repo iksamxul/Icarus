@@ -334,6 +334,29 @@
     });
   }
 
+  /* ── New in v1: the big numbers count up when they arrive ───────── */
+
+  const counts = [...document.querySelectorAll('.v1-count b[data-count]')];
+  if (counts.length && 'IntersectionObserver' in window) {
+    const tally = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        tally.unobserve(e.target);
+        const el = e.target;
+        const to = Number(el.dataset.count);
+        const t0 = performance.now();
+        const step = (t) => {
+          const k = Math.min(1, (t - t0) / 900);
+          el.textContent = String(Math.round(to * (1 - Math.pow(1 - k, 3))));
+          if (k < 1) requestAnimationFrame(step);
+        };
+        el.textContent = '0';
+        requestAnimationFrame(step);
+      }
+    }, { threshold: 0.6 });
+    counts.forEach((c) => tally.observe(c));
+  }
+
   /* ── 5. Motion-comic depth ───────────────────────────────────────── */
 
   const deep = [...document.querySelectorAll('.episode .pn, .yonkoma .pn')];

@@ -249,4 +249,39 @@
     window.scrollTo({ top: 0, behavior: still ? 'auto' : 'smooth' });
     document.querySelector('.nav .brand')?.focus({ preventScroll: true });
   });
+  /* ── New in v1: filter by kind and search ─────────────────────────── */
+
+  const v1 = document.getElementById('v1');
+  if (v1) {
+    const cats = [...v1.querySelectorAll('.v1-cat')];
+    const total = v1.querySelectorAll('.v1-cat li').length;
+    const buttons = [...v1.querySelectorAll('[data-v1]')];
+    const input = v1.querySelector('.v1-search input');
+    const shown = v1.querySelector('.v1-shown');
+    const empty = v1.querySelector('.v1-empty');
+    let kind = 'all';
+    const apply = () => {
+      const q = input.value.trim().toLowerCase();
+      let n = 0;
+      cats.forEach((cat) => {
+        const fits = kind === 'all' || cat.dataset.kind === kind;
+        let m = 0;
+        cat.querySelectorAll('li').forEach((li) => {
+          const hit = fits && (!q || li.textContent.toLowerCase().includes(q));
+          li.hidden = !hit;
+          if (hit) m += 1;
+        });
+        cat.hidden = m === 0;
+        n += m;
+      });
+      shown.textContent = 'Showing ' + n + ' of ' + total;
+      empty.hidden = n > 0;
+    };
+    buttons.forEach((b) => b.addEventListener('click', () => {
+      kind = b.dataset.v1;
+      buttons.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      apply();
+    }));
+    input.addEventListener('input', apply);
+  }
 })();

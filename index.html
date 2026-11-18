@@ -48,13 +48,13 @@
     }, 1200 * (n + 1));
   };
 </script>
-<link rel="stylesheet" href="assets/styles.css?v=20261118e">
+<link rel="stylesheet" href="assets/styles.css?v=20261118f">
 <script type="importmap">{ "imports": { "three": "./assets/vendor/three/three.module.min.js" } }</script>
-<script src="assets/swarm.js?v=20261118e" defer></script>
-<script src="assets/story.js?v=20261118e" defer></script>
-<script src="assets/site.js?v=20261118e" defer></script>
-<script src="assets/comic-fx.js?v=20261118e" defer></script>
-<script type="module" src="assets/three-icarus.js?v=20261118e"></script>
+<script src="assets/swarm.js?v=20261118f" defer></script>
+<script src="assets/story.js?v=20261118f" defer></script>
+<script src="assets/site.js?v=20261118f" defer></script>
+<script src="assets/comic-fx.js?v=20261118f" defer></script>
+<script type="module" src="assets/three-icarus.js?v=20261118f"></script>
 </head>
 <body>
 
@@ -638,6 +638,244 @@
     </div>
   </section>
 
+  <!-- ─── New in v1 ───────────────────────────────────────────────────────
+       Built from design/v1-features.md (51 features, 80 quality-of-life
+       fixes, each built and exercised in the running app). They ship with
+       the next Windows build; the download further down is still v0.1.0.
+  ──────────────────────────────────────────────────────────────────────── -->
+  <section class="sec wrap" id="v1" aria-labelledby="v1-title">
+    <p class="cap-meanwhile reveal">Meanwhile, in the workshop…</p>
+    <header class="sec-h split reveal">
+      <div>
+        <p class="label">New in v1</p>
+        <h2 id="v1-title">51 features and 80 little fixes.</h2>
+      </div>
+      <p>Each one is built into ICARUS v1 and checked in the running app. They arrive with the next Windows build; the download below is still v0.1.0.</p>
+    </header>
+    <div class="v1-tally">
+      <p class="v1-count reveal" data-kind="f"><b data-count="51">51</b><span>new features</span></p>
+      <p class="v1-count reveal" data-kind="q"><b data-count="80">80</b><span>quality-of-life fixes</span></p>
+    </div>
+    <div class="v1-tools">
+      <div class="v1-filter" role="group" aria-label="Show">
+        <button type="button" data-v1="all" aria-pressed="true">All <span>131</span></button>
+        <button type="button" data-v1="f" aria-pressed="false">Features <span>51</span></button>
+        <button type="button" data-v1="q" aria-pressed="false">Quality of life <span>80</span></button>
+      </div>
+      <label class="v1-search"><svg class="ico" aria-hidden="true"><use href="#i-search"/></svg><input type="search" placeholder="Search" aria-label="Search the v1 list" autocomplete="off"></label>
+      <p class="v1-shown" aria-live="polite">Showing 131 of 131</p>
+    </div>
+    <div class="v1-grid">
+      <article class="v1-cat reveal" data-kind="f">
+        <h3>Runs and history <span class="v1-n">10</span></h3>
+        <ul>
+          <li><code class="v1-id">F1</code><p><b>Run history survives restarts</b> <span>the last 50 runs are saved in the profile folder</span></p></li>
+          <li><code class="v1-id">F2</code><p><b>History sheet (<kbd>Ctrl+H</kbd>)</b> <span>every past run of the project with outcome, verified count, duration and when</span></p></li>
+          <li><code class="v1-id">F3</code><p><b>Run details</b> <span>the task, the lead's plan, each subtask's result and evidence, and every step</span></p></li>
+          <li><code class="v1-id">F4</code><p><b>Run timeline</b> <span>each agent's activity as bars on one clock</span></p></li>
+          <li><code class="v1-id">F5</code><p><b>Run stats</b> <span>duration, steps, page actions, tool calls, problems, time per agent</span></p></li>
+          <li><code class="v1-id">F6</code><p><b>Run again</b> <span>start any past task again in one click</span></p></li>
+          <li><code class="v1-id">F7</code><p><b>Export a run as a Markdown report</b></p></li>
+          <li><code class="v1-id">F8</code><p><b>Export a run as JSON</b></p></li>
+          <li><code class="v1-id">F9</code><p><b>Step log filters</b> <span>by agent, by kind, problems only, and text search</span></p></li>
+          <li><code class="v1-id">F10</code><p><b>Delete one run from history, or clear it</b></p></li>
+        </ul>
+      </article>
+      <article class="v1-cat reveal" data-kind="f">
+        <h3>Tasks <span class="v1-n">6</span></h3>
+        <ul>
+          <li><code class="v1-id">F11</code><p><b>Saved tasks per project</b> <span>name a task and keep it with the project</span></p></li>
+          <li><code class="v1-id">F12</code><p><b>Task variables</b> <span><code>{{name}}</code> in a saved task asks for its value before the run</span></p></li>
+          <li><code class="v1-id">F13</code><p><b>Task queue</b> <span>tasks added while a run goes start one after another</span></p></li>
+          <li><code class="v1-id">F14</code><p><b>Multi-line tasks</b> <span><kbd>Shift+Enter</kbd> adds a line and the bar grows</span></p></li>
+          <li><code class="v1-id">F15</code><p><b>Commands in the task bar</b> <span>type <code>&gt;</code> for actions (switch project, open a sheet, theme, new tab…)</span></p></li>
+          <li><code class="v1-id">F16</code><p><b><kbd>Ctrl+Shift+P</kbd> opens the commands directly</b></p></li>
+        </ul>
+      </article>
+      <article class="v1-cat reveal" data-kind="f">
+        <h3>Agents and projects <span class="v1-n">7</span></h3>
+        <ul>
+          <li><code class="v1-id">F17</code><p><b>Role presets for agents</b> <span>Forms, Reader, Researcher, Checker, Navigator</span></p></li>
+          <li><code class="v1-id">F18</code><p><b>Duplicate an agent</b></p></li>
+          <li><code class="v1-id">F19</code><p><b>Reorder agents (move up and down)</b></p></li>
+          <li><code class="v1-id">F20</code><p><b>Duplicate a project</b></p></li>
+          <li><code class="v1-id">F21</code><p><b>Export a project to a file (no secrets) and import one</b></p></li>
+          <li><code class="v1-id">F22</code><p><b>Bookmarks per project</b> <span>save the current page, open it from the menu or the commands</span></p></li>
+          <li><code class="v1-id">F23</code><p><b>Switch projects with <kbd>Ctrl+1</kbd> … <kbd>Ctrl+9</kbd></b></p></li>
+        </ul>
+      </article>
+      <article class="v1-cat reveal" data-kind="f">
+        <h3>Browser <span class="v1-n">10</span></h3>
+        <ul>
+          <li><code class="v1-id">F24</code><p><b>Find in page (<kbd>Ctrl+F</kbd>) with match count and next/previous</b></p></li>
+          <li><code class="v1-id">F25</code><p><b>Save a snapshot of the stage, or of one tab, as a PNG</b></p></li>
+          <li><code class="v1-id">F26</code><p><b>Reopen a closed tab (<kbd>Ctrl+Shift+T</kbd>)</b></p></li>
+          <li><code class="v1-id">F27</code><p><b>Duplicate a tab</b></p></li>
+          <li><code class="v1-id">F28</code><p><b>Tab menu (right-click)</b> <span>reload, duplicate, copy address, open in your browser, close others, close to the right</span></p></li>
+          <li><code class="v1-id">F29</code><p><b>Open the current page in your default browser</b></p></li>
+          <li><code class="v1-id">F30</code><p><b>Site icons in tabs</b></p></li>
+          <li><code class="v1-id">F31</code><p><b>Maximise one panel while the tabs are tiled, and restore it</b></p></li>
+          <li><code class="v1-id">F32</code><p><b>Follow mode</b> <span>the stage shows the tab of the agent that acted last</span></p></li>
+          <li><code class="v1-id">F33</code><p><b>Tile layout</b> <span>automatic, two columns or three columns</span></p></li>
+        </ul>
+      </article>
+      <article class="v1-cat reveal" data-kind="f">
+        <h3>Swarm overlay <span class="v1-n">5</span></h3>
+        <ul>
+          <li><code class="v1-id">F34</code><p><b>Show or hide the cursors</b></p></li>
+          <li><code class="v1-id">F35</code><p><b>Speech balloons on or off</b></p></li>
+          <li><code class="v1-id">F36</code><p><b>Sound-effect words (Tik tik, Pop) on or off</b></p></li>
+          <li><code class="v1-id">F37</code><p><b>Cursor size</b> <span>small, normal or large</span></p></li>
+          <li><code class="v1-id">F38</code><p><b>Target boxes on or off</b></p></li>
+        </ul>
+      </article>
+      <article class="v1-cat reveal" data-kind="f">
+        <h3>Notifications and window <span class="v1-n">5</span></h3>
+        <ul>
+          <li><code class="v1-id">F39</code><p><b>Desktop notification when a run ends while ICARUS is in the background</b></p></li>
+          <li><code class="v1-id">F40</code><p><b>Taskbar progress during a run, red when it fails</b></p></li>
+          <li><code class="v1-id">F41</code><p><b>The taskbar button flashes when a run ends in the background</b></p></li>
+          <li><code class="v1-id">F42</code><p><b>The window title shows the project and the run's progress</b></p></li>
+          <li><code class="v1-id">F43</code><p><b>Optional chime when a run ends</b></p></li>
+        </ul>
+      </article>
+      <article class="v1-cat reveal" data-kind="f">
+        <h3>Settings and help <span class="v1-n">7</span></h3>
+        <ul>
+          <li><code class="v1-id">F44</code><p><b>Settings sheet (<kbd>Ctrl+,</kbd>)</b> <span>appearance Night, Day or follow Windows</span></p></li>
+          <li><code class="v1-id">F45</code><p><b>Motion</b> <span>full, reduced or follow Windows</span></p></li>
+          <li><code class="v1-id">F46</code><p><b>Density</b> <span>comfortable or compact</span></p></li>
+          <li><code class="v1-id">F47</code><p><b>Keyboard shortcuts sheet (press <kbd>?</kbd>)</b></p></li>
+          <li><code class="v1-id">F48</code><p><b>About</b> <span>version, Electron and Chrome versions, config path, open the config folder, copy diagnostics</span></p></li>
+          <li><code class="v1-id">F49</code><p><b>Test every connection at once and see each one's state and how long the check took</b></p></li>
+          <li><code class="v1-id">F50</code><p><b>MCP tool browser</b> <span>search the tools of every server, with descriptions</span></p></li>
+        </ul>
+      </article>
+      <article class="v1-cat reveal" data-kind="f">
+        <h3>Desktop cursors <span class="v1-n">1</span></h3>
+        <ul>
+          <li><code class="v1-id">F51</code><p><b>When an agent works another app on this PC, its cursor flies out of the ICARUS window onto the desktop in one continuous motion, shows its clicks and typing there, and flies back; clicks pass straight through it, and Windows' one real mouse means the agents' actual input takes turns</b></p></li>
+        </ul>
+      </article>
+      <article class="v1-cat reveal" data-kind="q">
+        <h3>Task bar <span class="v1-n">15</span></h3>
+        <ul>
+          <li><code class="v1-id">Q1</code><p><b><kbd>Ctrl+Enter</kbd> runs the task, also in a multi-line task</b></p></li>
+          <li><code class="v1-id">Q2</code><p><b>Up arrow in an empty task bar brings back the last task</b></p></li>
+          <li><code class="v1-id">Q3</code><p><b>Clear button in the task bar</b></p></li>
+          <li><code class="v1-id">Q4</code><p><b>Recent tasks narrow down as you type</b></p></li>
+          <li><code class="v1-id">Q5</code><p><b>Remove a recent task from the list</b></p></li>
+          <li><code class="v1-id">Q6</code><p><b><kbd>Esc</kbd> clears the text first, then leaves the bar</b></p></li>
+          <li><code class="v1-id">Q7</code><p><b>Stop shows "Stopping…" until the run has stopped</b></p></li>
+          <li><code class="v1-id">Q8</code><p><b><kbd>Ctrl+.</kbd> stops a run, as <kbd>Esc</kbd> does</b></p></li>
+          <li><code class="v1-id">Q9</code><p><b>Clicking the outcome opens that run's details</b></p></li>
+          <li><code class="v1-id">Q10</code><p><b>Run again button next to the outcome</b></p></li>
+          <li><code class="v1-id">Q11</code><p><b>Copy the result summary</b></p></li>
+          <li><code class="v1-id">Q12</code><p><b>Failed subtasks counted in the progress text</b></p></li>
+          <li><code class="v1-id">Q13</code><p><b>The progress bar shows failed subtasks in red</b></p></li>
+          <li><code class="v1-id">Q14</code><p><b>The task bar shows how many tasks are queued</b></p></li>
+          <li><code class="v1-id">Q15</code><p><b>Drop text or a link on the task bar to fill it</b></p></li>
+        </ul>
+      </article>
+      <article class="v1-cat reveal" data-kind="q">
+        <h3>Cast rail <span class="v1-n">10</span></h3>
+        <ul>
+          <li><code class="v1-id">Q16</code><p><b>An agent card's tooltip shows its whole current line</b></p></li>
+          <li><code class="v1-id">Q17</code><p><b>An open step list follows the newest step</b></p></li>
+          <li><code class="v1-id">Q18</code><p><b>Copy an agent's steps</b></p></li>
+          <li><code class="v1-id">Q19</code><p><b>Step lists show how long each step took</b></p></li>
+          <li><code class="v1-id">Q20</code><p><b>Clicking a resting agent opens the roster</b></p></li>
+          <li><code class="v1-id">Q21</code><p><b>Click the lead's line to read all of it</b></p></li>
+          <li><code class="v1-id">Q22</code><p><b>The rail head counts working and resting agents</b></p></li>
+          <li><code class="v1-id">Q23</code><p><b>Collapse the rail to portraits with a button (remembered)</b></p></li>
+          <li><code class="v1-id">Q24</code><p><b>Model chips show the full model id on hover</b></p></li>
+          <li><code class="v1-id">Q25</code><p><b>The connections pill lists every problem on hover</b></p></li>
+        </ul>
+      </article>
+      <article class="v1-cat reveal" data-kind="q">
+        <h3>Tabs and address bar <span class="v1-n">14</span></h3>
+        <ul>
+          <li><code class="v1-id">Q26</code><p><b>Middle-click closes a tab</b></p></li>
+          <li><code class="v1-id">Q27</code><p><b>When the tabs do not fit, the mouse wheel scrolls the tab strip sideways</b></p></li>
+          <li><code class="v1-id">Q28</code><p><b><kbd>Ctrl+T</kbd> opens a new tab</b></p></li>
+          <li><code class="v1-id">Q29</code><p><b><kbd>Ctrl+W</kbd> closes the tab</b></p></li>
+          <li><code class="v1-id">Q30</code><p><b><kbd>Ctrl+Tab</kbd> and <kbd>Ctrl+Shift+Tab</kbd> move between tabs</b></p></li>
+          <li><code class="v1-id">Q31</code><p><b><kbd>Ctrl+L</kbd> goes to the address bar</b></p></li>
+          <li><code class="v1-id">Q32</code><p><b><kbd>F5</kbd> or <kbd>Ctrl+R</kbd> reloads; <kbd>Ctrl+Shift+R</kbd> reloads past the cache</b></p></li>
+          <li><code class="v1-id">Q33</code><p><b><kbd>Alt+Left</kbd> and <kbd>Alt+Right</kbd> go back and forward</b></p></li>
+          <li><code class="v1-id">Q34</code><p><b>Tabs show when their page is loading</b></p></li>
+          <li><code class="v1-id">Q35</code><p><b>Tab tooltips show the page title and full address</b></p></li>
+          <li><code class="v1-id">Q36</code><p><b>The address bar marks plain http pages as not secure (local pages excepted)</b></p></li>
+          <li><code class="v1-id">Q37</code><p><b>Copy the page address (<kbd>Ctrl+Shift+C</kbd> or the tab menu)</b></p></li>
+          <li><code class="v1-id">Q38</code><p><b>A new tab puts the cursor in the address bar</b></p></li>
+          <li><code class="v1-id">Q39</code><p><b>Closing a project's last tab opens its start page again instead of leaving the stage empty</b></p></li>
+        </ul>
+      </article>
+      <article class="v1-cat reveal" data-kind="q">
+        <h3>Stage <span class="v1-n">6</span></h3>
+        <ul>
+          <li><code class="v1-id">Q40</code><p><b>A page that failed to load shows a Retry button</b></p></li>
+          <li><code class="v1-id">Q41</code><p><b>An empty tab offers the start page and the project's bookmarks</b></p></li>
+          <li><code class="v1-id">Q42</code><p><b>Panel heads show a thin loading bar</b></p></li>
+          <li><code class="v1-id">Q43</code><p><b><kbd>Ctrl+G</kbd> tiles or untiles the tabs</b></p></li>
+          <li><code class="v1-id">Q44</code><p><b>Double-click a panel head to maximise it</b></p></li>
+          <li><code class="v1-id">Q45</code><p><b>Panel heads show the page title on hover</b></p></li>
+        </ul>
+      </article>
+      <article class="v1-cat reveal" data-kind="q">
+        <h3>Story strip <span class="v1-n">5</span></h3>
+        <ul>
+          <li><code class="v1-id">Q46</code><p><b>Click a frame to show that agent's tab</b></p></li>
+          <li><code class="v1-id">Q47</code><p><b>The strip says how many earlier steps are not shown</b></p></li>
+          <li><code class="v1-id">Q48</code><p><b>Collapse the story strip (remembered)</b></p></li>
+          <li><code class="v1-id">Q49</code><p><b>Frame tooltips show the whole step and any error</b></p></li>
+          <li><code class="v1-id">Q50</code><p><b>Hovering the strip holds it still so a frame can be read</b></p></li>
+        </ul>
+      </article>
+      <article class="v1-cat reveal" data-kind="q">
+        <h3>Sheets <span class="v1-n">14</span></h3>
+        <ul>
+          <li><code class="v1-id">Q51</code><p><b><kbd>Ctrl+S</kbd> saves the project sheet</b></p></li>
+          <li><code class="v1-id">Q52</code><p><b>Closing the project sheet with unsaved changes asks first</b></p></li>
+          <li><code class="v1-id">Q53</code><p><b>Deleting a project, connection or MCP server asks first; removing an agent can be undone</b></p></li>
+          <li><code class="v1-id">Q54</code><p><b>Tab stays inside an open sheet, and focus returns to where it was when it closes</b></p></li>
+          <li><code class="v1-id">Q55</code><p><b>Colour swatches for agents, one click each</b></p></li>
+          <li><code class="v1-id">Q56</code><p><b>Switch all agents on or off at once</b></p></li>
+          <li><code class="v1-id">Q57</code><p><b>Minus and plus buttons for "Agents at once"</b></p></li>
+          <li><code class="v1-id">Q58</code><p><b>The start page and allowed sites are checked as you type</b></p></li>
+          <li><code class="v1-id">Q59</code><p><b>Copy the config path</b></p></li>
+          <li><code class="v1-id">Q60</code><p><b>Copy an MCP server's log</b></p></li>
+          <li><code class="v1-id">Q61</code><p><b>Search the tools of an MCP server</b></p></li>
+          <li><code class="v1-id">Q62</code><p><b>Removing a connection says which agents use it</b></p></li>
+          <li><code class="v1-id">Q63</code><p><b>Saving says so</b></p></li>
+          <li><code class="v1-id">Q64</code><p><b>Testing the lead's model shows the response time</b></p></li>
+        </ul>
+      </article>
+      <article class="v1-cat reveal" data-kind="q">
+        <h3>Everywhere <span class="v1-n">16</span></h3>
+        <ul>
+          <li><code class="v1-id">Q65</code><p><b>Short notices for saves, copies and errors that go away by themselves</b></p></li>
+          <li><code class="v1-id">Q66</code><p><b>A dashboard error shows a Reload button instead of a blank window</b></p></li>
+          <li><code class="v1-id">Q67</code><p><b>Buttons with a shortcut name it in their tooltip</b></p></li>
+          <li><code class="v1-id">Q68</code><p><b>History shows relative times ("4 min ago") with the exact time on hover</b></p></li>
+          <li><code class="v1-id">Q69</code><p><b>Counts and clocks use even-width figures so they do not jitter</b></p></li>
+          <li><code class="v1-id">Q70</code><p><b>Agent cards show how long the agent has been working</b></p></li>
+          <li><code class="v1-id">Q71</code><p><b>The tile choice is remembered per project</b></p></li>
+          <li><code class="v1-id">Q72</code><p><b>ICARUS reopens at its last window size and position</b></p></li>
+          <li><code class="v1-id">Q73</code><p><b>Double-click a step to copy it</b></p></li>
+          <li><code class="v1-id">Q74</code><p><b>Addresses in steps and tool results open in a new tab when clicked</b></p></li>
+          <li><code class="v1-id">Q75</code><p><b>Long tool results expand when clicked</b></p></li>
+          <li><code class="v1-id">Q76</code><p><b>Agent cards count their problems when steps go wrong</b></p></li>
+          <li><code class="v1-id">Q77</code><p><b>Scrollbars match Night and Day</b></p></li>
+          <li><code class="v1-id">Q78</code><p><b>Notices and menus follow the motion setting</b></p></li>
+          <li><code class="v1-id">Q79</code><p><b>The command list shows each command's shortcut</b></p></li>
+          <li><code class="v1-id">Q80</code><p><b>Copy a subtask's evidence from the run details</b></p></li>
+        </ul>
+      </article>
+    </div>
+    <p class="v1-empty" hidden>Nothing matches that. Try another word, like <q>tab</q> or <q>history</q>.</p>
+  </section>
+
   <!-- ─── Screens ──────────────────────────────────────────────────────────
        App screenshots, one per edition: the dark one shows in dark, the
        light one in light (see shots/README.md for how they are captured).
@@ -785,6 +1023,7 @@
     <a href="#story">Story</a>
     <a href="#how">How it works</a>
     <a href="#features">Features</a>
+    <a href="#v1">New in v1</a>
     <a href="#inside">Screens</a>
     <a href="#download">Download</a>
   </nav>
